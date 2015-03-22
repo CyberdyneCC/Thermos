@@ -1,0 +1,266 @@
+--- ../src-base/minecraft/net/minecraft/world/chunk/Chunk.java
++++ ../src-work/minecraft/net/minecraft/world/chunk/Chunk.java
+@@ -36,6 +36,17 @@
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
++// CraftBukkit start
++import net.minecraft.block.BlockContainer;
++import org.bukkit.Bukkit;
++// CraftBukkit end
++// Spigot start
++import net.minecraft.entity.EntityLiving;
++import net.minecraft.entity.EnumCreatureType;
++import net.minecraft.entity.player.EntityPlayerMP;
++import net.minecraft.inventory.IInventory;
++// Spigot end
++
+ public class Chunk
+ {
+     private static final Logger logger = LogManager.getLogger();
+@@ -62,6 +73,8 @@
+     public int heightMapMinimum;
+     public long inhabitedTime;
+     private int queuedLightChecks;
++    public gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot (Cauldron protected -> public)
++    public int lastAccessedTick; // Cauldron track last time the chunk was accessed
+     private static final String __OBFID = "CL_00000373";
+ 
+     public Chunk(World p_i1995_1_, int p_i1995_2_, int p_i1995_3_)
+@@ -80,13 +93,22 @@
+ 
+         for (int k = 0; k < this.entityLists.length; ++k)
+         {
+-            this.entityLists[k] = new ArrayList();
++            this.entityLists[k] = new org.bukkit.craftbukkit.util.UnsafeList(); // CraftBukkit - ArrayList -> UnsafeList
+         }
+ 
+         Arrays.fill(this.precipitationHeightMap, -999);
+         Arrays.fill(this.blockBiomeArray, (byte) - 1);
++        // CraftBukkit start
++        if (!(this instanceof EmptyChunk))
++        {
++            this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
++        }
+     }
+ 
++    public org.bukkit.Chunk bukkitChunk;
++    public boolean mustSave;
++    // CraftBukkit end
++
+     public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
+     {
+         this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
+@@ -589,9 +611,10 @@
+ 
+             if (!this.worldObj.isRemote)
+             {
++                if (block1 == null) return false; // Cauldron
+                 block1.onBlockPreDestroy(this.worldObj, l1, p_150807_2_, i2, k1);
+             }
+-
++            // Cauldron - Removed CB patch that fixes BUKKIT-5238 to prevent stackoverflows. See issue #1165 and #1169
+             extendedblockstorage.func_150818_a(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_4_);
+             extendedblockstorage.setExtBlockMetadata(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_5_); // This line duplicates the one below, so breakBlock fires with valid worldstate
+ 
+@@ -777,8 +800,14 @@
+ 
+         if (i != this.xPosition || j != this.zPosition)
+         {
+-            logger.warn("Wrong location! " + p_76612_1_ + " (at " + i + ", " + j + " instead of " + this.xPosition + ", " + this.zPosition + ")");
+-            Thread.dumpStack();
++            // CraftBukkit start
++            Bukkit.getLogger().warning("Wrong location for " + p_76612_1_ + " in world '" + worldObj.getWorld().getName() + "'!");
++            //logger.warn("Wrong location! " + p_76612_1_ + " (at " + i + ", " + j + " instead of " + this.xPosition + ", " + this.zPosition + ")");
++            //Thread.dumpStack();
++            Bukkit.getLogger().warning(
++                    "Entity is at " + p_76612_1_.posX + "," + p_76612_1_.posZ + " (chunk " + i + "," + j + ") but was stored in chunk " + this.xPosition + ","
++                            + this.zPosition);
++            // CraftBukkit end
+         }
+ 
+         int k = MathHelper.floor_double(p_76612_1_.posY / 16.0D);
+@@ -799,6 +828,26 @@
+         p_76612_1_.chunkCoordY = k;
+         p_76612_1_.chunkCoordZ = this.zPosition;
+         this.entityLists[k].add(p_76612_1_);
++        // Spigot start - increment creature type count
++        // Keep this synced up with World.a(Class)
++        if (p_76612_1_ instanceof EntityLiving)
++        {
++            EntityLiving entityliving = (EntityLiving) p_76612_1_;
++
++            if (entityliving.canDespawn_CB() && entityliving.isNoDespawnRequired())
++            {
++                return;
++            }
++        }
++
++        for (EnumCreatureType creatureType : EnumCreatureType.values())
++        {
++            if (creatureType.getCreatureClass().isAssignableFrom(p_76612_1_.getClass()))
++            {
++                this.entityCount.adjustOrPutValue(creatureType.getCreatureClass(), 1, 1);
++            }
++        }
++        // Spigot end
+     }
+ 
+     public void removeEntity(Entity p_76622_1_)
+@@ -819,6 +868,26 @@
+         }
+ 
+         this.entityLists[p_76608_2_].remove(p_76608_1_);
++        // Spigot start - decrement creature type count
++        // Keep this synced up with World.a(Class)
++        if (p_76608_1_ instanceof EntityLiving)
++        {
++            EntityLiving entityliving = (EntityLiving) p_76608_1_;
++
++            if (entityliving.canDespawn_CB() && entityliving.isNoDespawnRequired())
++            {
++                return;
++            }
++        }
++
++        for (EnumCreatureType creatureType : EnumCreatureType.values())
++        {
++            if (creatureType.getCreatureClass().isAssignableFrom(p_76608_1_.getClass()))
++            {
++                this.entityCount.adjustValue(creatureType.getCreatureClass(), -1);
++            }
++        }
++        // Spigot end
+     }
+ 
+     public boolean canBlockSeeTheSky(int p_76619_1_, int p_76619_2_, int p_76619_3_)
+@@ -874,9 +943,23 @@
+         p_150812_4_.xCoord = this.xPosition * 16 + p_150812_1_;
+         p_150812_4_.yCoord = p_150812_2_;
+         p_150812_4_.zCoord = this.zPosition * 16 + p_150812_3_;
++        // Cauldron start - validate TE for corrupted data
++        Block block = null;
++        try
++        {
++            block = this.getBlock(p_150812_1_, p_150812_2_, p_150812_3_);
++        }
++        catch (ArrayIndexOutOfBoundsException e)
++        {
++            System.out.println("ERROR: Detected corrupted TileEntity " + p_150812_4_ + " with bad extended block ID of "
++                    + ((p_150812_2_ & 15) << 8 | p_150812_3_ << 4 | p_150812_1_) + " @  " + p_150812_4_.xCoord + ", " + p_150812_4_.yCoord + ", "
++                    + p_150812_4_.zCoord + ". Removing TE to avoid crash...");
++            p_150812_4_.invalidate();
++            return;
++        }
+ 
+         int metadata = getBlockMetadata(p_150812_1_, p_150812_2_, p_150812_3_);
+-        if (this.getBlock(p_150812_1_, p_150812_2_, p_150812_3_).hasTileEntity(metadata))
++        if (block != null && block.hasTileEntity(metadata)) // Cauldron end
+         {
+             if (this.chunkTileEntityMap.containsKey(chunkposition))
+             {
+@@ -886,6 +969,16 @@
+             p_150812_4_.validate();
+             this.chunkTileEntityMap.put(chunkposition, p_150812_4_);
+         }
++        // CraftBukkit start
++        else if (net.minecraft.server.MinecraftServer.getServer().tileEntityConfig.enableTEPlaceWarning.getValue()) // Cauldron
++        {
++            System.out.println("Attempted to place a tile entity (" + p_150812_4_ + ") at " + p_150812_4_.xCoord + "," + p_150812_4_.yCoord + ","
++                    + p_150812_4_.zCoord + " (" + org.bukkit.Material.getMaterial(Block.getIdFromBlock(getBlock(p_150812_1_, p_150812_2_, p_150812_3_)))
++                    + ") where there was no entity tile!");
++            System.out.println("Chunk coordinates: " + (this.xPosition * 16) + "," + (this.zPosition * 16));
++            new Exception().printStackTrace();
++        }
++        // CraftBukkit end
+     }
+ 
+     public void removeTileEntity(int p_150805_1_, int p_150805_2_, int p_150805_3_)
+@@ -936,6 +1029,21 @@
+ 
+         for (int i = 0; i < this.entityLists.length; ++i)
+         {
++            // CraftBukkit start
++            java.util.Iterator iter = this.entityLists[i].iterator();
++
++            while (iter.hasNext())
++            {
++                Entity entity = (Entity) iter.next();
++
++                // Do not pass along players, as doing so can get them stuck outside of time.
++                // (which for example disables inventory icon updates and prevents block breaking)
++                if (entity instanceof EntityPlayerMP)
++                {
++                    iter.remove();
++                }
++            }
++            // CraftBukkit end
+             this.worldObj.unloadEntities(this.entityLists[i]);
+         }
+         MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
+@@ -1035,6 +1143,7 @@
+ 
+     public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)
+     {
++        worldObj.timings.syncChunkLoadPostTimer.startTiming(); // Spigot
+         if (!this.isTerrainPopulated && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_))
+         {
+             p_76624_1_.populate(p_76624_2_, p_76624_3_, p_76624_4_);
+@@ -1054,6 +1163,7 @@
+         {
+             p_76624_1_.populate(p_76624_2_, p_76624_3_ - 1, p_76624_4_ - 1);
+         }
++        worldObj.timings.syncChunkLoadPostTimer.stopTiming(); // Spigot
+     }
+ 
+     public int getPrecipitationHeight(int p_76626_1_, int p_76626_2_)
+@@ -1184,8 +1294,10 @@
+             if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
+             {
+                 nibblearray = this.storageArrays[l].getMetadataArray();
+-                System.arraycopy(p_76607_1_, k, nibblearray.data, 0, nibblearray.data.length);
+-                k += nibblearray.data.length;
++                // Spigot start
++                System.arraycopy(p_76607_1_, k, nibblearray.getValueArray(), 0, nibblearray.getValueArray().length);
++                k += nibblearray.getValueArray().length;
++                // Spigot end
+             }
+         }
+ 
+@@ -1194,8 +1306,10 @@
+             if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
+             {
+                 nibblearray = this.storageArrays[l].getBlocklightArray();
+-                System.arraycopy(p_76607_1_, k, nibblearray.data, 0, nibblearray.data.length);
+-                k += nibblearray.data.length;
++                // Spigot start
++                System.arraycopy(p_76607_1_, k, nibblearray.getValueArray(), 0, nibblearray.getValueArray().length);
++                k += nibblearray.getValueArray().length;
++                // Spigot end
+             }
+         }
+ 
+@@ -1206,8 +1320,10 @@
+                 if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
+                 {
+                     nibblearray = this.storageArrays[l].getSkylightArray();
+-                    System.arraycopy(p_76607_1_, k, nibblearray.data, 0, nibblearray.data.length);
+-                    k += nibblearray.data.length;
++                    // Spigot start
++                    System.arraycopy(p_76607_1_, k, nibblearray.getValueArray(), 0, nibblearray.getValueArray().length);
++                    k += nibblearray.getValueArray().length;
++                    // Spigot end
+                 }
+             }
+         }
+@@ -1229,8 +1345,8 @@
+                         nibblearray = this.storageArrays[l].createBlockMSBArray();
+                     }
+ 
+-                    System.arraycopy(p_76607_1_, k, nibblearray.data, 0, nibblearray.data.length);
+-                    k += nibblearray.data.length;
++                    System.arraycopy(p_76607_1_, k, nibblearray.getValueArray(), 0, nibblearray.getValueArray().length);
++                    k += nibblearray.getValueArray().length;
+                 }
+             }
+             else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)

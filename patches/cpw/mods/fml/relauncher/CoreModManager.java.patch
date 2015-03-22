@@ -1,0 +1,47 @@
+--- ../src-base/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
++++ ../src-work/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
+@@ -153,6 +153,9 @@
+ 
+     }
+ 
++    // Cauldron - group output of @MCVersion warnings
++    private static List<String> noVersionAnnotationCoreMods = new ArrayList<String>();
++
+     public static void handleLaunch(File mcDir, LaunchClassLoader classLoader, FMLTweaker tweaker)
+     {
+         CoreModManager.mcDir = mcDir;
+@@ -212,7 +215,19 @@
+             loadCoreMod(classLoader, coreModClassName, null);
+         }
+         discoverCoreMods(mcDir, classLoader);
+-
++        // Cauldron start - group output of @MCVersion warnings
++        if (!noVersionAnnotationCoreMods.isEmpty())
++        {
++            FMLRelaunchLog
++                    .warning("The following coremods do not have a @MCVersion annotation. They may cause problems if this is not the correct version of Minecraft for them.");
++            StringBuilder sb = new StringBuilder("Missing @MCVersion: ");
++            for (String className : noVersionAnnotationCoreMods)
++            {
++                sb.append(className).append("  ");
++            }
++            FMLRelaunchLog.warning(sb.toString());
++        }
++        // Cauldron end
+     }
+ 
+     private static void discoverCoreMods(File mcDir, LaunchClassLoader classLoader)
+@@ -424,8 +439,11 @@
+             MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
+             if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
+             {
+-                FMLRelaunchLog.log(Level.WARN, "The coremod %s does not have a MCVersion annotation, it may cause issues with this version of Minecraft",
+-                        coreModClass);
++                // Cauldron start - group output of @MCVersion warnings
++                // FMLRelaunchLog.log(Level.WARN, "The coremod %s does not have a MCVersion annotation, it may cause issues with this version of Minecraft",
++                //        coreModClass);
++                noVersionAnnotationCoreMods.add(coreModClass);
++                // Cauldron end
+             }
+             else if (requiredMCVersion != null && !FMLInjectionData.mccversion.equals(requiredMCVersion.value()))
+             {

@@ -1,0 +1,34 @@
+--- ../src-base/minecraft/net/minecraftforge/common/chunkio/ChunkIOProvider.java
++++ ../src-work/minecraft/net/minecraftforge/common/chunkio/ChunkIOProvider.java
+@@ -9,6 +9,9 @@
+ import java.io.IOException;
+ import java.util.concurrent.atomic.AtomicInteger;
+ 
++import org.bukkit.Server;
++import org.bukkit.craftbukkit.util.LongHash;
++
+ class ChunkIOProvider implements AsynchronousExecutor.CallBackProvider<QueuedChunk, net.minecraft.world.chunk.Chunk, Runnable, RuntimeException> {
+     private final AtomicInteger threadNumber = new AtomicInteger(1);
+ 
+@@ -41,13 +44,20 @@
+         queuedChunk.loader.loadEntities(queuedChunk.world, queuedChunk.compound.getCompoundTag("Level"), chunk);
+         MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(chunk, queuedChunk.compound)); // Don't call ChunkDataEvent.Load async
+         chunk.lastSaveTime = queuedChunk.provider.worldObj.getTotalWorldTime();
+-        queuedChunk.provider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk);
++        queuedChunk.provider.loadedChunkHashMap.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
+         queuedChunk.provider.loadedChunks.add(chunk);
+         chunk.onChunkLoad();
+ 
+         if (queuedChunk.provider.currentChunkProvider != null) {
++            queuedChunk.provider.worldObj.timings.syncChunkLoadStructuresTimer.startTiming(); // Spigot
+             queuedChunk.provider.currentChunkProvider.recreateStructures(queuedChunk.x, queuedChunk.z);
++            queuedChunk.provider.worldObj.timings.syncChunkLoadStructuresTimer.stopTiming(); // Spigot
+         }
++        
++        Server server = queuedChunk.provider.worldObj.getServer();
++        if (server != null) {
++            server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(chunk.bukkitChunk, false));
++        }
+ 
+         chunk.populateChunk(queuedChunk.provider, queuedChunk.provider, queuedChunk.x, queuedChunk.z);
+     }

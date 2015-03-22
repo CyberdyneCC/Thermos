@@ -1,0 +1,71 @@
+--- ../src-base/minecraft/cpw/mods/fml/common/registry/GameRegistry.java
++++ ../src-work/minecraft/cpw/mods/fml/common/registry/GameRegistry.java
+@@ -53,6 +53,7 @@
+ import cpw.mods.fml.common.LoaderException;
+ import cpw.mods.fml.common.LoaderState;
+ import cpw.mods.fml.common.ObfuscationReflectionHelper;
++import java.util.HashMap; // Cauldron
+ 
+ public class GameRegistry
+ {
+@@ -60,6 +61,10 @@
+     private static Map<IWorldGenerator, Integer> worldGeneratorIndex = Maps.newHashMap();
+     private static List<IFuelHandler> fuelHandlers = Lists.newArrayList();
+     private static List<IWorldGenerator> sortedGeneratorList;
++    // Cauldron start
++    private static Map<String, Boolean> configWorldGenCache = new HashMap<String, Boolean>();
++    private static Map<String, String> worldGenMap = new HashMap<String, String>();
++    // Cauldron end
+ 
+     /**
+      * Register a world generator - something that inserts new block types into the world
+@@ -70,12 +75,18 @@
+      */
+     public static void registerWorldGenerator(IWorldGenerator generator, int modGenerationWeight)
+     {
++        // Cauldron start - mod id's are not available during generateWorld so we must capture them here
++        String modId = Loader.instance().activeModContainer().getModId();
++        modId = modId.replaceAll("[^A-Za-z0-9]", ""); // remove all non-digits/alphanumeric
++        modId.replace(" ", "_");
+         worldGenerators.add(generator);
+         worldGeneratorIndex.put(generator, modGenerationWeight);
+         if (sortedGeneratorList != null)
+         {
+             sortedGeneratorList = null;
+         }
++        worldGenMap.put(generator.getClass().getName(), modId);
++        // Cauldron end
+     }
+ 
+     /**
+@@ -100,11 +111,27 @@
+         long zSeed = fmlRandom.nextLong() >> 2 + 1L;
+         long chunkSeed = (xSeed * chunkX + zSeed * chunkZ) ^ worldSeed;
+ 
+-        for (IWorldGenerator generator : sortedGeneratorList)
++        boolean before = ((net.minecraft.world.WorldServer) world).theChunkProviderServer.loadChunkOnProvideRequest; // Cauldron store value
++        ((net.minecraft.world.WorldServer) world).theChunkProviderServer.loadChunkOnProvideRequest = true; // Cauldron load chunks on provide requests
++        for (IWorldGenerator generator : worldGenerators)
+         {
+-            fmlRandom.setSeed(chunkSeed);
+-            generator.generate(fmlRandom, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
++            // Cauldron start
++            if (!configWorldGenCache.containsKey(generator.getClass().getName()))
++            {
++                String modId = worldGenMap.get(generator.getClass().getName());
++                String generatorName = "";
++                generatorName = modId + "-" + generator.getClass().getSimpleName();
++                boolean generatorEnabled = world.cauldronConfig.getBoolean("worldgen-" + generatorName, true);
++                configWorldGenCache.put(generator.getClass().getName(), generatorEnabled);
++            }
++            if (configWorldGenCache.get(generator.getClass().getName()))
++            {
++                fmlRandom.setSeed(chunkSeed);
++                generator.generate(fmlRandom, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
++            }
+         }
++        ((net.minecraft.world.WorldServer)world).theChunkProviderServer.loadChunkOnProvideRequest = before; // reset
++        // Cauldron end
+     }
+ 
+     private static void computeSortedGeneratorList()

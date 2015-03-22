@@ -1,0 +1,17 @@
+--- ../src-base/minecraft/net/minecraft/network/NetworkSystem.java
++++ ../src-work/minecraft/net/minecraft/network/NetworkSystem.java
+@@ -139,6 +139,14 @@
+ 
+         synchronized (this.networkManagers)
+         {
++            // Spigot Start
++            // This prevents players from 'gaming' the server, and strategically relogging to increase their position in the tick order
++            if (org.spigotmc.SpigotConfig.playerShuffle > 0 && MinecraftServer.currentTick % org.spigotmc.SpigotConfig.playerShuffle == 0)
++            {
++                Collections.shuffle(this.networkManagers);
++            }
++
++            // Spigot End
+             Iterator iterator = this.networkManagers.iterator();
+ 
+             while (iterator.hasNext())

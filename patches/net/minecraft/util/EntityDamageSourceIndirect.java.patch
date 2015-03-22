@@ -1,0 +1,14 @@
+--- ../src-base/minecraft/net/minecraft/util/EntityDamageSourceIndirect.java
++++ ../src-work/minecraft/net/minecraft/util/EntityDamageSourceIndirect.java
+@@ -33,4 +33,11 @@
+         String s1 = s + ".item";
+         return itemstack != null && itemstack.hasDisplayName() && StatCollector.canTranslate(s1) ? new ChatComponentTranslation(s1, new Object[] {p_151519_1_.func_145748_c_(), ichatcomponent, itemstack.func_151000_E()}): new ChatComponentTranslation(s, new Object[] {p_151519_1_.func_145748_c_(), ichatcomponent});
+     }
++
++    // CraftBukkit start
++    public Entity getProximateDamageSource()
++    {
++        return super.getEntity();
++    }
++    // CraftBukkit end
+ }

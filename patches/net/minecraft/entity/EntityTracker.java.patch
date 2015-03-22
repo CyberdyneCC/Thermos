@@ -1,0 +1,27 @@
+--- ../src-base/minecraft/net/minecraft/entity/EntityTracker.java
++++ ../src-work/minecraft/net/minecraft/entity/EntityTracker.java
+@@ -38,6 +38,7 @@
+ import net.minecraft.world.chunk.Chunk;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import net.minecraft.server.MinecraftServer; // Spigot
+ 
+ import cpw.mods.fml.common.registry.EntityRegistry;
+ 
+@@ -46,7 +47,7 @@
+     private static final Logger logger = LogManager.getLogger();
+     private final WorldServer theWorld;
+     private Set trackedEntities = new HashSet();
+-    private IntHashMap trackedEntityIDs = new IntHashMap();
++    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
+     private int entityViewDistance;
+     private static final String __OBFID = "CL_00001431";
+ 
+@@ -184,6 +185,7 @@
+ 
+     public void addEntityToTracker(Entity p_72785_1_, int p_72785_2_, final int p_72785_3_, boolean p_72785_4_)
+     {
++        p_72785_2_ = org.spigotmc.TrackingRange.getEntityTrackingRange(p_72785_1_, p_72785_2_); // Spigot
+         if (p_72785_2_ > this.entityViewDistance)
+         {
+             p_72785_2_ = this.entityViewDistance;

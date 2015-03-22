@@ -1,0 +1,10 @@
+!.gitignore
+
+# eclipse
+/eclipse
+
+# gradle
+build
+.gradle
+
+*.DS_Store

@@ -1,0 +1,58 @@
+--- ../src-base/minecraft/cpw/mods/fml/common/FMLCommonHandler.java
++++ ../src-work/minecraft/cpw/mods/fml/common/FMLCommonHandler.java
+@@ -37,6 +37,10 @@
+ 
+ import org.apache.logging.log4j.Level;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.CraftWorld;
++import org.bukkit.entity.Player;
++import org.bukkit.event.player.PlayerChangedWorldEvent;
+ 
+ import com.google.common.base.Joiner;
+ import com.google.common.base.Strings;
+@@ -385,10 +389,11 @@
+         {
+             return;
+         }
+-        if (handlerSet.contains(handler))
++        if (handlerSet.contains(handler) || worldInfo.getDimension() != 0) // Cauldron - Only check FML data in main world
+         {
+             return;
+         }
++        // Cauldron - logic below should only be run for overworld as Forge/Vanilla only use 1 SaveHandler
+         handlerSet.add(handler);
+         handlerToCheck = new WeakReference<SaveHandler>(handler); // for confirmBackupLevelDatUse
+         Map<String,NBTBase> additionalProperties = Maps.newHashMap();
+@@ -496,7 +501,12 @@
+ 
+     public String getModName()
+     {
+-        List<String> modNames = Lists.newArrayListWithExpectedSize(3);
++        // Cauldron start    
++        List<String> modNames = Lists.newArrayListWithExpectedSize(6);
++        modNames.add("cauldron");
++        modNames.add("craftbukkit");
++        modNames.add("mcpc");
++        // Cauldron end
+         modNames.add("fml");
+         if (!noForge)
+         {
+@@ -540,8 +550,17 @@
+         bus().post(new InputEvent.KeyInputEvent());
+     }
+ 
++    // Cauldron start - wrapper to notify plugins for mods that bypass ServerConfigurationManager
+     public void firePlayerChangedDimensionEvent(EntityPlayer player, int fromDim, int toDim)
+     {
++        this.firePlayerChangedDimensionEvent(player, fromDim, toDim, player.worldObj.getWorld());
++    }
++
++    public void firePlayerChangedDimensionEvent(EntityPlayer player, int fromDim, int toDim, CraftWorld fromWorld)
++    {
++        PlayerChangedWorldEvent event = new PlayerChangedWorldEvent((Player) player.getBukkitEntity(), fromWorld);
++        Bukkit.getServer().getPluginManager().callEvent(event);
++        // Cauldron end
+         bus().post(new PlayerEvent.PlayerChangedDimensionEvent(player, fromDim, toDim));
+     }
+ 

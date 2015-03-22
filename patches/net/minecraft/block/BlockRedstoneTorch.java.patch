@@ -1,0 +1,62 @@
+--- ../src-base/minecraft/net/minecraft/block/BlockRedstoneTorch.java
++++ ../src-work/minecraft/net/minecraft/block/BlockRedstoneTorch.java
+@@ -13,6 +13,8 @@
+ import net.minecraft.world.IBlockAccess;
+ import net.minecraft.world.World;
+ 
++import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
++
+ public class BlockRedstoneTorch extends BlockTorch
+ {
+     private boolean field_150113_a;
+@@ -125,10 +127,30 @@
+             list.remove(0);
+         }
+ 
++        // CraftBukkit start
++        org.bukkit.plugin.PluginManager manager = p_149674_1_.getServer().getPluginManager();
++        org.bukkit.block.Block block = p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_);
++        int oldCurrent = this.field_150113_a ? 15 : 0;
++        BlockRedstoneEvent event = new BlockRedstoneEvent(block, oldCurrent, oldCurrent);
++        // CraftBukkit end
++
+         if (this.field_150113_a)
+         {
+             if (flag)
+             {
++                // CraftBukkit start
++                if (oldCurrent != 0)
++                {
++                    event.setNewCurrent(0);
++                    manager.callEvent(event);
++
++                    if (event.getNewCurrent() != 0)
++                    {
++                        return;
++                    }
++                }
++
++                // CraftBukkit end
+                 p_149674_1_.setBlock(p_149674_2_, p_149674_3_, p_149674_4_, Blocks.unlit_redstone_torch, p_149674_1_.getBlockMetadata(p_149674_2_, p_149674_3_, p_149674_4_), 3);
+ 
+                 if (this.func_150111_a(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_, true))
+@@ -147,6 +169,19 @@
+         }
+         else if (!flag && !this.func_150111_a(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_, false))
+         {
++            // CraftBukkit start
++            if (oldCurrent != 15)
++            {
++                event.setNewCurrent(15);
++                manager.callEvent(event);
++
++                if (event.getNewCurrent() != 15)
++                {
++                    return;
++                }
++            }
++
++            // CraftBukkit end
+             p_149674_1_.setBlock(p_149674_2_, p_149674_3_, p_149674_4_, Blocks.redstone_torch, p_149674_1_.getBlockMetadata(p_149674_2_, p_149674_3_, p_149674_4_), 3);
+         }
+     }

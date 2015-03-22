@@ -1,0 +1,45 @@
+--- ../src-base/minecraft/net/minecraftforge/common/ForgeHooks.java
++++ ../src-work/minecraft/net/minecraftforge/common/ForgeHooks.java
+@@ -63,6 +63,7 @@
+ import net.minecraftforge.event.world.BlockEvent;
+ import net.minecraftforge.event.world.NoteBlockEvent;
+ import static net.minecraft.init.Blocks.*;
++import net.minecraftforge.common.util.FakePlayer; // Cauldron
+ 
+ public class ForgeHooks
+ {
+@@ -439,6 +440,8 @@
+ 
+     public static BlockEvent.BreakEvent onBlockBreakEvent(World world, GameType gameType, EntityPlayerMP entityPlayer, int x, int y, int z)
+     {
++        // Cauldron - pre-cancel handled in BreakEvent
++        /*
+         // Logic from tryHarvestBlock for pre-canceling the event
+         boolean preCancelEvent = false;
+         if (gameType.isAdventure() && !entityPlayer.isCurrentToolAdventureModeExempt(x, y, z))
+@@ -449,9 +452,9 @@
+         {
+             preCancelEvent = true;
+         }
+-
++        */
+         // Tell client the block is gone immediately then process events
+-        if (world.getTileEntity(x, y, z) == null)
++        if (world.getTileEntity(x, y, z) == null && !(entityPlayer instanceof FakePlayer)) // Cauldron - don't send packets to fakeplayers
+         {
+             S23PacketBlockChange packet = new S23PacketBlockChange(x, y, z, world);
+             packet.field_148883_d = Blocks.air;
+@@ -463,11 +466,11 @@
+         Block block = world.getBlock(x, y, z);
+         int blockMetadata = world.getBlockMetadata(x, y, z);
+         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, blockMetadata, entityPlayer);
+-        event.setCanceled(preCancelEvent);
++        // event.setCanceled(preCancelEvent); // Cauldron
+         MinecraftForge.EVENT_BUS.post(event);
+ 
+         // Handle if the event is canceled
+-        if (event.isCanceled())
++        if (event.isCanceled() && !(entityPlayer instanceof FakePlayer)) // Cauldron - don't send packets to fakeplayers
+         {
+             // Let the client know the block still exists
+             entityPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));

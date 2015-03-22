@@ -1,0 +1,18 @@
+--- ../src-base/minecraft/cpw/mods/fml/common/network/internal/HandshakeCompletionHandler.java
++++ ../src-work/minecraft/cpw/mods/fml/common/network/internal/HandshakeCompletionHandler.java
+@@ -13,9 +13,15 @@
+     @Override
+     protected void channelRead0(ChannelHandlerContext ctx, CompleteHandshake msg) throws Exception
+     {
++        // Cauldron start - attempt to fix race condition with attr being null
++        Object attr = ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER);
++        if (attr != null)
++        {
+         NetworkDispatcher dispatcher = ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER).getAndRemove();
+         dispatcher.completeHandshake(msg.target);
+     }
++        // Cauldron end
++    }
+ 
+     @Override
+     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception

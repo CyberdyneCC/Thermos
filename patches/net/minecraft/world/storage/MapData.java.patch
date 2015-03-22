@@ -1,0 +1,116 @@
+--- ../src-base/minecraft/net/minecraft/world/storage/MapData.java
++++ ../src-work/minecraft/net/minecraft/world/storage/MapData.java
+@@ -14,6 +14,14 @@
+ import net.minecraft.world.World;
+ import net.minecraft.world.WorldSavedData;
+ 
++// CraftBukkit start
++import java.util.UUID;
++
++import org.bukkit.craftbukkit.CraftServer;
++import org.bukkit.craftbukkit.CraftWorld;
++import org.bukkit.craftbukkit.map.CraftMapView;
++// CraftBukkit end
++
+ public class MapData extends WorldSavedData
+ {
+     public int xCenter;
+@@ -24,11 +32,21 @@
+     public List playersArrayList = new ArrayList();
+     private Map playersHashMap = new HashMap();
+     public Map playersVisibleOnMap = new LinkedHashMap();
++
++    // CraftBukkit start
++    public final CraftMapView mapView;
++    private CraftServer server;
++    private UUID uniqueId = null;
++    // CraftBukkit end
+     private static final String __OBFID = "CL_00000577";
+ 
+     public MapData(String p_i2140_1_)
+     {
+         super(p_i2140_1_);
++        // CraftBukkit start
++        mapView = new CraftMapView(this);
++        server = (CraftServer) org.bukkit.Bukkit.getServer();
++        // CraftBukkit end
+     }
+ 
+     public void readFromNBT(NBTTagCompound p_76184_1_)
+@@ -107,7 +125,7 @@
+     {
+         if (!this.playersHashMap.containsKey(p_76191_1_))
+         {
+-            MapData.MapInfo mapinfo = new MapData.MapInfo(p_76191_1_);
++            MapData.MapInfo mapinfo = new MapData.MapInfo(this, p_76191_1_); // Cauldron
+             this.playersHashMap.put(p_76191_1_, mapinfo);
+             this.playersArrayList.add(mapinfo);
+         }
+@@ -265,7 +283,7 @@
+ 
+         if (mapinfo == null)
+         {
+-            mapinfo = new MapData.MapInfo(p_82568_1_);
++            mapinfo = new MapData.MapInfo(this, p_82568_1_); // Cauldron
+             this.playersHashMap.put(p_82568_1_, mapinfo);
+             this.playersArrayList.add(mapinfo);
+         }
+@@ -300,10 +318,12 @@
+         private byte[] lastPlayerLocationOnMap;
+         public int field_82569_d;
+         private boolean field_82570_i;
++        final MapData mapDataObj; // Cauldron
+         private static final String __OBFID = "CL_00000578";
+ 
+-        public MapInfo(EntityPlayer p_i2138_2_)
++        public MapInfo(MapData mapData, EntityPlayer p_i2138_2_)
+         {
++            this.mapDataObj = mapData; // Cauldron
+             this.entityplayerObj = p_i2138_2_;
+ 
+             for (int i = 0; i < this.field_76209_b.length; ++i)
+@@ -328,20 +348,37 @@
+                 int i;
+                 int i1;
+ 
++                // Spigot start
++                boolean custom = this.mapDataObj.mapView.renderers.size() > 1 || !(this.mapDataObj.mapView.renderers.get(0) instanceof org.bukkit.craftbukkit.map.CraftMapRenderer);
++                org.bukkit.craftbukkit.map.RenderData render = (custom) ? this.mapDataObj.mapView.render((org.bukkit.craftbukkit.entity.CraftPlayer) entityplayerObj.getBukkitEntity()) : null; // CraftBukkit
++    
+                 if (--this.ticksUntilPlayerLocationMapUpdate < 0)
+                 {
+                     this.ticksUntilPlayerLocationMapUpdate = 4;
+-                    abyte = new byte[MapData.this.playersVisibleOnMap.size() * 3 + 1];
++                    abyte = new byte[((custom) ? render.cursors.size() : this.mapDataObj.playersVisibleOnMap.size()) * 3 + 1]; // CraftBukkit
+                     abyte[0] = 1;
+                     i = 0;
+-
+-                    for (Iterator iterator = MapData.this.playersVisibleOnMap.values().iterator(); iterator.hasNext(); ++i)
++    
++                    // CraftBukkit start
++    
++                    // Spigot start
++                    for (Iterator iterator = ((custom) ? render.cursors.iterator() : this.mapDataObj.playersVisibleOnMap.values().iterator()); iterator.hasNext(); ++i)
+                     {
+-                        MapData.MapCoord mapcoord = (MapData.MapCoord)iterator.next();
+-                        abyte[i * 3 + 1] = (byte)(mapcoord.iconSize << 4 | mapcoord.iconRotation & 15);
+-                        abyte[i * 3 + 2] = mapcoord.centerX;
+-                        abyte[i * 3 + 3] = mapcoord.centerZ;
++                        org.bukkit.map.MapCursor cursor = (custom) ? (org.bukkit.map.MapCursor) iterator.next() : null;
++    
++                        if (cursor != null && !cursor.isVisible())
++                        {
++                            continue;
++                        }
++    
++                        MapCoord deco = (custom) ? null : (MapCoord) iterator.next();
++                        abyte[i * 3 + 1] = (byte)(((custom) ? cursor.getRawType() : deco.iconSize) << 4 | ((custom) ? cursor.getDirection() : deco.iconRotation) & 15);
++                        abyte[i * 3 + 2] = (byte)((custom) ? cursor.getX() : deco.centerX);
++                        abyte[i * 3 + 3] = (byte)((custom) ? cursor.getY() : deco.centerZ);
+                     }
++    
++                    // Spigot end
++                    // CraftBukkit end
+ 
+                     boolean flag = !p_76204_1_.isOnItemFrame();
+ 

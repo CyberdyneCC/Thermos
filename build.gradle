@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'maven'
+apply plugin: 'cauldron'
+
+minecraft {
+    version = '1.7.10'
+    mcpVersion = '9.05'
+    mainClass = 'cpw.mods.fml.relauncher.ServerLaunchWrapper'
+    tweakClass = 'cpw.mods.fml.common.launcher.FMLTweaker'
+    installerVersion = "1.4"
+    subprojects {
+        repositories {
+            mavenLocal()
+            maven {
+                name = "sonatype"
+                url = "https://oss.sonatype.org/content/repositories/snapshots/"
+            }
+            flatDir {
+                name "fileRepo"
+                dirs "repo"
+            }
+        }
+    }
+    srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
+}
+
+group = 'net.minecraftforge'
+ext.mcVersion = "1.7.10"
+ext.cauldronVersion = "1"
+ext.forgeVersion = "1291"
+ext.bukkitVersion = "01"
+version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${bukkitVersion}.0"
+
+jenkins {
+    job = 'Cauldron'
+}
+
+launch4j {
+    jreMinVersion = '1.6.0'
+}
+
+tasks.packageUniversal {
+    classifier = 'server'
+}
+
+tasks.packageUniversal.manifest { 
+    attributes([
+    'Implementation-Vendor': 'Cauldron',
+    'Implementation-Title': 'Cauldron',
+    'Implementation-Version': 'git-Cauldron-Reloaded-'+project.version,
+    'Forge-Version': '10.13.2.1291',
+    'Specification-Vendor': 'Bukkit Team',
+    'Specification-Title': 'Bukkit',
+    'Specification-Version': '1.7.10-R0.1-SNAPSHOT'
+    ])
+}

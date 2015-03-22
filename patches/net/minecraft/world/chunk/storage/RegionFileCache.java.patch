@@ -1,0 +1,11 @@
+--- ../src-base/minecraft/net/minecraft/world/chunk/storage/RegionFileCache.java
++++ ../src-work/minecraft/net/minecraft/world/chunk/storage/RegionFileCache.java
+@@ -10,7 +10,7 @@
+ 
+ public class RegionFileCache
+ {
+-    private static final Map regionsByFilename = new HashMap();
++    public static final Map regionsByFilename = new HashMap(); // CraftBukkit - private -> public
+     private static final String __OBFID = "CL_00000383";
+ 
+     public static synchronized RegionFile createOrLoadRegionFile(File p_76550_0_, int p_76550_1_, int p_76550_2_)

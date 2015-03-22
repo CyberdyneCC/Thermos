@@ -1,0 +1,45 @@
+--- ../src-base/minecraft/cpw/mods/fml/common/network/handshake/NetworkDispatcher.java
++++ ../src-work/minecraft/cpw/mods/fml/common/network/handshake/NetworkDispatcher.java
+@@ -72,7 +72,7 @@
+     public static final AttributeKey<Boolean> IS_LOCAL = new AttributeKey<Boolean>("fml:isLocal");
+     public final NetworkManager manager;
+     private final ServerConfigurationManager scm;
+-    private EntityPlayerMP player;
++    public EntityPlayerMP player; // Cauldron
+     private ConnectionState state;
+     private ConnectionType connectionType;
+     private final Side side;
+@@ -202,7 +202,7 @@
+         }
+         else
+         {
+-            FMLLog.info("Unexpected packet during modded negotiation - assuming vanilla or keepalives : %s", msg.getClass().getName());
++            //FMLLog.info("Unexpected packet during modded negotiation - assuming vanilla or keepalives : %s", msg.getClass().getName()); // Cauldron - unneeded spam
+         }
+         return false;
+     }
+@@ -287,6 +287,7 @@
+             state = ConnectionState.HANDSHAKING;
+         }
+         String channelName = msg.func_149559_c();
++        player.getBukkitEntity().addChannel(channelName); // Cauldron - register channel for bukkit player
+         if ("FML|HS".equals(channelName) || "REGISTER".equals(channelName) || "UNREGISTER".equals(channelName))
+         {
+             FMLProxyPacket proxy = new FMLProxyPacket(msg);
+@@ -308,6 +309,7 @@
+         else if (NetworkRegistry.INSTANCE.hasChannel(channelName, Side.SERVER))
+         {
+             FMLProxyPacket proxy = new FMLProxyPacket(msg);
++            serverHandler.getCraftServer().getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), msg.func_149559_c(), msg.func_149558_e()); // pass msg to bukkit
+             proxy.setDispatcher(this);
+             context.fireChannelRead(proxy);
+             return true;
+@@ -465,7 +467,7 @@
+         // Stop the epic channel closed spam at close
+         if (!(cause instanceof ClosedChannelException))
+         {
+-            FMLLog.log(Level.ERROR, cause, "NetworkDispatcher exception");
++            //FMLLog.log(Level.ERROR, cause, "NetworkDispatcher exception"); // Cauldron - disable unneeded spam
+         }
+         super.exceptionCaught(ctx, cause);
+     }
