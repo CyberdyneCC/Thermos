@@ -13,9 +13,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+
 // Cauldron start
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.BlockSnapshot;
 // Cauldron end
 
 public class CraftBlockState implements BlockState {
@@ -55,6 +57,30 @@ public class CraftBlockState implements BlockState {
     public CraftBlockState(final Block block, int flag) {
         this(block);
         this.flag = flag;
+    }
+
+    public CraftBlockState(BlockSnapshot blocksnapshot)
+    {
+        this.world = blocksnapshot.world.getWorld();
+        this.x = blocksnapshot.x;
+        this.y = blocksnapshot.y;
+        this.z = blocksnapshot.z;
+        this.type = net.minecraft.block.Block.getIdFromBlock(blocksnapshot.replacedBlock);
+        this.light = (byte) blocksnapshot.replacedBlock.getLightValue();
+        this.chunk = (CraftChunk) this.world.getBlockAt(this.x, this.y, this.z).getChunk();
+        this.flag = 3;
+        TileEntity te = this.world.getHandle().getTileEntity(this.x, this.y, this.z);
+        if (te != null)
+        {
+            this.nbt = new NBTTagCompound();
+            te.writeToNBT(this.nbt);
+        }
+        else
+        {
+            this.nbt = null;
+        }
+
+        this.createData((byte) blocksnapshot.meta);
     }
 
     public static CraftBlockState getBlockState(net.minecraft.world.World world, int x, int y, int z) {

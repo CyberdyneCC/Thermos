@@ -9,9 +9,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraftforge.common.util.BlockSnapshot;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.BlockChangeDelegate;
@@ -504,28 +504,28 @@ public class CraftWorld implements World {
         }
 
         world.captureTreeGeneration = true;
-        world.captureBlockStates = true;
+        world.captureBlockSnapshots = true;
         boolean grownTree = gen.generate(world, rand, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        world.captureBlockStates = false;
+        world.captureBlockSnapshots = false;
         world.captureTreeGeneration = false;
         if (grownTree) { // Copy block data to delegate
-            for (BlockState blockstate : world.capturedBlockStates) {
-                int x = blockstate.getX();
-                int y = blockstate.getY();
-                int z = blockstate.getZ();
+            for (BlockSnapshot blocksnapshot : world.capturedBlockSnapshots) {
+                int x = blocksnapshot.x;
+                int y = blocksnapshot.y;
+                int z = blocksnapshot.z;
                 net.minecraft.block.Block oldBlock = world.getBlock(x, y, z); 
-                int newId = blockstate.getTypeId();
-                int data = blockstate.getRawData();
-                int flag = ((CraftBlockState)blockstate).getFlag();
+                int newId = net.minecraft.block.Block.getIdFromBlock(blocksnapshot.replacedBlock);
+                int data = blocksnapshot.meta;
+                int flag = blocksnapshot.flag;
                 delegate.setTypeIdAndData(x, y, z, newId, data);
                 net.minecraft.block.Block newBlock = world.getBlock(x, y, z); 
                 world.markAndNotifyBlock(x, y, z, null, oldBlock, newBlock, flag);
             }
-            world.capturedBlockStates.clear();
+            world.capturedBlockSnapshots.clear();
             return true;
         }
         else {
-            world.capturedBlockStates.clear();
+            world.capturedBlockSnapshots.clear();
             return false;
         }
     }

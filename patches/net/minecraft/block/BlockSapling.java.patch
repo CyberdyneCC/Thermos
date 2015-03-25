@@ -19,7 +19,7 @@
      private static final String __OBFID = "CL_00000305";
  
      protected BlockSapling()
-@@ -41,9 +49,31 @@
+@@ -41,9 +49,39 @@
          {
              super.updateTick(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_, p_149674_5_);
  
@@ -30,29 +30,37 @@
 +                p_149674_1_.captureTreeGeneration = true;
                  this.func_149879_c(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_, p_149674_5_);
 +                p_149674_1_.captureTreeGeneration = false;
-+                if (p_149674_1_.capturedBlockStates.size() > 0)
++                if (p_149674_1_.capturedBlockSnapshots.size() > 0)
 +                {
 +                    TreeType treeType = BlockSapling.treeType;
 +                    BlockSapling.treeType = null;
 +                    Location location = new Location(p_149674_1_.getWorld(), p_149674_2_, p_149674_3_, p_149674_4_);
-+                    List<BlockState> blocks = (List<BlockState>) p_149674_1_.capturedBlockStates.clone();
-+                    p_149674_1_.capturedBlockStates.clear();
++                    List<net.minecraftforge.common.util.BlockSnapshot> blocks = (List) p_149674_1_.capturedBlockSnapshots.clone();
++                    List<BlockState> blockstates = new java.util.ArrayList();
++                    for (net.minecraftforge.common.util.BlockSnapshot snapshot : blocks)
++                    {
++                        blockstates.add(new org.bukkit.craftbukkit.block.CraftBlockState(snapshot));
++                    }
++                    p_149674_1_.capturedBlockSnapshots.clear();
 +                    StructureGrowEvent event = null;
-+                    if (treeType != null) {
-+                        event = new StructureGrowEvent(location, treeType, false, null, blocks);
++                    if (treeType != null)
++                    {
++                        event = new StructureGrowEvent(location, treeType, false, null, blockstates);
 +                        org.bukkit.Bukkit.getPluginManager().callEvent(event);
 +                    }
-+                    if (event == null || !event.isCancelled()) {
-+                        for (BlockState blockstate : blocks) {
++                    if (event == null || !event.isCancelled())
++                    {
++                        for (BlockState blockstate : blockstates)
++                        {
 +                            blockstate.update(true);
 +                        }
 +                    }
 +                }
-+                //Cauldron end
++                // Cauldron end
              }
          }
      }
-@@ -73,7 +103,20 @@
+@@ -73,7 +111,20 @@
      {
          if (!net.minecraftforge.event.terraingen.TerrainGen.saplingGrowTree(p_149878_1_, p_149878_5_, p_149878_2_, p_149878_3_, p_149878_4_)) return;
          int l = p_149878_1_.getBlockMetadata(p_149878_2_, p_149878_3_, p_149878_4_) & 7;
@@ -74,7 +82,7 @@
          int i1 = 0;
          int j1 = 0;
          boolean flag = false;
-@@ -84,6 +127,7 @@
+@@ -84,6 +135,7 @@
              default:
                  break;
              case 1:
@@ -82,7 +90,7 @@
                  label78:
  
                  for (i1 = 0; i1 >= -1; --i1)
-@@ -108,6 +152,7 @@
+@@ -108,6 +160,7 @@
  
                  break;
              case 2:
@@ -90,7 +98,7 @@
                  object = new WorldGenForest(true, false);
                  break;
              case 3:
-@@ -119,6 +164,7 @@
+@@ -119,6 +172,7 @@
                      {
                          if (this.func_149880_a(p_149878_1_, p_149878_2_ + i1, p_149878_3_, p_149878_4_ + j1, 3) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1 + 1, p_149878_3_, p_149878_4_ + j1, 3) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1, p_149878_3_, p_149878_4_ + j1 + 1, 3) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1 + 1, p_149878_3_, p_149878_4_ + j1 + 1, 3))
                          {
@@ -98,7 +106,7 @@
                              object = new WorldGenMegaJungle(true, 10, 20, 3, 3);
                              flag = true;
                              break label93;
-@@ -130,11 +176,13 @@
+@@ -130,11 +184,13 @@
                  {
                      j1 = 0;
                      i1 = 0;
@@ -112,7 +120,7 @@
                  object = new WorldGenSavannaTree(true);
                  break;
              case 5:
-@@ -147,6 +195,7 @@
+@@ -147,6 +203,7 @@
                          if (this.func_149880_a(p_149878_1_, p_149878_2_ + i1, p_149878_3_, p_149878_4_ + j1, 5) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1 + 1, p_149878_3_, p_149878_4_ + j1, 5) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1, p_149878_3_, p_149878_4_ + j1 + 1, 5) && this.func_149880_a(p_149878_1_, p_149878_2_ + i1 + 1, p_149878_3_, p_149878_4_ + j1 + 1, 5))
                          {
                              object = new WorldGenCanopyTree(true);

@@ -124,17 +124,3 @@
              }
          }
      }
-@@ -684,6 +759,13 @@
- 
-     public ItemStack getItemStack()
-     {
-+        // CraftBukkit start
-+        if (this.itemStack != null && this.itemStack.stackSize == 0)
-+        {
-+            this.setItemStack(null);
-+        }
-+
-+        // CraftBukkit end
-         return this.itemStack;
-     }
- 

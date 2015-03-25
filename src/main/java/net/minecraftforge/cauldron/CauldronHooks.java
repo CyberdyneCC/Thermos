@@ -22,6 +22,8 @@ import javax.management.MBeanServer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityMultiPart;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -147,32 +149,36 @@ public class CauldronHooks
 
     public static boolean checkBoundingBoxSize(Entity entity, AxisAlignedBB aabb)
     {
-        if (!(entity instanceof EntityLivingBase) || entity instanceof EntityPlayer) return false; // only check living entities that are not players
-        int logSize = MinecraftServer.cauldronConfig.largeBoundingBoxLogSize.getValue();
-        if (logSize <= 0 || !MinecraftServer.cauldronConfig.checkEntityBoundingBoxes.getValue()) return false;
-        int x = MathHelper.floor_double(aabb.minX);
-        int x1 = MathHelper.floor_double(aabb.maxX + 1.0D);
-        int y = MathHelper.floor_double(aabb.minY);
-        int y1 = MathHelper.floor_double(aabb.maxY + 1.0D);
-        int z = MathHelper.floor_double(aabb.minZ);
-        int z1 = MathHelper.floor_double(aabb.maxZ + 1.0D);
-        
-        int size = Math.abs(x1-x) * Math.abs(y1-y) * Math.abs(z1-z);
-        if (size > MinecraftServer.cauldronConfig.largeBoundingBoxLogSize.getValue())
+        if (entity instanceof EntityLivingBase && (!(entity instanceof IBossDisplayData) || !(entity instanceof IEntityMultiPart))
+                && !(entity instanceof EntityPlayer))
         {
-            logWarning("Entity being removed for bounding box restrictions");
-            logWarning("BB Size: {0} > {1} avg edge: {2}", size, logSize, aabb.getAverageEdgeLength());
-            logWarning("Motion: ({0}, {1}, {2})", entity.motionX, entity.motionY, entity.motionZ);
-            logWarning("Calculated bounding box: {0}", aabb);
-            logWarning("Entity bounding box: {0}", entity.getBoundingBox());
-            logWarning("Entity: {0}", entity);
-            NBTTagCompound tag = new NBTTagCompound();
-            entity.writeToNBT(tag);
-            logWarning("Entity NBT: {0}", tag);
-            logStack();
-            entity.setDead();
-            return true;
+            int logSize = MinecraftServer.cauldronConfig.largeBoundingBoxLogSize.getValue();
+            if (logSize <= 0 || !MinecraftServer.cauldronConfig.checkEntityBoundingBoxes.getValue()) return false;
+            int x = MathHelper.floor_double(aabb.minX);
+            int x1 = MathHelper.floor_double(aabb.maxX + 1.0D);
+            int y = MathHelper.floor_double(aabb.minY);
+            int y1 = MathHelper.floor_double(aabb.maxY + 1.0D);
+            int z = MathHelper.floor_double(aabb.minZ);
+            int z1 = MathHelper.floor_double(aabb.maxZ + 1.0D);
+
+            int size = Math.abs(x1 - x) * Math.abs(y1 - y) * Math.abs(z1 - z);
+            if (size > MinecraftServer.cauldronConfig.largeBoundingBoxLogSize.getValue())
+            {
+                logWarning("Entity being removed for bounding box restrictions");
+                logWarning("BB Size: {0} > {1} avg edge: {2}", size, logSize, aabb.getAverageEdgeLength());
+                logWarning("Motion: ({0}, {1}, {2})", entity.motionX, entity.motionY, entity.motionZ);
+                logWarning("Calculated bounding box: {0}", aabb);
+                logWarning("Entity bounding box: {0}", entity.getBoundingBox());
+                logWarning("Entity: {0}", entity);
+                NBTTagCompound tag = new NBTTagCompound();
+                entity.writeToNBT(tag);
+                logWarning("Entity NBT: {0}", tag);
+                logStack();
+                entity.setDead();
+                return true;
+            }
         }
+
         return false;
     }
     

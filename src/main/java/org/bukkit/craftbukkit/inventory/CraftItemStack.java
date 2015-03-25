@@ -371,10 +371,12 @@ public final class CraftItemStack extends ItemStack {
             return false;
         }
 
-        net.minecraft.nbt.NBTTagCompound tag = new net.minecraft.nbt.NBTTagCompound();
-        item.setTagCompound(tag);
+        if (item.stackTagCompound == null)
+        {
+            item.stackTagCompound = item.writeToNBT(new net.minecraft.nbt.NBTTagCompound());
+        }
 
-        ((CraftMetaItem) itemMeta).applyToItem(tag);
+        ((CraftMetaItem)itemMeta).applyToItem(item.stackTagCompound);
         return true;
     }
 

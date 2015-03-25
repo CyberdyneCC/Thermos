@@ -406,7 +406,7 @@
 +            float originalDamage = f;
 +            // Cauldron start - apply forge damage hook
 +            f = ForgeHooks.onLivingHurt(this, damagesource, f);
-+            if (f <= 0) return false;
++            if (f <= 0) return true;
 +            // Cauldron end
 +            Function<Double, Double> hardHat = new Function<Double, Double>() {
 +                @Override

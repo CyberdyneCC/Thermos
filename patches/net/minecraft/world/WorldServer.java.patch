@@ -552,13 +552,27 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1263,20 @@
+@@ -1006,6 +1263,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
 +        // */
 +        if (flag != this.isRaining())
 +        {
++            if (flag)
++            {
++                this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(2, 0.0F), super.provider.dimensionId);
++            }
++            else
++            {
++                this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(1, 0.0F), super.provider.dimensionId);
++            }
++
++            this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, super.rainingStrength),
++                    super.provider.dimensionId);
++            this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, super.thunderingStrength),
++                    super.provider.dimensionId);
++
 +            // Only send weather packets to those affected
 +            for (int i = 0; i < this.playerEntities.size(); ++i)
 +            {
@@ -567,13 +581,12 @@
 +                    ((EntityPlayerMP) this.playerEntities.get(i)).setPlayerWeather((!flag ? WeatherType.DOWNFALL : WeatherType.CLEAR), false);
 +                }
 +            }
-+
 +            // CraftBukkit end
 +        }
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1340,31 @@
+@@ -1069,4 +1353,51 @@
                  this();
              }
          }
@@ -602,6 +615,26 @@
 +    public int getTypeId(int x, int y, int z)
 +    {
 +        return Block.getIdFromBlock(getBlock(x, y, z));
++    }
++
++    public boolean setTypeAndData(int x, int y, int z, Block block, int data, int flag)
++    {
++        return this.setBlock(x, y, z, block, data, flag);
++    }
++
++    public boolean setData(int x, int y, int z, int data, int flag)
++    {
++        return this.setBlockMetadataWithNotify(x, y, z, data, flag);
++    }
++
++    public int getData(int x, int y, int z)
++    {
++        return this.getBlockMetadata(x, y, z);
++    }
++
++    public Block getType(int x, int y, int z)
++    {
++        return this.getBlock(x, y, z);
 +    }
 +    // CraftBukkit end
  }

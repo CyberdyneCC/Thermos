@@ -12,7 +12,7 @@ public class CauldronWorldConfig extends WorldConfig
 
     public void init()
     {
-        entityDespawnImmediate = getBoolean( "entity-despawn-immediate", true);
+        entityDespawnImmediate = getBoolean( "entity-despawn-immediate", false);
         this.save();
     }
 }

@@ -241,12 +241,12 @@
          if (this.noClip)
          {
              this.boundingBox.offset(p_70091_1_, p_70091_3_, p_70091_5_);
-@@ -756,6 +899,35 @@
+@@ -756,6 +899,34 @@
              d10 = this.posY - d4;
              d11 = this.posZ - d5;
  
 +            // CraftBukkit start
-+            if ((this.isCollidedHorizontally) && (this.getBukkitEntity() instanceof Vehicle))
++            if (this.isCollidedHorizontally && this.getBukkitEntity() instanceof Vehicle && this.worldObj.getWorld() != null)
 +            {
 +                Vehicle vehicle = (Vehicle) this.getBukkitEntity();
 +                org.bukkit.block.Block block = this.worldObj.getWorld().getBlockAt(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY - (double) this.yOffset), MathHelper.floor_double(this.posZ));
@@ -271,13 +271,12 @@
 +                VehicleBlockCollisionEvent event = new VehicleBlockCollisionEvent(vehicle, block);
 +                this.worldObj.getServer().getPluginManager().callEvent(event);
 +            }
-+
 +            // CraftBukkit end
 +
              if (this.canTriggerWalking() && !flag && this.ridingEntity == null)
              {
                  int j1 = MathHelper.floor_double(this.posX);
-@@ -798,6 +970,8 @@
+@@ -798,6 +969,8 @@
                  }
              }
  
@@ -286,7 +285,7 @@
              try
              {
                  this.func_145775_I();
-@@ -809,7 +983,8 @@
+@@ -809,7 +982,8 @@
                  this.addEntityCrashInfo(crashreportcategory);
                  throw new ReportedException(crashreport);
              }
@@ -296,7 +295,7 @@
              boolean flag2 = this.isWet();
  
              if (this.worldObj.func_147470_e(this.boundingBox.contract(0.001D, 0.001D, 0.001D)))
-@@ -820,8 +995,20 @@
+@@ -820,8 +994,20 @@
                  {
                      ++this.fire;
  
@@ -318,7 +317,7 @@
                          this.setFire(8);
                      }
                  }
-@@ -839,6 +1026,8 @@
+@@ -839,6 +1025,8 @@
  
              this.worldObj.theProfiler.endSection();
          }
@@ -327,19 +326,27 @@
      }
  
      protected String getSwimSound()
-@@ -867,7 +1056,11 @@
+@@ -867,7 +1055,18 @@
  
                          try
                          {
+-                            block.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
 +                            // Cauldron start - damage hook for custom blocks
-+                            CraftEventFactory.blockDamage = this.worldObj.getWorld().getBlockAt(k1, l1, i2);
-                             block.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
-+                            CraftEventFactory.blockDamage = null;
++                            if (this.worldObj.getWorld() != null)
++                            {
++                                CraftEventFactory.blockDamage = this.worldObj.getWorld().getBlockAt(k1, l1, i2);
++                                block.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
++                                CraftEventFactory.blockDamage = null;
++                            }
++                            else
++                            {
++                                block.onEntityCollidedWithBlock(this.worldObj, k1, l1, i2, this);
++                            }
 +                            // Cauldron end
                          }
                          catch (Throwable throwable)
                          {
-@@ -928,6 +1121,7 @@
+@@ -928,6 +1127,7 @@
          return null;
      }
  
@@ -347,7 +354,7 @@
      protected void dealFireDamage(int p_70081_1_)
      {
          if (!this.isImmuneToFire)
-@@ -935,7 +1129,16 @@
+@@ -935,7 +1135,16 @@
              this.attackEntityFrom(DamageSource.inFire, (float)p_70081_1_);
          }
      }
@@ -364,7 +371,7 @@
      public final boolean isImmuneToFire()
      {
          return this.isImmuneToFire;
-@@ -1184,6 +1387,8 @@
+@@ -1184,6 +1393,8 @@
  
      public void onCollideWithPlayer(EntityPlayer p_70100_1_) {}
  
@@ -373,7 +380,7 @@
      public void applyEntityCollision(Entity p_70108_1_)
      {
          if (p_70108_1_.riddenByEntity != this && p_70108_1_.ridingEntity != this)
-@@ -1310,6 +1515,20 @@
+@@ -1310,6 +1521,20 @@
          {
              p_70109_1_.setTag("Pos", this.newDoubleNBTList(new double[] {this.posX, this.posY + (double)this.ySize, this.posZ}));
              p_70109_1_.setTag("Motion", this.newDoubleNBTList(new double[] {this.motionX, this.motionY, this.motionZ}));
@@ -394,7 +401,7 @@
              p_70109_1_.setTag("Rotation", this.newFloatNBTList(new float[] {this.rotationYaw, this.rotationPitch}));
              p_70109_1_.setFloat("FallDistance", this.fallDistance);
              p_70109_1_.setShort("Fire", (short)this.fire);
-@@ -1320,6 +1539,12 @@
+@@ -1320,6 +1545,12 @@
              p_70109_1_.setInteger("PortalCooldown", this.timeUntilPortal);
              p_70109_1_.setLong("UUIDMost", this.getUniqueID().getMostSignificantBits());
              p_70109_1_.setLong("UUIDLeast", this.getUniqueID().getLeastSignificantBits());
@@ -407,7 +414,7 @@
              if (customEntityData != null)
              {
                  p_70109_1_.setTag("ForgeData", customEntityData);
-@@ -1370,7 +1595,7 @@
+@@ -1370,7 +1601,7 @@
              this.motionX = nbttaglist1.func_150309_d(0);
              this.motionY = nbttaglist1.func_150309_d(1);
              this.motionZ = nbttaglist1.func_150309_d(2);
@@ -416,7 +423,7 @@
              if (Math.abs(this.motionX) > 10.0D)
              {
                  this.motionX = 0.0D;
-@@ -1385,7 +1610,7 @@
+@@ -1385,7 +1616,7 @@
              {
                  this.motionZ = 0.0D;
              }
@@ -425,7 +432,7 @@
              this.prevPosX = this.lastTickPosX = this.posX = nbttaglist.func_150309_d(0);
              this.prevPosY = this.lastTickPosY = this.posY = nbttaglist.func_150309_d(1);
              this.prevPosZ = this.lastTickPosZ = this.posZ = nbttaglist.func_150309_d(2);
-@@ -1436,6 +1661,76 @@
+@@ -1436,6 +1667,76 @@
              {
                  this.setPosition(this.posX, this.posY, this.posZ);
              }
@@ -502,7 +509,7 @@
          }
          catch (Throwable throwable)
          {
-@@ -1653,6 +1948,31 @@
+@@ -1653,6 +1954,31 @@
  
      public void mountEntity(Entity p_70078_1_)
      {
@@ -534,7 +541,7 @@
          this.entityRiderPitchDelta = 0.0D;
          this.entityRiderYawDelta = 0.0D;
  
-@@ -1660,6 +1980,20 @@
+@@ -1660,6 +1986,20 @@
          {
              if (this.ridingEntity != null)
              {
@@ -555,7 +562,7 @@
                  this.setLocationAndAngles(this.ridingEntity.posX, this.ridingEntity.boundingBox.minY + (double)this.ridingEntity.height, this.ridingEntity.posZ, this.rotationYaw, this.rotationPitch);
                  this.ridingEntity.riddenByEntity = null;
              }
-@@ -1668,22 +2002,61 @@
+@@ -1668,22 +2008,61 @@
          }
          else
          {
@@ -624,7 +631,7 @@
              this.ridingEntity = p_70078_1_;
              p_70078_1_.riddenByEntity = this;
          }
-@@ -1860,12 +2233,59 @@
+@@ -1860,12 +2239,59 @@
  
      public void onStruckByLightning(EntityLightningBolt p_70077_1_)
      {
@@ -686,7 +693,7 @@
          }
      }
  
-@@ -2038,36 +2458,62 @@
+@@ -2038,36 +2464,62 @@
          {
              this.worldObj.theProfiler.startSection("changeDimension");
              MinecraftServer minecraftserver = MinecraftServer.getServer();
@@ -765,7 +772,7 @@
              }
  
              this.isDead = true;
-@@ -2077,7 +2523,6 @@
+@@ -2077,7 +2529,6 @@
              this.worldObj.theProfiler.endSection();
          }
      }

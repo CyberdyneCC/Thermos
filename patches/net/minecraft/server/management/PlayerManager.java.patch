@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/server/management/PlayerManager.java
 +++ ../src-work/minecraft/net/minecraft/server/management/PlayerManager.java
-@@ -18,17 +18,23 @@
+@@ -18,14 +18,19 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -22,11 +22,7 @@
      private int playerViewRadius;
      private long previousTotalWorldTime;
      private final int[][] xzDirectionsConst = new int[][] {{1, 0}, {0, 1}, { -1, 0}, {0, -1}};
-+    private boolean wasNotEmpty; // CraftBukkit
-     private static final String __OBFID = "CL_00001434";
- 
-     public PlayerManager(WorldServer p_i1176_1_)
-@@ -37,6 +43,14 @@
+@@ -37,6 +42,14 @@
          this.func_152622_a(p_i1176_1_.func_73046_m().getConfigurationManager().getViewDistance());
      }
  
@@ -41,7 +37,7 @@
      public WorldServer getWorldServer()
      {
          return this.theWorldServer;
-@@ -51,34 +65,53 @@
+@@ -51,27 +64,38 @@
          if (i - this.previousTotalWorldTime > 8000L)
          {
              this.previousTotalWorldTime = i;
@@ -77,7 +73,7 @@
  
          if (this.players.isEmpty())
          {
-+            if (!wasNotEmpty)
++            if (this.theWorldServer.loadedEntityList.size() == 0 || this.theWorldServer.theChunkProviderServer.loadedChunkHashMap.size() == 0)
 +            {
 +                return; // CraftBukkit - Only do unload when we go from non-empty to empty
 +            }
@@ -85,22 +81,7 @@
              WorldProvider worldprovider = this.theWorldServer.provider;
  
              if (!worldprovider.canRespawnHere())
-             {
-                 this.theWorldServer.theChunkProviderServer.unloadAllChunks();
-             }
-+
-+            // CraftBukkit start
-+            wasNotEmpty = false;
-         }
-+        else
-+        {
-+            wasNotEmpty = true;
-+        }
-+        // CraftBukkit end
-     }
- 
-     public boolean func_152621_a(int p_152621_1_, int p_152621_2_)
-@@ -102,6 +135,20 @@
+@@ -102,6 +126,20 @@
          return playerinstance;
      }
  
@@ -121,7 +102,7 @@
      public void markBlockForUpdate(int p_151250_1_, int p_151250_2_, int p_151250_3_)
      {
          int l = p_151250_1_ >> 4;
-@@ -541,7 +588,7 @@
+@@ -541,7 +579,7 @@
                      {
                          i = this.chunkLocation.chunkXPos * 16;
                          j = this.chunkLocation.chunkZPos * 16;

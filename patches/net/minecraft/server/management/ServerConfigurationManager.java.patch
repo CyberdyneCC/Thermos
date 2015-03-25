@@ -58,7 +58,7 @@
      protected int maxPlayers;
      private int viewDistance;
      private WorldSettings.GameType gameType;
-@@ -91,8 +115,16 @@
+@@ -91,8 +115,17 @@
      private int playerPingIndex;
      private static final String __OBFID = "CL_00001423";
  
@@ -69,13 +69,14 @@
      {
 +        p_i1500_1_.server = new CraftServer(p_i1500_1_, this);
 +        p_i1500_1_.console = org.bukkit.craftbukkit.command.ColouredConsoleSender.getInstance();
++        p_i1500_1_.remoteConsole = new org.bukkit.craftbukkit.command.CraftRemoteConsoleCommandSender();
 +        p_i1500_1_.reader.addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(p_i1500_1_.server));
 +        this.cserver = p_i1500_1_.server;
 +        // CraftBukkit end
          this.bannedPlayers = new UserListBans(field_152613_a);
          this.bannedIPs = new BanList(field_152614_b);
          this.ops = new UserListOps(field_152615_c);
-@@ -131,12 +163,32 @@
+@@ -131,12 +164,32 @@
              s1 = p_72355_1_.getSocketAddress().toString();
          }
  
@@ -109,7 +110,7 @@
          nethandlerplayserver.sendPacket(new S3FPacketCustomPayload("MC|Brand", this.getServerInstance().getServerModName().getBytes(Charsets.UTF_8)));
          nethandlerplayserver.sendPacket(new S05PacketSpawnPosition(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ));
          nethandlerplayserver.sendPacket(new S39PacketPlayerAbilities(p_72355_2_.capabilities));
-@@ -145,6 +197,7 @@
+@@ -145,6 +198,7 @@
          p_72355_2_.func_147099_x().func_150884_b(p_72355_2_);
          this.func_96456_a((ServerScoreboard)worldserver.getScoreboard(), p_72355_2_);
          this.mcServer.func_147132_au();
@@ -117,7 +118,7 @@
          ChatComponentTranslation chatcomponenttranslation;
  
          if (!p_72355_2_.getCommandSenderName().equalsIgnoreCase(s))
-@@ -158,6 +211,7 @@
+@@ -158,6 +212,7 @@
  
          chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.YELLOW);
          this.sendChatMsg(chatcomponenttranslation);
@@ -125,7 +126,7 @@
          this.playerLoggedIn(p_72355_2_);
          nethandlerplayserver.setPlayerLocation(p_72355_2_.posX, p_72355_2_.posY, p_72355_2_.posZ, p_72355_2_.rotationYaw, p_72355_2_.rotationPitch);
          this.updateTimeAndWeatherForPlayer(p_72355_2_, worldserver);
-@@ -192,7 +246,7 @@
+@@ -192,7 +247,7 @@
          }
      }
  
@@ -134,7 +135,7 @@
      {
          HashSet hashset = new HashSet();
          Iterator iterator = p_96456_1_.getTeams().iterator();
-@@ -225,6 +279,11 @@
+@@ -225,6 +280,11 @@
  
      public void setPlayerManager(WorldServer[] p_72364_1_)
      {
@@ -146,7 +147,7 @@
          this.playerNBTManagerObj = p_72364_1_[0].getSaveHandler().getSaveHandler();
      }
  
-@@ -248,7 +307,7 @@
+@@ -248,7 +308,7 @@
  
      public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP p_72380_1_)
      {
@@ -155,7 +156,7 @@
          NBTTagCompound nbttagcompound1;
  
          if (p_72380_1_.getCommandSenderName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
-@@ -281,18 +340,61 @@
+@@ -281,18 +341,61 @@
  
      public void playerLoggedIn(EntityPlayerMP p_72377_1_)
      {
@@ -222,7 +223,7 @@
      }
  
      public void updatePlayerPertinentChunks(EntityPlayerMP p_72358_1_)
-@@ -300,14 +402,33 @@
+@@ -300,14 +403,33 @@
          p_72358_1_.getServerForPlayer().getPlayerManager().updatePlayerPertinentChunks(p_72358_1_);
      }
  
@@ -258,7 +259,7 @@
          {
              worldserver.removePlayerEntityDangerously(p_72367_1_.ridingEntity);
              logger.debug("removing player mount");
-@@ -316,9 +437,35 @@
+@@ -316,9 +438,35 @@
          worldserver.removeEntity(p_72367_1_);
          worldserver.getPlayerManager().removePlayer(p_72367_1_);
          this.playerEntityList.remove(p_72367_1_);
@@ -297,7 +298,7 @@
      }
  
      public String allowUserToConnect(SocketAddress p_148542_1_, GameProfile p_148542_2_)
-@@ -359,6 +506,71 @@
+@@ -359,6 +507,71 @@
          }
      }
  
@@ -369,7 +370,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -397,116 +609,316 @@
+@@ -397,116 +610,316 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -606,7 +607,7 @@
 +        if (fromWorld != location.getWorld())
 +        {
 +            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(entityplayermp1, ((CraftWorld) fromWorld).getHandle().provider.dimensionId,
-+                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId); // Cauldron - fire forge changed dimension event
++                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId, (CraftWorld) fromWorld); // Cauldron - fire forge changed dimension event
 +        }
 +        else
 +            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
@@ -745,7 +746,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -592,6 +1004,197 @@
+@@ -592,6 +1005,197 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -943,7 +944,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -599,11 +1202,13 @@
+@@ -599,11 +1203,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -957,7 +958,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -864,13 +1469,24 @@
+@@ -864,13 +1470,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -984,7 +985,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -925,16 +1541,19 @@
+@@ -925,16 +1542,19 @@
  
          if (p_72354_2_.isRaining())
          {
@@ -1005,7 +1006,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -950,7 +1569,10 @@
+@@ -950,7 +1570,10 @@
  
      public String[] getAvailablePlayerDat()
      {
@@ -1017,7 +1018,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1019,12 +1641,30 @@
+@@ -1019,12 +1642,30 @@
  
      public void removeAllPlayers()
      {

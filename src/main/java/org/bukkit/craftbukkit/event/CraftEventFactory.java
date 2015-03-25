@@ -949,6 +949,10 @@ public class CraftEventFactory {
             event = new PlayerAchievementAwardedEvent(player, CraftStatistic.getBukkitAchievement((net.minecraft.stats.Achievement) statistic));
         } else {
             org.bukkit.Statistic stat = CraftStatistic.getBukkitStatistic(statistic);
+            if (stat == null)
+            {
+                return null;
+            }
             switch (stat) {
                 case FALL_ONE_CM:
                 case BOAT_ONE_CM:

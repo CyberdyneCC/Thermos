@@ -40,7 +40,10 @@ public class CraftChunk implements Chunk {
     }
 
     public net.minecraft.world.chunk.Chunk getHandle() {
-        net.minecraft.world.chunk.Chunk c = weakChunk.get();
+        net.minecraft.world.chunk.Chunk c = null;
+        if (weakChunk != null) {
+            c = weakChunk.get();
+        }
 
         if (c == null) {
             c = worldServer.getChunkFromChunkCoords(x, z);

@@ -1,14 +1,23 @@
 --- ../src-base/minecraft/net/minecraftforge/common/ForgeHooks.java
 +++ ../src-work/minecraft/net/minecraftforge/common/ForgeHooks.java
-@@ -63,6 +63,7 @@
+@@ -63,6 +63,16 @@
  import net.minecraftforge.event.world.BlockEvent;
  import net.minecraftforge.event.world.NoteBlockEvent;
  import static net.minecraft.init.Blocks.*;
-+import net.minecraftforge.common.util.FakePlayer; // Cauldron
++// Cauldron start
++import net.minecraftforge.common.util.FakePlayer;
++import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.TreeType;
++import org.bukkit.block.BlockState;
++import org.bukkit.craftbukkit.block.CraftBlockState;
++import org.bukkit.entity.Player;
++import org.bukkit.event.world.StructureGrowEvent;
++//Cauldron end
  
  public class ForgeHooks
  {
-@@ -439,6 +440,8 @@
+@@ -439,6 +449,8 @@
  
      public static BlockEvent.BreakEvent onBlockBreakEvent(World world, GameType gameType, EntityPlayerMP entityPlayer, int x, int y, int z)
      {
@@ -17,7 +26,7 @@
          // Logic from tryHarvestBlock for pre-canceling the event
          boolean preCancelEvent = false;
          if (gameType.isAdventure() && !entityPlayer.isCurrentToolAdventureModeExempt(x, y, z))
-@@ -449,9 +452,9 @@
+@@ -449,9 +461,9 @@
          {
              preCancelEvent = true;
          }
@@ -29,7 +38,7 @@
          {
              S23PacketBlockChange packet = new S23PacketBlockChange(x, y, z, world);
              packet.field_148883_d = Blocks.air;
-@@ -463,11 +466,11 @@
+@@ -463,11 +475,11 @@
          Block block = world.getBlock(x, y, z);
          int blockMetadata = world.getBlockMetadata(x, y, z);
          BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, blockMetadata, entityPlayer);
@@ -43,3 +52,188 @@
          {
              // Let the client know the block still exists
              entityPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+@@ -500,81 +512,137 @@
+         if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
+         {
+             world.captureBlockSnapshots = true;
++            // Cauldron start
++            if (itemstack.getItem() instanceof net.minecraft.item.ItemDye && itemstack.getItemDamage() == 15)
++            {
++                Block block = world.getBlock(x, y, z);
++                if (block != null && (block instanceof net.minecraft.block.BlockSapling || block instanceof net.minecraft.block.BlockMushroom))
++                {
++                    world.captureTreeGeneration = true;
++                }
++            }
++            // Cauldron end
+         }
+ 
++        ItemStack.currentPlayer = player; // Cauldron
+         boolean flag = itemstack.getItem().onItemUse(itemstack, player, world, x, y, z, side, hitX, hitY, hitZ);
++        ItemStack.currentPlayer = null; // Cauldron
+         world.captureBlockSnapshots = false;
+ 
+-        if (flag)
++        // Cauldron start
++        if (flag && world.captureTreeGeneration && world.capturedBlockSnapshots.size() > 0)
+         {
+-            // save new item data
+-            int newMeta = itemstack.getItemDamage();
+-            int newSize = itemstack.stackSize;
+-            NBTTagCompound newNBT = null;
+-            if (itemstack.getTagCompound() != null)
++            world.captureTreeGeneration = false;
++            Location loc = new Location(world.getWorld(), (double) x, (double) y, (double) z);
++            TreeType type = net.minecraft.block.BlockSapling.treeType;
++            net.minecraft.block.BlockSapling.treeType = null;
++            List<BlockState> states = new ArrayList();
++
++            for (net.minecraftforge.common.util.BlockSnapshot snapshot : (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots.clone())
+             {
+-                newNBT = (NBTTagCompound)itemstack.getTagCompound().copy();
++                states.add(new CraftBlockState(snapshot));
+             }
+-            net.minecraftforge.event.world.BlockEvent.PlaceEvent placeEvent = null;
+-            List<net.minecraftforge.common.util.BlockSnapshot> blockSnapshots = (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots.clone();
+-            world.capturedBlockSnapshots.clear();
+ 
+-            // make sure to set pre-placement item data for event
+-            itemstack.setItemDamage(meta);
+-            itemstack.stackSize = size;
+-            if (nbt != null)
++            world.capturedBlockSnapshots.clear();
++            StructureGrowEvent event = null;
++            if (type != null)
+             {
+-                itemstack.setTagCompound(nbt);
++                event = new StructureGrowEvent(loc, type, false, (Player) player.getBukkitEntity(), states);
++                Bukkit.getPluginManager().callEvent(event);
+             }
+-            if (blockSnapshots.size() > 1)
+-            {
+-                placeEvent = ForgeEventFactory.onPlayerMultiBlockPlace(player, blockSnapshots, net.minecraftforge.common.util.ForgeDirection.getOrientation(side));
+-            }
+-            else if (blockSnapshots.size() == 1)
+-            {
+-                placeEvent = ForgeEventFactory.onPlayerBlockPlace(player, blockSnapshots.get(0), net.minecraftforge.common.util.ForgeDirection.getOrientation(side));
+-            }
+ 
+-            if (placeEvent != null && (placeEvent.isCanceled()))
++            if (event == null || !event.isCancelled())
+             {
+-                flag = false; // cancel placement
+-                // revert back all captured blocks
+-                for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : blockSnapshots)
++                for (BlockState state : states)
+                 {
+-                    world.restoringBlockSnapshots = true;
+-                    blocksnapshot.restore(true, false);
+-                    world.restoringBlockSnapshots = false;
++                    state.update(true);
+                 }
+             }
+-            else
++
++            return flag;
++        }
++        else
++        {
++            world.captureTreeGeneration = false; // Cauldron end
++            if (flag)
+             {
+-                // Change the stack to its new content
+-                itemstack.setItemDamage(newMeta);
+-                itemstack.stackSize = newSize;
++                // save new item data
++                int newMeta = itemstack.getItemDamage();
++                int newSize = itemstack.stackSize;
++                NBTTagCompound newNBT = null;
++                if (itemstack.getTagCompound() != null)
++                {
++                    newNBT = (NBTTagCompound) itemstack.getTagCompound().copy();
++                }
++                net.minecraftforge.event.world.BlockEvent.PlaceEvent placeEvent = null;
++                List<net.minecraftforge.common.util.BlockSnapshot> blockSnapshots = (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots
++                        .clone();
++                world.capturedBlockSnapshots.clear();
++
++                // make sure to set pre-placement item data for event
++                itemstack.setItemDamage(meta);
++                itemstack.stackSize = size;
+                 if (nbt != null)
+                 {
+-                    itemstack.setTagCompound(newNBT);
++                    itemstack.setTagCompound(nbt);
+                 }
++                if (blockSnapshots.size() > 1)
++                {
++                    placeEvent = ForgeEventFactory.onPlayerMultiBlockPlace(player, blockSnapshots,
++                            net.minecraftforge.common.util.ForgeDirection.getOrientation(side));
++                }
++                else if (blockSnapshots.size() == 1)
++                {
++                    placeEvent = ForgeEventFactory.onPlayerBlockPlace(player, blockSnapshots.get(0),
++                            net.minecraftforge.common.util.ForgeDirection.getOrientation(side));
++                }
+ 
+-                for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : blockSnapshots)
++                if (placeEvent != null && (placeEvent.isCanceled()))
+                 {
+-                    int blockX = blocksnapshot.x;
+-                    int blockY = blocksnapshot.y;
+-                    int blockZ = blocksnapshot.z;
+-                    int metadata = world.getBlockMetadata(blockX, blockY, blockZ);
+-                    int updateFlag = blocksnapshot.flag;
+-                    Block oldBlock = blocksnapshot.replacedBlock;
+-                    Block newBlock = world.getBlock(blockX, blockY, blockZ);
+-                    if (newBlock != null && !(newBlock.hasTileEntity(metadata))) // Containers get placed automatically
++                    flag = false; // cancel placement
++                    // revert back all captured blocks
++                    for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : blockSnapshots)
+                     {
+-                        newBlock.onBlockAdded(world, blockX, blockY, blockZ);
++                        world.restoringBlockSnapshots = true;
++                        blocksnapshot.restore(true, false);
++                        world.restoringBlockSnapshots = false;
+                     }
++                }
++                else
++                {
++                    // Change the stack to its new content
++                    itemstack.setItemDamage(newMeta);
++                    itemstack.stackSize = newSize;
++                    if (nbt != null)
++                    {
++                        itemstack.setTagCompound(newNBT);
++                    }
+ 
+-                    world.markAndNotifyBlock(blockX, blockY, blockZ, null, oldBlock, newBlock, updateFlag);
++                    for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : blockSnapshots)
++                    {
++                        int blockX = blocksnapshot.x;
++                        int blockY = blocksnapshot.y;
++                        int blockZ = blocksnapshot.z;
++                        int metadata = world.getBlockMetadata(blockX, blockY, blockZ);
++                        int updateFlag = blocksnapshot.flag;
++                        Block oldBlock = blocksnapshot.replacedBlock;
++                        Block newBlock = world.getBlock(blockX, blockY, blockZ);
++                        if (newBlock != null && !(newBlock.hasTileEntity(metadata))) // Containers
++                                                                                     // get
++                                                                                     // placed
++                                                                                     // automatically
++                        {
++                            newBlock.onBlockAdded(world, blockX, blockY, blockZ);
++                        }
++
++                        world.markAndNotifyBlock(blockX, blockY, blockZ, null, oldBlock, newBlock, updateFlag);
++                    }
++                    player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);
+                 }
+-                player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);
++
+             }
+         }
++        
+         world.capturedBlockSnapshots.clear();
+ 
+         return flag;

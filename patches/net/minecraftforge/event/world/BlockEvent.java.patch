@@ -37,3 +37,20 @@
          }
  
          public EntityPlayer getPlayer()
+@@ -140,6 +146,16 @@
+             this.blockSnapshot = blockSnapshot;
+             this.placedBlock = blockSnapshot.getCurrentBlock();
+             this.placedAgainst = placedAgainst;
++            // Cauldron start - handle event on bukkit side
++            org.bukkit.craftbukkit.block.CraftBlockState blockstate = org.bukkit.craftbukkit.block.CraftBlockState.getBlockState(super.world, super.x, super.y,
++                    super.z);
++            org.bukkit.event.block.BlockPlaceEvent bukkitEvent = CraftEventFactory.callBlockPlaceEvent(super.world, player, blockstate, super.x, super.y,
++                    super.z);
++            if (bukkitEvent.isCancelled() || !bukkitEvent.canBuild())
++            {
++                this.setCanceled(true);
++            }
++            // Cauldron end
+             if (DEBUG)
+             {
+                 System.out.printf("Created PlaceEvent - [PlacedBlock: %s ][PlacedAgainst: %s ][ItemStack: %s ][Player: %s ]\n", placedBlock, placedAgainst, player.getCurrentEquippedItem(), player);

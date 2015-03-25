@@ -35,129 +35,23 @@
      private static final String __OBFID = "CL_00000043";
  
      private cpw.mods.fml.common.registry.RegistryDelegate<Item> delegate;
-@@ -126,12 +145,120 @@
+@@ -126,12 +145,14 @@
      public boolean tryPlaceItemIntoWorld(EntityPlayer p_77943_1_, World p_77943_2_, int p_77943_3_, int p_77943_4_, int p_77943_5_, int p_77943_6_, float p_77943_7_, float p_77943_8_, float p_77943_9_)
      {
          if (!p_77943_2_.isRemote) return net.minecraftforge.common.ForgeHooks.onPlaceItemIntoWorld(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
-+        // Cauldron start - handle all placement events here
-+        int meta = this.getItemDamage();
-+        int size = this.stackSize;
-+        NBTTagCompound nbt = null;
-+        if (this.getTagCompound() != null)
-+        {
-+            nbt = (NBTTagCompound) this.getTagCompound().copy();
-+        }
-+
-+        if (!(this.getItem() instanceof ItemBucket)) // if not bucket
-+        {
-+            p_77943_2_.captureBlockStates = true;
-+            if (this.getItem() instanceof ItemDye && this.getItemDamage() == 15)
-+            {
-+                Block block = p_77943_2_.getBlock(p_77943_3_, p_77943_4_, p_77943_5_);
-+                if (block != null && (block instanceof BlockSapling || block instanceof BlockMushroom))
-+                {
-+                    p_77943_2_.captureTreeGeneration = true;
-+                }
-+            }
-+        }
-+        currentPlayer = p_77943_1_;
-         boolean flag = this.getItem().onItemUse(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
-+        p_77943_2_.captureBlockStates = false;
-+        currentPlayer = null;
-+        if (flag && p_77943_2_.captureTreeGeneration && p_77943_2_.capturedBlockStates.size() > 0)
-+        {
-+            p_77943_2_.captureTreeGeneration = false;
-+            Location location = new Location(p_77943_2_.getWorld(), p_77943_3_, p_77943_4_, p_77943_5_);
-+            TreeType treeType = BlockSapling.treeType;
-+            BlockSapling.treeType = null;
-+            List<BlockState> blocks = (List<BlockState>) p_77943_2_.capturedBlockStates.clone();
-+            p_77943_2_.capturedBlockStates.clear();
-+            StructureGrowEvent event = null;
-+            if (treeType != null)
-+            {
-+                event = new StructureGrowEvent(location, treeType, false, (Player) p_77943_1_.getBukkitEntity(), blocks);
-+                org.bukkit.Bukkit.getPluginManager().callEvent(event);
-+            }
-+            if (event == null || !event.isCancelled())
-+            {
-+                for (BlockState blockstate : blocks)
-+                {
-+                    blockstate.update(true);
-+                }
-+            }
+-        boolean flag = this.getItem().onItemUse(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
  
-+            return flag;
-+        }
-+        p_77943_2_.captureTreeGeneration = false;
-+
++        // Cauldron start - handle all placement events here
++        boolean flag = this.getItem().onItemUse(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
          if (flag)
          {
--            p_77943_1_.addStat(StatList.objectUseStats[Item.getIdFromItem(this.field_151002_e)], 1);
-+            org.bukkit.event.block.BlockPlaceEvent placeEvent = null;
-+            List<BlockState> blockstates = (List<BlockState>) p_77943_2_.capturedBlockStates.clone();
-+            p_77943_2_.capturedBlockStates.clear();
-+            if (blockstates.size() > 1)
-+            {
-+                placeEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callBlockMultiPlaceEvent(p_77943_2_, p_77943_1_, blockstates, p_77943_3_,
-+                        p_77943_4_, p_77943_5_);
-+            }
-+            else if (blockstates.size() == 1)
-+            {
-+                placeEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callBlockPlaceEvent(p_77943_2_, p_77943_1_, blockstates.get(0), p_77943_3_,
-+                        p_77943_4_, p_77943_5_);
-+            }
-+            if (placeEvent != null && (placeEvent.isCancelled() || !placeEvent.canBuild()))
-+            {
-+                flag = false; // cancel placement
-+                // revert back all captured blocks
-+                for (BlockState blockstate : blockstates)
-+                {
-+                    p_77943_2_.restoringBlockStates = true;
-+                    blockstate.update(true, false); // restore blockstate
-+                    p_77943_2_.restoringBlockStates = false;
-+                }
-+                // make sure to restore stack after cancel
-+                this.setItemDamage(meta);
-+                this.stackSize = size;
-+                if (nbt != null)
-+                {
-+                    this.setTagCompound(nbt);
-+                }
-+            }
-+            else
-+            {
-+                // drop items
-+                for (int i = 0; i < p_77943_2_.capturedItems.size(); i++)
-+                {
-+                    p_77943_2_.spawnEntityInWorld(p_77943_2_.capturedItems.get(i));
-+                }
-+
-+                for (BlockState blockstate : blockstates)
-+                {
-+                    int x = blockstate.getX();
-+                    int y = blockstate.getY();
-+                    int z = blockstate.getZ();
-+                    int metadata = p_77943_2_.getBlockMetadata(x, y, z);
-+                    int updateFlag = ((CraftBlockState) blockstate).getFlag();
-+                    Block oldBlock = CraftMagicNumbers.getBlock(blockstate.getTypeId());
-+                    Block newBlock = p_77943_2_.getBlock(x, y, z);
-+                    if (newBlock != null && !(newBlock.hasTileEntity(metadata)))
-+                    { // Containers get placed automatically
-+                        newBlock.onBlockAdded(p_77943_2_, x, y, z);
-+                    }
-+
-+                    p_77943_2_.markAndNotifyBlock(x, y, z, null, oldBlock, newBlock, updateFlag);
-+                }
-+                p_77943_1_.addStat(StatList.objectUseStats[Item.getIdFromItem(this.field_151002_e)], 1);
-+            }
+             p_77943_1_.addStat(StatList.objectUseStats[Item.getIdFromItem(this.field_151002_e)], 1);
          }
-+        p_77943_2_.capturedBlockStates.clear();
-+        p_77943_2_.capturedItems.clear();
 +        // Cauldron end
  
          return flag;
      }
-@@ -227,8 +354,22 @@
+@@ -227,8 +248,22 @@
          return getItem().getMaxDamage(this);
      }
  
@@ -180,7 +74,7 @@
          if (!this.isItemStackDamageable())
          {
              return false;
-@@ -250,6 +391,23 @@
+@@ -250,6 +285,23 @@
  
                  p_96631_1_ -= k;
  
@@ -204,7 +98,7 @@
                  if (p_96631_1_ <= 0)
                  {
                      return false;
-@@ -288,6 +446,12 @@
+@@ -288,6 +340,12 @@
                          this.stackSize = 0;
                      }
  
@@ -217,7 +111,7 @@
                      this.itemDamage = 0;
                  }
              }
-@@ -419,6 +583,7 @@
+@@ -419,6 +477,7 @@
  
      public void setTagCompound(NBTTagCompound p_77982_1_)
      {
