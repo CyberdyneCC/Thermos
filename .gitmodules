@@ -1,7 +1,7 @@
 [submodule "bukkit"]
 	path = bukkit
-	url = https://github.com/gamerforEA/Bukkit.git
+	url = git@github.com:gamerforEA/Bukkit.git
 [submodule "forge"]
 	path = forge
-	url = https://github.com/gamerforEA/MinecraftForge.git
+	url = git@github.com:gamerforEA/MinecraftForge.git
 	branch = 1.7.10
