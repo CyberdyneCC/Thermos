@@ -19,10 +19,10 @@
  import net.minecraft.world.demo.DemoWorldManager;
  import net.minecraft.world.storage.IPlayerFileData;
 +import net.minecraftforge.common.DimensionManager;
+ import net.minecraft.world.storage.SaveHandler;
  import net.minecraftforge.common.chunkio.ChunkIOExecutor;
 +import net.minecraftforge.common.network.ForgeMessage;
 +import net.minecraftforge.common.network.ForgeNetworkHandler;
- 
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -135,19 +135,16 @@
      {
          HashSet hashset = new HashSet();
          Iterator iterator = p_96456_1_.getTeams().iterator();
-@@ -225,6 +280,11 @@
+@@ -225,6 +280,8 @@
  
      public void setPlayerManager(WorldServer[] p_72364_1_)
      {
-+        if (this.playerNBTManagerObj != null)
-+        {
-+            return; // CraftBukkit
-+        }
++        if (this.playerNBTManagerObj != null) return; // CraftBukkit
 +
          this.playerNBTManagerObj = p_72364_1_[0].getSaveHandler().getSaveHandler();
      }
  
-@@ -248,7 +308,7 @@
+@@ -248,7 +305,7 @@
  
      public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP p_72380_1_)
      {
@@ -156,7 +153,7 @@
          NBTTagCompound nbttagcompound1;
  
          if (p_72380_1_.getCommandSenderName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
-@@ -281,18 +341,61 @@
+@@ -294,18 +351,61 @@
  
      public void playerLoggedIn(EntityPlayerMP p_72377_1_)
      {
@@ -196,9 +193,8 @@
  
          for (int i = 0; i < this.playerEntityList.size(); ++i)
          {
--            EntityPlayerMP entityplayermp1 = (EntityPlayerMP)this.playerEntityList.get(i);
+             EntityPlayerMP entityplayermp1 = (EntityPlayerMP)this.playerEntityList.get(i);
 -            p_72377_1_.playerNetServerHandler.sendPacket(new S38PacketPlayerListItem(entityplayermp1.getCommandSenderName(), true, entityplayermp1.ping));
-+            EntityPlayerMP entityplayermp1 = (EntityPlayerMP) this.playerEntityList.get(i);
 +
 +            if (entityplayermp1.getBukkitEntity().canSee(p_72377_1_.getBukkitEntity()))
 +            {
@@ -218,12 +214,12 @@
 +
 +            // .name -> .listName
 +            p_72377_1_.playerNetServerHandler.sendPacket(new S38PacketPlayerListItem(entityplayermp1.listName, true, entityplayermp1.ping));
-+            // CraftBukkit end
 +        }
++        // CraftBukkit end
      }
  
      public void updatePlayerPertinentChunks(EntityPlayerMP p_72358_1_)
-@@ -300,14 +403,33 @@
+@@ -313,14 +413,33 @@
          p_72358_1_.getServerForPlayer().getPlayerManager().updatePlayerPertinentChunks(p_72358_1_);
      }
  
@@ -259,7 +255,7 @@
          {
              worldserver.removePlayerEntityDangerously(p_72367_1_.ridingEntity);
              logger.debug("removing player mount");
-@@ -316,9 +438,35 @@
+@@ -329,9 +448,35 @@
          worldserver.removeEntity(p_72367_1_);
          worldserver.getPlayerManager().removePlayer(p_72367_1_);
          this.playerEntityList.remove(p_72367_1_);
@@ -298,7 +294,7 @@
      }
  
      public String allowUserToConnect(SocketAddress p_148542_1_, GameProfile p_148542_2_)
-@@ -359,6 +507,71 @@
+@@ -372,6 +517,71 @@
          }
      }
  
@@ -364,13 +360,13 @@
 +        }
 +
 +        return entity;
-+        // CraftBukkit end
 +    }
++    // CraftBukkit end
 +
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -397,116 +610,316 @@
+@@ -410,80 +620,200 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -416,12 +412,12 @@
          if (this.mcServer.isDemo())
          {
 -            object = new DemoWorldManager(this.mcServer.worldServerForDimension(p_72368_1_.dimension));
-+        object = new DemoWorldManager(this.mcServer.worldServerForDimension(0));
++            object = new DemoWorldManager(this.mcServer.worldServerForDimension(0));
          }
          else
          {
 -            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(p_72368_1_.dimension));
-+        object = new ItemInWorldManager(this.mcServer.worldServerForDimension(0));
++            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(0));
          }
  
 -        EntityPlayerMP entityplayermp1 = new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);
@@ -544,7 +540,6 @@
 -                entityplayermp1.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(0, 0.0F));
 +                location = respawnEvent.getRespawnLocation();
              }
-+
 +            par1EntityPlayerMP.reset();
          }
 +        else
@@ -605,19 +600,14 @@
 -        FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
 +        // If world changed then fire the appropriate change world event else respawn
 +        if (fromWorld != location.getWorld())
-+        {
 +            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(entityplayermp1, ((CraftWorld) fromWorld).getHandle().provider.dimensionId,
 +                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId, (CraftWorld) fromWorld); // Cauldron - fire forge changed dimension event
-+        }
 +        else
 +            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
          return entityplayermp1;
      }
  
--    public void transferPlayerToDimension(EntityPlayerMP p_72356_1_, int p_72356_2_)
-+    // Cauldron start - refactor transferPlayerToDimension to be compatible with Bukkit. These methods are to be used when a player comes in contact with a portal
-+    public void transferPlayerToDimension(EntityPlayerMP p_72356_1_, int p_72356_2_) // wrapper for vanilla compatibility
-     {
+@@ -492,34 +822,110 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -740,13 +730,13 @@
      {
 -        transferEntityToWorld(p_82448_1_, p_82448_2_, p_82448_3_, p_82448_4_, p_82448_4_.getDefaultTeleporter());
 +        // CraftBukkit start - Split into modular functions
-+        //transferEntityToWorld(p_82448_1_, p_82448_2_, p_82448_3_, p_82448_4_, p_82448_4_.getDefaultTeleporter());
++        // transferEntityToWorld(p_82448_1_, p_82448_2_, p_82448_3_, p_82448_4_, p_82448_4_.getDefaultTeleporter());
 +        Location exit = this.calculateTarget(p_82448_1_.getBukkitEntity().getLocation(), p_82448_4_);
 +        this.repositionEntity(p_82448_1_, exit, true);
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -592,6 +1005,197 @@
+@@ -605,6 +1011,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -763,35 +753,15 @@
 +        double d1 = enter.getZ();
 +        double d2 = 8.0D;
 +
-+        /*
-+        double d3 = entity.locX;
-+        double d4 = entity.locY;
-+        double d5 = entity.locZ;
-+        float f = entity.yaw;
-+        
-+        worldserver.methodProfiler.a("moving");
-+        */
 +        if (worldserver1.dimension == -1)
 +        {
 +            d0 /= d2;
 +            d1 /= d2;
-+            /*
-+            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+            */
 +        }
 +        else if (worldserver1.dimension == 0)
 +        {
 +            d0 *= d2;
 +            d1 *= d2;
-+            /*
-+            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+            */
 +        }
 +        else
 +        {
@@ -817,34 +787,14 @@
 +                yaw = 90.0F;
 +                pitch = 0.0F;
 +            }
-+            // Cauldron end
-+            /*
-+            entity.setPositionRotation(d0, entity.locY, d1, 90.0F, 0.0F);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+            */
 +        }
 +
-+        // worldserver.methodProfiler.b();
 +        if (i != 1)
 +        {
-+            // worldserver.methodProfiler.a("placing");
 +            d0 = (double) MathHelper.clamp_int((int) d0, -29999872, 29999872);
 +            d1 = (double) MathHelper.clamp_int((int) d1, -29999872, 29999872);
-+            /*
-+            if (entity.isAlive()) {
-+                worldserver1.addEntity(entity);
-+                entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-+                worldserver1.entityJoinedWorld(entity, false);
-+                worldserver1.t().a(entity, d3, d4, d5, f);
-+            }
-+            
-+            worldserver.methodProfiler.b();
-+            */
 +        }
 +
-+        // entity.spawnIn(worldserver1);
 +        return new Location(worldserver1.getWorld(), d0, y, d1, yaw, pitch);
 +    }
 +
@@ -854,15 +804,6 @@
 +        int i = entity.dimension;
 +        WorldServer worldserver = (WorldServer) entity.worldObj;
 +        WorldServer worldserver1 = ((CraftWorld) exit.getWorld()).getHandle();
-+        /*
-+        double d0 = entity.locX;
-+        double d1 = entity.locZ;
-+        double d2 = 8.0D;
-+        double d3 = entity.locX;
-+        double d4 = entity.locY;
-+        double d5 = entity.locZ;
-+        float f = entity.yaw;
-+        */
 +        worldserver.theProfiler.startSection("moving");
 +        entity.setLocationAndAngles(exit.getX(), exit.getY(), exit.getZ(), exit.getYaw(), exit.getPitch());
 +
@@ -871,53 +812,14 @@
 +            worldserver.updateEntityWithOptionalForce(entity, false);
 +        }
 +
-+        /*
-+        if (entity.dimension == -1) {
-+            d0 /= d2;
-+            d1 /= d2;
-+            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+        } else if (entity.dimension == 0) {
-+            d0 *= d2;
-+            d1 *= d2;
-+            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+        } else {
-+            ChunkCoordinates chunkcoordinates;
-+        
-+            if (i == 1) {
-+                chunkcoordinates = worldserver1.getSpawn();
-+            } else {
-+                chunkcoordinates = worldserver1.getDimensionSpawn();
-+            }
-+        
-+           d0 = (double) chunkcoordinates.x;
-+            entity.locY = (double) chunkcoordinates.y;
-+            d1 = (double) chunkcoordinates.z;
-+            entity.setPositionRotation(d0, entity.locY, d1, 90.0F, 0.0F);
-+            if (entity.isAlive()) {
-+                worldserver.entityJoinedWorld(entity, false);
-+            }
-+        }
-+        */
 +        worldserver.theProfiler.endSection();
 +
 +        if (i != 1)
 +        {
 +            worldserver.theProfiler.startSection("placing");
 +
-+            /*
-+            d0 = (double) MathHelper.a((int) d0, -29999872, 29999872);
-+            d1 = (double) MathHelper.a((int) d1, -29999872, 29999872);
-+            */
 +            if (entity.isEntityAlive())
 +            {
-+                // entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch)
-+                // worldserver1.s().a(entity, d3, d4, d5, f);
 +                if (portal)
 +                {
 +                    Vector velocity = entity.getBukkitEntity().getVelocity();
@@ -938,13 +840,13 @@
 +        }
 +
 +        entity.setWorld(worldserver1);
-+        // CraftBukkit end
 +    }
++    // CraftBukkit end
 +
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -599,11 +1203,13 @@
+@@ -612,11 +1121,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -958,7 +860,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -864,13 +1470,24 @@
+@@ -877,13 +1388,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -985,14 +887,11 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -925,16 +1542,19 @@
- 
-         if (p_72354_2_.isRaining())
-         {
-+            // CraftBukkit start - handle player weather
+@@ -941,13 +1463,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
++            // CraftBukkit start - handle player weather
 +            p_72354_1_.setPlayerWeather(org.bukkit.WeatherType.DOWNFALL, false);
 +            // CraftBukkit end
          }
@@ -1006,7 +905,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -950,7 +1570,10 @@
+@@ -963,7 +1488,10 @@
  
      public String[] getAvailablePlayerDat()
      {
@@ -1018,7 +917,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1019,12 +1642,30 @@
+@@ -1032,12 +1560,30 @@
  
      public void removeAllPlayers()
      {

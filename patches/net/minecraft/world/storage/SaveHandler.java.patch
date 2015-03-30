@@ -1,14 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/world/storage/SaveHandler.java
 +++ ../src-work/minecraft/net/minecraft/world/storage/SaveHandler.java
-@@ -10,6 +10,7 @@
- import cpw.mods.fml.common.FMLCommonHandler;
- import cpw.mods.fml.common.StartupQuery;
- import net.minecraft.entity.player.EntityPlayer;
-+import net.minecraft.entity.player.EntityPlayerMP;
- import net.minecraft.nbt.CompressedStreamTools;
- import net.minecraft.nbt.NBTTagCompound;
- import net.minecraft.server.MinecraftServer;
-@@ -19,6 +20,13 @@
+@@ -21,6 +21,13 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -22,7 +14,7 @@
  public class SaveHandler implements ISaveHandler, IPlayerFileData
  {
      private static final Logger logger = LogManager.getLogger();
-@@ -27,6 +35,8 @@
+@@ -29,6 +36,8 @@
      private final File mapDataDir;
      private final long initializationTime = MinecraftServer.getSystemTimeMillis();
      private final String saveDirectoryName;
@@ -31,7 +23,7 @@
      private static final String __OBFID = "CL_00000585";
  
      public SaveHandler(File p_i2146_1_, String p_i2146_2_, boolean p_i2146_3_)
-@@ -65,7 +75,7 @@
+@@ -67,7 +76,7 @@
          catch (IOException ioexception)
          {
              ioexception.printStackTrace();
@@ -40,7 +32,7 @@
          }
      }
  
-@@ -85,7 +95,7 @@
+@@ -87,7 +96,7 @@
              {
                  if (datainputstream.readLong() != this.initializationTime)
                  {
@@ -49,7 +41,7 @@
                  }
              }
              finally
-@@ -95,7 +105,10 @@
+@@ -97,7 +106,10 @@
          }
          catch (IOException ioexception)
          {
@@ -61,7 +53,7 @@
          }
      }
  
-@@ -120,6 +133,7 @@
+@@ -122,6 +134,7 @@
                  nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                  worldInfo = new WorldInfo(nbttagcompound1);
                  FMLCommonHandler.instance().handleWorldDataLoad(this, worldInfo, nbttagcompound);
@@ -69,7 +61,7 @@
                  return worldInfo;
              }
              catch (StartupQuery.AbortedException e)
-@@ -143,6 +157,7 @@
+@@ -145,6 +158,7 @@
                  nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
                  worldInfo = new WorldInfo(nbttagcompound1);
                  FMLCommonHandler.instance().handleWorldDataLoad(this, worldInfo, nbttagcompound);
@@ -77,16 +69,15 @@
                  return worldInfo;
              }
              catch (StartupQuery.AbortedException e)
-@@ -154,7 +169,7 @@
-                 exception.printStackTrace();
+@@ -157,6 +171,7 @@
              }
          }
--
+ 
 +        this.initBukkitData(worldInfo); // Cauldron
          return null;
      }
  
-@@ -282,6 +297,18 @@
+@@ -284,6 +299,18 @@
  
          if (nbttagcompound != null)
          {
@@ -96,16 +87,16 @@
 +                CraftPlayer player = (CraftPlayer) p_75752_1_.getBukkitEntity(); // Cauldron
 +                // Only update first played if it is older than the one we have
 +                long modified = new File(playersDirectory, p_75752_1_.getCommandSenderName() + ".dat").lastModified();
-+                if (modified < player.getFirstPlayed()) {
++                if (modified < player.getFirstPlayed())
++                {
 +                    player.setFirstPlayed(modified);
 +                }
 +            }
 +            // CraftBukkit end
-+
              p_75752_1_.readFromNBT(nbttagcompound);
          }
  
-@@ -289,6 +316,27 @@
+@@ -291,6 +318,27 @@
          return nbttagcompound;
      }
  
@@ -133,11 +124,10 @@
      public IPlayerFileData getSaveHandler()
      {
          return this;
-@@ -320,4 +368,97 @@
-     {
+@@ -323,6 +371,99 @@
          return this.saveDirectoryName;
      }
-+
+ 
 +    // CraftBukkit start
 +    public UUID getUUID()
 +    {
@@ -230,4 +220,7 @@
 +        }
 +    }
 +    // Cauldron end
- }
++
+     public NBTTagCompound getPlayerNBT(EntityPlayerMP player)
+     {
+         try

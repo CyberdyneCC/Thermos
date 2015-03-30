@@ -284,7 +284,7 @@
  
 +        IChatComponent chatmessage = this.func_110142_aN().func_151521_b();
 +        String deathmessage = chatmessage.getUnformattedText();
-+        org.bukkit.event.entity.PlayerDeathEvent event = CraftEventFactory.callPlayerDeathEvent(this, loot, deathmessage);
++        org.bukkit.event.entity.PlayerDeathEvent event = CraftEventFactory.callPlayerDeathEvent(this, loot, deathmessage, keepInventory);
 +        String deathMessage = event.getDeathMessage();
 +
 +        if (deathMessage != null && deathMessage.length() > 0)
@@ -299,7 +299,7 @@
 +            }
 +        }
 +
-+        if (!keepInventory)
++        if (!event.getKeepInventory())
 +        {
 +            // Cauldron start - rework CraftBukkit logic to support Forge better
 +            this.inventory.clearInventory(null, -1); // CraftBukkit - we clean the player's inventory after the EntityDeathEvent is called so plugins can get the exact state of the inventory.

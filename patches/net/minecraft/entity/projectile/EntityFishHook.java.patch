@@ -31,7 +31,7 @@
                  if (movingobjectposition.entityHit != null)
                  {
                      if (movingobjectposition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.field_146042_b), 0.0F))
-@@ -509,6 +517,18 @@
+@@ -509,6 +517,16 @@
  
              if (this.field_146043_c != null)
              {
@@ -41,8 +41,6 @@
 +
 +                if (playerFishEvent.isCancelled())
 +                {
-+                    this.setDead();
-+                    this.field_146042_b.fishEntity = null;
 +                    return 0;
 +                }
 +
@@ -50,7 +48,7 @@
                  double d0 = this.field_146042_b.posX - this.posX;
                  double d2 = this.field_146042_b.posY - this.posY;
                  double d4 = this.field_146042_b.posZ - this.posZ;
-@@ -522,6 +542,19 @@
+@@ -522,6 +540,17 @@
              else if (this.field_146045_ax > 0)
              {
                  EntityItem entityitem = new EntityItem(this.worldObj, this.posX, this.posY, this.posZ, this.func_146033_f());
@@ -61,8 +59,6 @@
 +
 +                if (playerFishEvent.isCancelled())
 +                {
-+                    this.setDead();
-+                    this.field_146042_b.fishEntity = null;
 +                    return 0;
 +                }
 +
@@ -70,7 +66,7 @@
                  double d1 = this.field_146042_b.posX - this.posX;
                  double d3 = this.field_146042_b.posY - this.posY;
                  double d5 = this.field_146042_b.posZ - this.posZ;
-@@ -531,15 +564,36 @@
+@@ -531,15 +560,37 @@
                  entityitem.motionY = d3 * d9 + (double)MathHelper.sqrt_double(d7) * 0.08D;
                  entityitem.motionZ = d5 * d9;
                  this.worldObj.spawnEntityInWorld(entityitem);
@@ -88,11 +84,8 @@
 +
 +                if (playerFishEvent.isCancelled())
 +                {
-+                    this.setDead();
-+                    this.field_146042_b.fishEntity = null;
 +                    return 0;
 +                }
-+
 +                // CraftBukkit end
                  b0 = 2;
              }
@@ -102,13 +95,17 @@
 +            {
 +                PlayerFishEvent playerFishEvent = new PlayerFishEvent((Player) this.field_146042_b.getBukkitEntity(), null, (Fish) this.getBukkitEntity(), PlayerFishEvent.State.FAILED_ATTEMPT);
 +                this.worldObj.getServer().getPluginManager().callEvent(playerFishEvent);
-+            }
 +
++                if (playerFishEvent.isCancelled())
++                {
++                    return 0;
++                }
++            }
 +            // CraftBukkit end
              this.setDead();
              this.field_146042_b.fishEntity = null;
              return b0;
-@@ -580,7 +634,7 @@
+@@ -580,7 +631,7 @@
              {
                  float f3 = f - f2;
                  this.field_146042_b.addStat(StatList.fishCaughtStat, 1);

@@ -219,7 +219,7 @@
              score.func_96648_a();
          }
      }
-@@ -777,6 +861,19 @@
+@@ -777,6 +861,36 @@
                  entityitem.motionZ += Math.sin((double)f1) * (double)f;
              }
  
@@ -231,7 +231,24 @@
 +
 +            if (event.isCancelled())
 +            {
-+                player.getInventory().addItem(drop.getItemStack());
++                // player.getInventory().addItem(drop.getItemStack());
++                org.bukkit.inventory.ItemStack cur = player.getInventory().getItemInHand();
++                if (p_146097_3_ && (cur == null || cur.getAmount() == 0))
++                {
++                    // The complete stack was dropped
++                    player.getInventory().setItemInHand(drop.getItemStack());
++                }
++                else if (p_146097_3_ && cur.isSimilar(drop.getItemStack()) && drop.getItemStack().getAmount() == 1)
++                {
++                    // Only one item is dropped
++                    cur.setAmount(cur.getAmount() + 1);
++                    player.getInventory().setItemInHand(cur);
++                }
++                else
++                {
++                    // Fallback
++                    player.getInventory().addItem(drop.getItemStack());
++                }
 +                return null;
 +            }
 +            // CraftBukkit end
@@ -239,7 +256,7 @@
              this.joinEntityItemWithWorld(entityitem);
              this.addStat(StatList.dropStat, 1);
              return entityitem;
-@@ -881,6 +978,15 @@
+@@ -881,6 +995,15 @@
              this.wakeUpPlayer(true, true, false);
          }
  
@@ -255,7 +272,7 @@
          if (p_70037_1_.hasKey("SpawnX", 99) && p_70037_1_.hasKey("SpawnY", 99) && p_70037_1_.hasKey("SpawnZ", 99))
          {
              this.spawnChunk = new ChunkCoordinates(p_70037_1_.getInteger("SpawnX"), p_70037_1_.getInteger("SpawnY"), p_70037_1_.getInteger("SpawnZ"));
-@@ -925,6 +1031,7 @@
+@@ -925,6 +1048,7 @@
              p_70014_1_.setInteger("SpawnY", this.spawnChunk.posY);
              p_70014_1_.setInteger("SpawnZ", this.spawnChunk.posZ);
              p_70014_1_.setBoolean("SpawnForced", this.spawnForced);
@@ -263,7 +280,7 @@
          }
  
          NBTTagList spawnlist = new NBTTagList();
-@@ -1003,7 +1110,7 @@
+@@ -1003,7 +1127,7 @@
                  {
                      if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL)
                      {
@@ -272,7 +289,7 @@
                      }
  
                      if (this.worldObj.difficultySetting == EnumDifficulty.EASY)
-@@ -1017,7 +1124,7 @@
+@@ -1017,7 +1141,7 @@
                      }
                  }
  
@@ -281,7 +298,7 @@
                  {
                      return false;
                  }
-@@ -1039,9 +1146,40 @@
+@@ -1039,9 +1163,40 @@
  
      public boolean canAttackPlayer(EntityPlayer p_96122_1_)
      {
@@ -325,7 +342,7 @@
      }
  
      protected void damageArmor(float p_70675_1_)
-@@ -1073,19 +1211,34 @@
+@@ -1073,19 +1228,34 @@
          return (float)i / (float)this.inventory.armorInventory.length;
      }
  
@@ -362,7 +379,7 @@
              p_70665_2_ = this.applyPotionDamageCalculations(p_70665_1_, p_70665_2_);
              float f1 = p_70665_2_;
              p_70665_2_ = Math.max(p_70665_2_ - this.getAbsorptionAmount(), 0.0F);
-@@ -1099,6 +1252,7 @@
+@@ -1099,6 +1269,7 @@
                  this.func_110142_aN().func_94547_a(p_70665_1_, f2, p_70665_2_);
              }
          }
@@ -370,7 +387,7 @@
      }
  
      public void func_146101_a(TileEntityFurnace p_146101_1_) {}
-@@ -1134,7 +1288,8 @@
+@@ -1134,7 +1305,8 @@
  
                  if (itemstack.interactWithEntity(this, (EntityLivingBase)p_70998_1_))
                  {
@@ -380,7 +397,7 @@
                      {
                          this.destroyCurrentEquippedItem();
                      }
-@@ -1281,7 +1436,8 @@
+@@ -1281,7 +1453,8 @@
                          {
                              itemstack.hitEntity((EntityLivingBase)object, this);
  
@@ -390,7 +407,7 @@
                              {
                                  this.destroyCurrentEquippedItem();
                              }
-@@ -1293,7 +1449,17 @@
+@@ -1293,7 +1466,17 @@
  
                              if (j > 0)
                              {
@@ -409,7 +426,7 @@
                              }
                          }
  
-@@ -1322,6 +1488,10 @@
+@@ -1322,6 +1505,10 @@
  
          if (this.openContainer != null)
          {
@@ -420,7 +437,7 @@
              this.openContainer.onContainerClosed(this);
          }
      }
-@@ -1381,6 +1551,20 @@
+@@ -1381,6 +1568,20 @@
              this.mountEntity((Entity)null);
          }
  
@@ -441,7 +458,7 @@
          this.setSize(0.2F, 0.2F);
          this.yOffset = 0.2F;
  
-@@ -1476,6 +1660,26 @@
+@@ -1476,6 +1677,26 @@
              this.worldObj.updateAllPlayersSleepingFlag();
          }
  
@@ -468,7 +485,7 @@
          if (p_70999_1_)
          {
              this.sleepTimer = 0;
-@@ -1606,11 +1810,13 @@
+@@ -1606,11 +1827,13 @@
          {
              this.spawnChunk = new ChunkCoordinates(p_71063_1_);
              this.spawnForced = p_71063_2_;
