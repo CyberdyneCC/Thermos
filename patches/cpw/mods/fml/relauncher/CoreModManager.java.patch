@@ -10,11 +10,10 @@
      public static void handleLaunch(File mcDir, LaunchClassLoader classLoader, FMLTweaker tweaker)
      {
          CoreModManager.mcDir = mcDir;
-@@ -212,7 +215,19 @@
+@@ -212,6 +215,19 @@
              loadCoreMod(classLoader, coreModClassName, null);
          }
          discoverCoreMods(mcDir, classLoader);
--
 +        // Cauldron start - group output of @MCVersion warnings
 +        if (!noVersionAnnotationCoreMods.isEmpty())
 +        {
@@ -28,10 +27,10 @@
 +            FMLRelaunchLog.warning(sb.toString());
 +        }
 +        // Cauldron end
+ 
      }
  
-     private static void discoverCoreMods(File mcDir, LaunchClassLoader classLoader)
-@@ -424,8 +439,11 @@
+@@ -424,8 +440,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {

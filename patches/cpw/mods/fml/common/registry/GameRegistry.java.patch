@@ -1,25 +1,26 @@
 --- ../src-base/minecraft/cpw/mods/fml/common/registry/GameRegistry.java
 +++ ../src-work/minecraft/cpw/mods/fml/common/registry/GameRegistry.java
-@@ -53,6 +53,7 @@
- import cpw.mods.fml.common.LoaderException;
- import cpw.mods.fml.common.LoaderState;
- import cpw.mods.fml.common.ObfuscationReflectionHelper;
+@@ -24,6 +24,7 @@
+ import java.util.Map;
+ import java.util.Random;
+ import java.util.Set;
 +import java.util.HashMap; // Cauldron
  
- public class GameRegistry
- {
-@@ -60,6 +61,10 @@
-     private static Map<IWorldGenerator, Integer> worldGeneratorIndex = Maps.newHashMap();
+ import net.minecraft.block.Block;
+ import net.minecraft.item.Item;
+@@ -61,6 +62,11 @@
      private static List<IFuelHandler> fuelHandlers = Lists.newArrayList();
      private static List<IWorldGenerator> sortedGeneratorList;
+ 
 +    // Cauldron start
 +    private static Map<String, Boolean> configWorldGenCache = new HashMap<String, Boolean>();
 +    private static Map<String, String> worldGenMap = new HashMap<String, String>();
 +    // Cauldron end
- 
++
      /**
       * Register a world generator - something that inserts new block types into the world
-@@ -70,12 +75,18 @@
+      *
+@@ -70,12 +76,18 @@
       */
      public static void registerWorldGenerator(IWorldGenerator generator, int modGenerationWeight)
      {
@@ -38,7 +39,7 @@
      }
  
      /**
-@@ -100,11 +111,27 @@
+@@ -100,11 +112,27 @@
          long zSeed = fmlRandom.nextLong() >> 2 + 1L;
          long chunkSeed = (xSeed * chunkX + zSeed * chunkZ) ^ worldSeed;
  
