@@ -29,7 +29,7 @@
      private ServerEula field_154332_n;
      private boolean canSpawnStructures;
      private WorldSettings.GameType gameType;
-@@ -52,9 +62,12 @@
+@@ -52,10 +62,13 @@
      public static boolean allowPlayerLogins = false;
      private static final String __OBFID = "CL_00001784";
  
@@ -38,12 +38,14 @@
 +    public DedicatedServer(joptsimple.OptionSet options)
      {
 -        super(p_i1508_1_, Proxy.NO_PROXY);
+-        Thread thread = new Thread("Server Infinisleeper")
 +        super(options, Proxy.NO_PROXY);
 +        // super(p_i1508_1_, Proxy.NO_PROXY);
 +        // CraftBukkit end
-         Thread thread = new Thread("Server Infinisleeper")
++        new Thread("Server Infinisleeper")
          {
              private static final String __OBFID = "CL_00001787";
+             {
 @@ -82,31 +95,77 @@
          };
      }

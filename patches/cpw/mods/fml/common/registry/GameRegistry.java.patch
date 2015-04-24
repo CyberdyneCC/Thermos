@@ -27,7 +27,7 @@
 +        // Cauldron start - mod id's are not available during generateWorld so we must capture them here
 +        String modId = Loader.instance().activeModContainer().getModId();
 +        modId = modId.replaceAll("[^A-Za-z0-9]", ""); // remove all non-digits/alphanumeric
-+        modId.replace(" ", "_");
++        modId = modId.replace(" ", "_");
          worldGenerators.add(generator);
          worldGeneratorIndex.put(generator, modGenerationWeight);
          if (sortedGeneratorList != null)

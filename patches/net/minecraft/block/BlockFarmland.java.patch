@@ -40,7 +40,7 @@
 +            {
 +                cancellable = CraftEventFactory.callPlayerInteractEvent((EntityPlayer) p_149746_5_, org.bukkit.event.block.Action.PHYSICAL, p_149746_2_, p_149746_3_, p_149746_4_, -1, null);
 +            }
-+            else if (p_149746_1_ != null && p_149746_1_.getWorld() != null && p_149746_5_ != null)
++            else if (p_149746_1_.getWorld() != null && p_149746_5_ != null)
 +            {
 +                cancellable = new EntityInteractEvent(p_149746_5_.getBukkitEntity(), p_149746_1_.getWorld().getBlockAt(p_149746_2_, p_149746_3_, p_149746_4_));
 +                p_149746_1_.getServer().getPluginManager().callEvent((EntityInteractEvent) cancellable);

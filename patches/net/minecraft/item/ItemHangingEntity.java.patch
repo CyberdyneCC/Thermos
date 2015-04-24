@@ -18,7 +18,7 @@
                      if (!p_77648_3_.isRemote)
                      {
 +                        // CraftBukkit start
-+                        Player who = (p_77648_2_ == null) ? null : (Player) p_77648_2_.getBukkitEntity();
++                        Player who = (Player) p_77648_2_.getBukkitEntity();
 +                        org.bukkit.block.Block blockClicked = p_77648_3_.getWorld().getBlockAt(p_77648_4_, p_77648_5_, p_77648_6_);
 +                        org.bukkit.block.BlockFace blockFace = org.bukkit.craftbukkit.block.CraftBlock.notchToBlockFace(p_77648_7_);
 +                        HangingPlaceEvent event = new HangingPlaceEvent((org.bukkit.entity.Hanging) entityhanging.getBukkitEntity(), who, blockClicked, blockFace);

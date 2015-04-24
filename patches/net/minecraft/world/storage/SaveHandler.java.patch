@@ -124,7 +124,7 @@
      public IPlayerFileData getSaveHandler()
      {
          return this;
-@@ -323,6 +371,99 @@
+@@ -323,6 +371,100 @@
          return this.saveDirectoryName;
      }
  
@@ -202,6 +202,7 @@
 +    {
 +        return playersDirectory;
 +    }
++
 +    // CraftBukkit end
 +
 +    // Cauldron start

@@ -247,11 +247,11 @@ public class CraftInventory implements Inventory {
     }
 
     private int firstPartial(ItemStack item) {
-        ItemStack[] inventory = getContents();
-        ItemStack filteredItem = CraftItemStack.asCraftCopy(item);
         if (item == null) {
             return -1;
         }
+        ItemStack[] inventory = getContents();
+        ItemStack filteredItem = CraftItemStack.asCraftCopy(item);
         for (int i = 0; i < inventory.length; i++) {
             ItemStack cItem = inventory[i];
             if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && cItem.isSimilar(filteredItem)) {

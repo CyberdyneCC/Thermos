@@ -204,6 +204,15 @@
              this.worldObj.unloadEntities(this.entityLists[i]);
          }
          MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
+@@ -1025,7 +1139,7 @@
+ 
+     public Random getRandomWithSeed(long p_76617_1_)
+     {
+-        return new Random(this.worldObj.getSeed() + (long)(this.xPosition * this.xPosition * 4987142) + (long)(this.xPosition * 5947611) + (long)(this.zPosition * this.zPosition) * 4392871L + (long)(this.zPosition * 389711) ^ p_76617_1_);
++        return new Random(this.worldObj.getSeed() + (4987142L * this.xPosition * this.xPosition) + (5947611L * this.xPosition) + (4392871L * this.zPosition * this.zPosition) + (389711L * this.zPosition) ^ p_76617_1_);
+     }
+ 
+     public boolean isEmpty()
 @@ -1035,6 +1149,7 @@
  
      public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)

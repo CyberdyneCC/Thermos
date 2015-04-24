@@ -18,8 +18,8 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.demo.DemoWorldManager;
  import net.minecraft.world.storage.IPlayerFileData;
-+import net.minecraftforge.common.DimensionManager;
  import net.minecraft.world.storage.SaveHandler;
++import net.minecraftforge.common.DimensionManager;
  import net.minecraftforge.common.chunkio.ChunkIOExecutor;
 +import net.minecraftforge.common.network.ForgeMessage;
 +import net.minecraftforge.common.network.ForgeNetworkHandler;
@@ -135,16 +135,15 @@
      {
          HashSet hashset = new HashSet();
          Iterator iterator = p_96456_1_.getTeams().iterator();
-@@ -225,6 +280,8 @@
+@@ -225,6 +280,7 @@
  
      public void setPlayerManager(WorldServer[] p_72364_1_)
      {
 +        if (this.playerNBTManagerObj != null) return; // CraftBukkit
-+
          this.playerNBTManagerObj = p_72364_1_[0].getSaveHandler().getSaveHandler();
      }
  
-@@ -248,7 +305,7 @@
+@@ -248,7 +304,7 @@
  
      public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP p_72380_1_)
      {
@@ -153,7 +152,7 @@
          NBTTagCompound nbttagcompound1;
  
          if (p_72380_1_.getCommandSenderName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
-@@ -294,18 +351,61 @@
+@@ -294,18 +350,60 @@
  
      public void playerLoggedIn(EntityPlayerMP p_72377_1_)
      {
@@ -195,7 +194,6 @@
          {
              EntityPlayerMP entityplayermp1 = (EntityPlayerMP)this.playerEntityList.get(i);
 -            p_72377_1_.playerNetServerHandler.sendPacket(new S38PacketPlayerListItem(entityplayermp1.getCommandSenderName(), true, entityplayermp1.ping));
-+
 +            if (entityplayermp1.getBukkitEntity().canSee(p_72377_1_.getBukkitEntity()))
 +            {
 +                entityplayermp1.playerNetServerHandler.sendPacket(packet);
@@ -219,7 +217,7 @@
      }
  
      public void updatePlayerPertinentChunks(EntityPlayerMP p_72358_1_)
-@@ -313,14 +413,33 @@
+@@ -313,14 +411,33 @@
          p_72358_1_.getServerForPlayer().getPlayerManager().updatePlayerPertinentChunks(p_72358_1_);
      }
  
@@ -229,8 +227,8 @@
 -        FMLCommonHandler.instance().firePlayerLoggedOut(p_72367_1_);
 +        disconnect(p_72367_1_);
 +    }
-+    // Cauldron end
 +
++    // Cauldron end
 +    public String disconnect(EntityPlayerMP p_72367_1_) // CraftBukkit - return string
 +    {
          p_72367_1_.triggerAchievement(StatList.leaveGameStat);
@@ -255,7 +253,7 @@
          {
              worldserver.removePlayerEntityDangerously(p_72367_1_.ridingEntity);
              logger.debug("removing player mount");
-@@ -329,9 +448,35 @@
+@@ -329,9 +446,35 @@
          worldserver.removeEntity(p_72367_1_);
          worldserver.getPlayerManager().removePlayer(p_72367_1_);
          this.playerEntityList.remove(p_72367_1_);
@@ -294,7 +292,7 @@
      }
  
      public String allowUserToConnect(SocketAddress p_148542_1_, GameProfile p_148542_2_)
-@@ -372,6 +517,71 @@
+@@ -372,6 +515,71 @@
          }
      }
  
@@ -366,7 +364,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +620,200 @@
+@@ -410,80 +618,199 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -428,7 +426,7 @@
 -        WorldServer worldserver = this.mcServer.worldServerForDimension(p_72368_1_.dimension);
 -        this.func_72381_a(entityplayermp1, p_72368_1_, worldserver);
 +        return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
-+        // */
++       // */
 +        return player;
 +        // CraftBukkit end
 +    }
@@ -436,7 +434,7 @@
 +    // Cauldron start - refactor entire method for sanity.
 +    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3)
 +    {
-+        return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null);
++       return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null);
 +    }
 +
 +    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location)
@@ -530,7 +528,6 @@
 +                location = new Location(toWorld, toWorld.getSpawnLocation().getX(), toWorld.getSpawnLocation().getY(), toWorld.getSpawnLocation().getZ()); // use the world spawnpoint as default location
              }
 -            else
-+
 +            Player respawnPlayer = this.cserver.getPlayer(entityplayermp1);
 +            PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(respawnPlayer, location, isBedSpawn);
 +            this.cserver.getPluginManager().callEvent(respawnEvent);
@@ -607,7 +604,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +822,110 @@
+@@ -492,34 +819,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -718,11 +715,13 @@
 +
          while (iterator.hasNext())
          {
-             PotionEffect potioneffect = (PotionEffect)iterator.next();
+-            PotionEffect potioneffect = (PotionEffect)iterator.next();
 -            p_72356_1_.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(p_72356_1_.getEntityId(), potioneffect));
++            PotionEffect potioneffect = (PotionEffect) iterator.next();
 +            par1EntityPlayerMP.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(par1EntityPlayerMP.getEntityId(), potioneffect));
          }
 -        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(p_72356_1_, j, p_72356_2_);
++
 +        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(par1EntityPlayerMP, fromWorld.dimension, targetDimension);
      }
  
@@ -733,10 +732,11 @@
 +        // transferEntityToWorld(p_82448_1_, p_82448_2_, p_82448_3_, p_82448_4_, p_82448_4_.getDefaultTeleporter());
 +        Location exit = this.calculateTarget(p_82448_1_.getBukkitEntity().getLocation(), p_82448_4_);
 +        this.repositionEntity(p_82448_1_, exit, true);
++        // CraftBukkit end
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1011,109 @@
+@@ -605,6 +1010,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -751,17 +751,16 @@
 +        float pitch = enter.getPitch();
 +        double d0 = enter.getX();
 +        double d1 = enter.getZ();
-+        double d2 = 8.0D;
 +
 +        if (worldserver1.dimension == -1)
 +        {
-+            d0 /= d2;
-+            d1 /= d2;
++            d0 /= 8.0D;
++            d1 /= 8.0D;
 +        }
 +        else if (worldserver1.dimension == 0)
 +        {
-+            d0 *= d2;
-+            d1 *= d2;
++            d0 *= 8.0D;
++            d1 *= 8.0D;
 +        }
 +        else
 +        {
@@ -787,6 +786,7 @@
 +                yaw = 90.0F;
 +                pitch = 0.0F;
 +            }
++            // Cauldron end
 +        }
 +
 +        if (i != 1)
@@ -846,7 +846,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1121,13 @@
+@@ -612,11 +1120,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -860,7 +860,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1388,24 @@
+@@ -877,13 +1387,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -887,7 +887,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1463,16 @@
+@@ -941,13 +1462,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -905,7 +905,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -963,7 +1488,10 @@
+@@ -963,7 +1487,10 @@
  
      public String[] getAvailablePlayerDat()
      {
@@ -917,7 +917,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1560,30 @@
+@@ -1032,12 +1559,30 @@
  
      public void removeAllPlayers()
      {

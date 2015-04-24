@@ -62,7 +62,7 @@
  public abstract class World implements IBlockAccess
  {
     /**
-@@ -83,10 +128,10 @@
+@@ -83,15 +128,14 @@
  
      public boolean scheduledUpdatesAreImmediate;
      public List loadedEntityList = new ArrayList();
@@ -75,11 +75,17 @@
      public List playerEntities = new ArrayList();
      public List weatherEffects = new ArrayList();
      private long cloudColour = 16777215L;
-@@ -100,26 +145,87 @@
+     public int skylightSubtracted;
+-    protected int updateLCG = (new Random()).nextInt();
+     protected final int DIST_HASH_MAGIC = 1013904223;
+     public float prevRainingStrength;
+     public float rainingStrength;
+@@ -100,26 +144,88 @@
      public int lastLightningBolt;
      public EnumDifficulty difficultySetting;
      public Random rand = new Random();
 -    public final WorldProvider provider;
++    protected int updateLCG = this.rand.nextInt();
 +    public WorldProvider provider; // CraftBukkit - remove final
      protected List worldAccesses = new ArrayList();
 -    protected IChunkProvider chunkProvider;

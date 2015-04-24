@@ -103,7 +103,7 @@ public class CustomTimingsHandler
             {
                 if ( timings.curTickTotal > 50000000 )
                 {
-                    timings.violations += Math.ceil( timings.curTickTotal / 50000000 );
+                    timings.violations += Math.ceil( (double) timings.curTickTotal / 50000000 );
                 }
                 timings.curTickTotal = 0;
                 timings.timingDepth = 0; // incase reset messes this up
