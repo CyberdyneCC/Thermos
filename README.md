@@ -4,26 +4,10 @@ Compilation
 We use Gradle to handle our dependencies.
 
 1. Checkout project.
-2. Init submodules : git submodule update --init --recursive -- depth 1
+2. Init submodules : git submodule update --init --recursive --depth 1
 3. Setup workspace : gradlew setupCauldron
 4. Build binaries  : gradlew buildPackages
 Note: all binaries will be in distributions folder
-
-Supporting Cauldron
---------
-Click here to [Donate to bloodmc](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YNCKCALNQKFAS)
-Click here to [Become a Patreon] (http://www.patreon.com/bloodmc)
-
-Top Patron Supporters
------------
-
-* isiliden
-* eonic
-* trab
-* jamescowens
-* SFTMedia
-* Shmeeb
-
 
 Profiling
 ---------
@@ -32,9 +16,8 @@ We use YourKit as our Java Profiler.
 
 YourKit is kindly supporting open source projects with its full-featured Java Profiler.
 YourKit, LLC is the creator of innovative and intelligent tools for profiling
-Java and .NET applications. Take a look at YourKit's leading software products:
+Java. Take a look at YourKit's leading software products:
 * [YourKit Java Profiler](http://www.yourkit.com/java/profiler/index.jsp)
-* [YourKit .NET Profiler](http://www.yourkit.com/.net/profiler/index.jsp)
 
 
 Coding and Pull Request Conventions
