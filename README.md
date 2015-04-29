@@ -4,7 +4,7 @@ Compilation
 We use Gradle to handle our dependencies.
 
 1. Checkout project.
-2. Init submodules : git submodule update --init --recursive --depth 1
+2. Init submodules : git submodule update --init --recursive
 3. Setup workspace : gradlew setupCauldron
 4. Build binaries  : gradlew buildPackages
 Note: all binaries will be in distributions folder
