@@ -1,11 +1,11 @@
 --- ../src-base/minecraft/net/minecraft/network/rcon/RConThreadClient.java
 +++ ../src-work/minecraft/net/minecraft/network/rcon/RConThreadClient.java
-@@ -53,6 +53,8 @@
+@@ -52,6 +52,8 @@
+ 
                  BufferedInputStream bufferedinputstream = new BufferedInputStream(this.clientSocket.getInputStream());
                  int i = bufferedinputstream.read(this.buffer, 0, 1460);
- 
++                
 +                if (i == -1) this.running = false; // Cauldron
-+
-                 if (10 <= i)
+ 
+                 if (10 > i)
                  {
-                     byte b0 = 0;

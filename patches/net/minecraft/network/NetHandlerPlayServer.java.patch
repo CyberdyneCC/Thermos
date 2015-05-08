@@ -1818,7 +1818,7 @@
              finally
              {
 @@ -1135,19 +2442,18 @@
-                 {
+ 
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
 -                        itemstack1.setTagInfo("author", new NBTTagString(this.playerEntity.getCommandSenderName()));
