@@ -1,10 +1,30 @@
 --- ../src-base/minecraft/net/minecraft/item/ItemStack.java
 +++ ../src-work/minecraft/net/minecraft/item/ItemStack.java
-@@ -35,6 +35,20 @@
+@@ -2,14 +2,18 @@
+ 
+ import com.google.common.collect.HashMultimap;
+ import com.google.common.collect.Multimap;
++
++import cpw.mods.fml.common.FMLLog;
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++
+ import java.text.DecimalFormat;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Random;
+ import java.util.Map.Entry;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.enchantment.Enchantment;
+ import net.minecraft.enchantment.EnchantmentDurability;
+@@ -35,6 +39,21 @@
  import net.minecraft.world.World;
  import net.minecraftforge.event.ForgeEventFactory;
  
 +import org.bukkit.craftbukkit.util.CraftMagicNumbers; // CraftBukkit
++
 +import net.minecraft.entity.player.EntityPlayerMP; // Spigot
 +// Cauldron start
 +import net.minecraft.block.BlockSapling;
@@ -21,7 +41,7 @@
  public final class ItemStack
  {
      public static final DecimalFormat field_111284_a = new DecimalFormat("#.###");
-@@ -43,7 +57,12 @@
+@@ -43,7 +62,12 @@
      private Item field_151002_e;
      public NBTTagCompound stackTagCompound;
      int itemDamage;
@@ -35,7 +55,7 @@
      private static final String __OBFID = "CL_00000043";
  
      private cpw.mods.fml.common.registry.RegistryDelegate<Item> delegate;
-@@ -126,12 +145,14 @@
+@@ -126,12 +150,14 @@
      public boolean tryPlaceItemIntoWorld(EntityPlayer p_77943_1_, World p_77943_2_, int p_77943_3_, int p_77943_4_, int p_77943_5_, int p_77943_6_, float p_77943_7_, float p_77943_8_, float p_77943_9_)
      {
          if (!p_77943_2_.isRemote) return net.minecraftforge.common.ForgeHooks.onPlaceItemIntoWorld(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
@@ -51,7 +71,7 @@
  
          return flag;
      }
-@@ -227,8 +248,22 @@
+@@ -227,8 +253,22 @@
          return getItem().getMaxDamage(this);
      }
  
@@ -74,7 +94,7 @@
          if (!this.isItemStackDamageable())
          {
              return false;
-@@ -250,6 +285,23 @@
+@@ -250,6 +290,23 @@
  
                  p_96631_1_ -= k;
  
@@ -98,7 +118,16 @@
                  if (p_96631_1_ <= 0)
                  {
                      return false;
-@@ -288,6 +340,12 @@
+@@ -267,7 +324,7 @@
+         {
+             if (this.isItemStackDamageable())
+             {
+-                if (this.attemptDamageItem(p_77972_1_, p_77972_2_.getRNG()))
++                if (this.isDamaged(p_77972_1_, p_77972_2_.getRNG(), p_77972_2_))
+                 {
+                     p_77972_2_.renderBrokenItemStack(this);
+                     --this.stackSize;
+@@ -288,6 +345,12 @@
                          this.stackSize = 0;
                      }
  
@@ -111,7 +140,7 @@
                      this.itemDamage = 0;
                  }
              }
-@@ -419,6 +477,7 @@
+@@ -419,6 +482,7 @@
  
      public void setTagCompound(NBTTagCompound p_77982_1_)
      {

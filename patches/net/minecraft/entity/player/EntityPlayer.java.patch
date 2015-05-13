@@ -383,7 +383,7 @@
                  this.func_110142_aN().func_94547_a(p_70665_1_, f2, p_70665_2_);
              }
          }
-+        return false;
++        return true;
      }
  
      public void func_146101_a(TileEntityFurnace p_146101_1_) {}

@@ -1,6 +1,6 @@
 [submodule "bukkit"]
 	path = bukkit
-	url = https://github.com/gamerforEA/Bukkit.git
+	url = https://prok.pw/git/prototik/bukkit.git
 [submodule "forge"]
 	path = forge
 	url = https://github.com/MinecraftForge/MinecraftForge.git
