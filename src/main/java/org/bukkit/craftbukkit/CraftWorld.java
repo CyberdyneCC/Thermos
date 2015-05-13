@@ -85,7 +85,8 @@ public class CraftWorld implements World {
     }
 
     public Block getBlockAt(int x, int y, int z) {
-        return getChunkAt(x >> 4, z >> 4).getBlock(x & 0xF, y & 0xFF, z & 0xF);
+    	Chunk chunk = getChunkAt(x >> 4, z >> 4);
+        return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xFF, z & 0xF);
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
@@ -121,7 +122,8 @@ public class CraftWorld implements World {
     }
 
     public Chunk getChunkAt(int x, int z) {
-        return this.world.theChunkProviderServer.loadChunk(x, z).bukkitChunk;
+    	net.minecraft.world.chunk.Chunk chunk = this.world.theChunkProviderServer.loadChunk(x, z);
+        return chunk == null ? null : chunk.bukkitChunk;
     }
 
     public Chunk getChunkAt(Block block) {

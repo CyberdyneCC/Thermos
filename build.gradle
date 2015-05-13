@@ -46,7 +46,7 @@ ext.mcVersion = "1.7.10"
 ext.cauldronVersion = "2"
 ext.forgeVersion = "1403"
 ext.bukkitVersion = "1"
-version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${bukkitVersion}.47"
+version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${bukkitVersion}.49"
 
 jenkins {
     job = 'Cauldron'
