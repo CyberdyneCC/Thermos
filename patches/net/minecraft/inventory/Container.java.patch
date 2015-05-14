@@ -26,7 +26,7 @@
 +    public int field_94536_g; // CraftBukkit - private -> public
      private final Set field_94537_h = new HashSet();
 +    public InventoryView bukkitView = null; // Cauldron
-+
++    private int tickCount = 0; // Spigot
      protected List crafters = new ArrayList();
      private Set playerList = new HashSet();
      private static final String __OBFID = "CL_00001730";
@@ -85,7 +85,24 @@
          }
          else
          {
-@@ -109,6 +164,10 @@
+@@ -74,7 +129,7 @@
+             ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
+             ItemStack itemstack1 = (ItemStack)this.inventoryItemStacks.get(i);
+ 
+-            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack))
++            if (!areItemStacksEqual(itemstack1, itemstack))
+             {
+                 itemstack1 = itemstack == null ? null : itemstack.copy();
+                 this.inventoryItemStacks.set(i, itemstack1);
+@@ -85,6 +140,7 @@
+                 }
+             }
+         }
++        tickCount++;
+     }
+ 
+     public boolean enchantItem(EntityPlayer p_75140_1_, int p_75140_2_)
+@@ -109,6 +165,10 @@
  
      public Slot getSlot(int p_75139_1_)
      {
@@ -96,7 +113,7 @@
          return (Slot)this.inventorySlots.get(p_75139_1_);
      }
  
-@@ -168,6 +227,7 @@
+@@ -168,6 +228,7 @@
                      itemstack3 = inventoryplayer.getItemStack().copy();
                      i1 = inventoryplayer.getItemStack().stackSize;
                      Iterator iterator = this.field_94537_h.iterator();
@@ -104,7 +121,7 @@
  
                      while (iterator.hasNext())
                      {
-@@ -190,18 +250,55 @@
+@@ -190,18 +251,55 @@
                              }
  
                              i1 -= itemstack1.stackSize - j1;
@@ -165,7 +182,7 @@
                  }
  
                  this.func_94533_d();
-@@ -235,10 +332,17 @@
+@@ -235,10 +333,17 @@
  
                          if (p_75144_2_ == 1)
                          {
@@ -184,3 +201,14 @@
                                  inventoryplayer.setItemStack((ItemStack)null);
                              }
                          }
+@@ -730,4 +835,10 @@
+             return MathHelper.floor_float(f * 14.0F) + (i > 0 ? 1 : 0);
+         }
+     }
++    
++    // Spigot start
++    public boolean areItemStacksEqual(ItemStack is1, ItemStack is2) {
++    	return tickCount % 20 == 0 ? ItemStack.areItemStacksEqual(is1, is2) : ItemStack.fastMatches(is1, is2);
++    }
++    // Spigot
+ }

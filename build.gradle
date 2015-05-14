@@ -47,7 +47,7 @@ archivesBaseName = 'kcauldron'
 ext.mcVersion = "1.7.10"
 ext.cauldronVersion = "3"
 ext.forgeVersion = "1403"
-ext.revision = "57"
+ext.revision = "58"
 version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${revision}"
 
 launch4j {
