@@ -1,6 +1,14 @@
 --- ../src-base/minecraft/net/minecraft/network/rcon/RConThreadClient.java
 +++ ../src-work/minecraft/net/minecraft/network/rcon/RConThreadClient.java
-@@ -52,6 +52,8 @@
+@@ -45,13 +45,15 @@
+         {
+             try
+             {
+-                if (!this.running)
++                if (!this.running || clientSocket == null)
+                 {
+                     break;
+                 }
  
                  BufferedInputStream bufferedinputstream = new BufferedInputStream(this.clientSocket.getInputStream());
                  int i = bufferedinputstream.read(this.buffer, 0, 1460);
@@ -9,3 +17,11 @@
  
                  if (10 > i)
                  {
+@@ -167,6 +169,7 @@
+ 
+     private void closeSocket()
+     {
++    	this.running = false;
+         if (null != this.clientSocket)
+         {
+             try
