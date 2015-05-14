@@ -156,7 +156,7 @@
 +    // Spigot start
 +    public static boolean fastMatches(ItemStack is1, ItemStack is2) {
 +    	if (is1 == null && is2 == null) return true;
-+    	if (is1 != null && is2 != null) return is1.stackSize == is1.stackSize && is1.field_151002_e == is2.field_151002_e && is1.itemDamage == is2.itemDamage;
++    	if (is1 != null && is2 != null) return is1.stackSize == is2.stackSize && is1.field_151002_e == is2.field_151002_e && is1.itemDamage == is2.itemDamage;
 +    	return false;
 +    }
 +    // Spigot end
