@@ -9,7 +9,7 @@ import org.objectweb.asm.MethodVisitor;
 import net.minecraft.launchwrapper.IClassTransformer;
 import static org.objectweb.asm.Opcodes.*;
 
-public class KCauldonClassTransformer implements IClassTransformer {
+public class KCauldronClassTransformer implements IClassTransformer {
 	public static boolean DEV;
 
 	@Override
