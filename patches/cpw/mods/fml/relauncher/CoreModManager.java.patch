@@ -1,6 +1,41 @@
 --- ../src-base/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
 +++ ../src-work/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
-@@ -153,6 +153,9 @@
+@@ -27,10 +27,14 @@
+ import java.util.Map;
+ import java.util.jar.Attributes;
+ import java.util.jar.JarFile;
++
++import kcauldron.KCauldonClassTransformer;
+ import net.minecraft.launchwrapper.ITweaker;
+ import net.minecraft.launchwrapper.Launch;
+ import net.minecraft.launchwrapper.LaunchClassLoader;
++
+ import org.apache.logging.log4j.Level;
++
+ import com.google.common.base.Strings;
+ import com.google.common.base.Throwables;
+ import com.google.common.collect.ImmutableList;
+@@ -38,6 +42,7 @@
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.ObjectArrays;
+ import com.google.common.primitives.Ints;
++
+ import cpw.mods.fml.common.FMLLog;
+ import cpw.mods.fml.common.asm.transformers.ModAccessTransformer;
+ import cpw.mods.fml.common.launcher.FMLInjectionAndSortingTweaker;
+@@ -94,6 +99,11 @@
+         @Override
+         public void injectIntoClassLoader(LaunchClassLoader classLoader)
+         {
++        	// Cauldron start
++        	// Register own ClassTransformer for some needs
++        	classLoader.registerTransformer("kcauldron.KCauldonClassTransformer");
++        	KCauldonClassTransformer.DEV = deobfuscatedEnvironment;
++        	// Cauldron end
+             FMLRelaunchLog.fine("Injecting coremod %s {%s} class transformers", name, coreModInstance.getClass().getName());
+             if (coreModInstance.getASMTransformerClass() != null) for (String transformer : coreModInstance.getASMTransformerClass())
+             {
+@@ -153,6 +163,9 @@
  
      }
  
@@ -10,7 +45,7 @@
      public static void handleLaunch(File mcDir, LaunchClassLoader classLoader, FMLTweaker tweaker)
      {
          CoreModManager.mcDir = mcDir;
-@@ -212,6 +215,19 @@
+@@ -212,6 +225,19 @@
              loadCoreMod(classLoader, coreModClassName, null);
          }
          discoverCoreMods(mcDir, classLoader);
@@ -30,7 +65,7 @@
  
      }
  
-@@ -424,8 +440,11 @@
+@@ -424,8 +450,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {

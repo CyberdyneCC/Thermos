@@ -41,17 +41,14 @@ minecraft {
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'net.minecraftforge'
-ext.mcVersion = "1.7.10"
-ext.cauldronVersion = "2"
-ext.forgeVersion = "1403"
-ext.bukkitVersion = "1"
-ext.revision = "54"
-version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${bukkitVersion}.${revision}"
+group = 'pw.prok.kcauldron'
+archivesBaseName = 'kcauldron'
 
-jenkins {
-    job = 'Cauldron'
-}
+ext.mcVersion = "1.7.10"
+ext.cauldronVersion = "3"
+ext.forgeVersion = "1403"
+ext.revision = "57"
+version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${revision}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -63,8 +60,8 @@ tasks.packageUniversal {
 
 tasks.packageUniversal.manifest { 
     attributes([
-    'Implementation-Vendor': 'Cauldron',
-    'Implementation-Title': 'Cauldron',
+    'Implementation-Vendor': 'Prototik',
+    'Implementation-Title': 'KCauldron',
     'Implementation-Version': 'KCauldron-'+project.version,
     'Forge-Version': '10.13.3.1403',
     'Specification-Vendor': 'Bukkit Team',

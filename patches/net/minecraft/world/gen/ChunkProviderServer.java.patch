@@ -38,7 +38,7 @@
 +    public List loadedChunks = new ArrayList(); // Cauldron - vanilla compatibility
      public WorldServer worldObj;
      private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
-+    public LongHashMap field_73244_f = new LongHashMap(); // Cauldron - vanilla/mystcraft compatibility
++    public LongHashMap loadedChunkHashMap_vanilla = new LongHashMap(); // Cauldron - vanilla/mystcraft compatibility
      private static final String __OBFID = "CL_00001436";
  
      public ChunkProviderServer(WorldServer p_i1520_1_, IChunkLoader p_i1520_2_, IChunkProvider p_i1520_3_)
@@ -170,7 +170,7 @@
 -            chunk.onChunkLoad();
 +            this.loadedChunkHashMap.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk); // CraftBukkit
 +            this.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
-+            this.field_73244_f.add(ChunkCoordIntPair.chunkXZ2Int(p_73158_1_, p_73158_2_), chunk); // Cauldron - vanilla/mystcraft compatibility
++            this.loadedChunkHashMap_vanilla.add(ChunkCoordIntPair.chunkXZ2Int(p_73158_1_, p_73158_2_), chunk); // Cauldron - vanilla/mystcraft compatibility
 +            loadingChunks.remove(LongHash.toLong(p_73158_1_, p_73158_2_)); // Cauldron - LongHash
 +
 +            if (chunk != null)
@@ -408,7 +408,7 @@
 +                    // this.unloadQueue.remove(olong);
 +                    this.loadedChunkHashMap.remove(chunkcoordinates); // CraftBukkit
 +                    this.loadedChunks.remove(chunk); // Cauldron - vanilla compatibility
-+                    this.field_73244_f.remove(ChunkCoordIntPair.chunkXZ2Int(LongHash.msw(chunkcoordinates), LongHash.lsw(chunkcoordinates))); // Cauldron - vanilla/mystcraft compatibility
++                    this.loadedChunkHashMap_vanilla.remove(ChunkCoordIntPair.chunkXZ2Int(LongHash.msw(chunkcoordinates), LongHash.lsw(chunkcoordinates))); // Cauldron - vanilla/mystcraft compatibility
 +                    ForgeChunkManager.putDormantChunk(chunkcoordinates, chunk);
 +                    if(this.loadedChunkHashMap.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
 +                        DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);

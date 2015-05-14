@@ -17,7 +17,7 @@
 -        queuedChunk.provider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk);
 +        queuedChunk.provider.loadedChunkHashMap.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
          queuedChunk.provider.loadedChunks.add(chunk);
-+        queuedChunk.provider.field_73244_f.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk); // Cauldron - vanilla/mystcraft compatibility
++        queuedChunk.provider.loadedChunkHashMap_vanilla.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk); // Cauldron - vanilla/mystcraft compatibility
          chunk.onChunkLoad();
  
          if (queuedChunk.provider.currentChunkProvider != null) {
