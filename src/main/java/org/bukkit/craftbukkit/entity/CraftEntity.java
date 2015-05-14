@@ -413,7 +413,13 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
             return false;
         }
 
-        entity.worldObj = ((CraftWorld) location.getWorld()).getHandle();
+        // Spigot start
+        net.minecraft.world.WorldServer newWorld = ((CraftWorld) location.getWorld()).getHandle();
+        if (newWorld != entity.worldObj) {
+        	entity.teleportTo(location, cause.isPortal());
+            return true;
+        }
+        // Spigot
         entity.setPositionAndRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         // entity.setLocation() throws no event, and so cannot be cancelled
         return true;

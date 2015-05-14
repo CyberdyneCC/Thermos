@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/org/bukkit/event/player/PlayerTeleportEvent.java
 +++ ../src-work/minecraft/org/bukkit/event/player/PlayerTeleportEvent.java
-@@ -55,7 +55,14 @@
+@@ -55,11 +55,27 @@
           * portal
           */
          END_PORTAL,
@@ -15,3 +15,16 @@
           * Indicates the teleportation was caused by an event not covered by
           * this enum
           */
+         UNKNOWN;
++        
++        public boolean isPortal() {
++        	switch(this) {
++        	case NETHER_PORTAL:
++        	case END_PORTAL:
++        		return true;
++        	}
++        	return false;
++        }
+     }
+ 
+     @Override
