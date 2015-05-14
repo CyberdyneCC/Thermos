@@ -36,7 +36,7 @@
          this.setEntityItemStack(p_i1710_8_);
          this.lifespan = (p_i1710_8_.getItem() == null ? 6000 : p_i1710_8_.getItem().getEntityLifespan(p_i1710_8_, p_i1710_1_));
      }
-@@ -89,93 +104,102 @@
+@@ -89,93 +104,103 @@
              }
          }
  
@@ -47,6 +47,7 @@
 +        // CraftBukkit start - Use wall time for pickup and despawn timers
 +        int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
 +        this.delayBeforeCanPickup -= elapsedTicks;
++        if (this.delayBeforeCanPickup < 0) this.delayBeforeCanPickup = 0; // Cauldron
 +        this.age += elapsedTicks;
 +        this.lastTick = MinecraftServer.currentTick;
 +        // CraftBukkit end
@@ -198,7 +199,7 @@
  
          while (iterator.hasNext())
          {
-@@ -225,11 +249,13 @@
+@@ -225,11 +250,13 @@
              }
              else
              {
@@ -217,7 +218,7 @@
                  return true;
              }
          }
-@@ -316,8 +342,27 @@
+@@ -316,8 +343,27 @@
          }
  
          NBTTagCompound nbttagcompound1 = p_70037_1_.getCompoundTag("Item");
@@ -246,7 +247,7 @@
          ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
  
          if (item == null || item.stackSize <= 0)
-@@ -350,6 +395,31 @@
+@@ -350,6 +396,31 @@
              ItemStack itemstack = this.getEntityItem();
              int i = itemstack.stackSize;
  
