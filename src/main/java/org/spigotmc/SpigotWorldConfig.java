@@ -278,4 +278,13 @@ public class SpigotWorldConfig
         maxCollisionsPerEntity = getInt( "max-entity-collisions", 8 );
         log( "Max Entity Collisions: " + maxCollisionsPerEntity );
     }
+    
+    public int tileMaxTickTime;
+    public int entityMaxTickTime;
+    private void maxTickTimes()
+    {
+    	tileMaxTickTime = getInt("max-tick-time.tile", 50);
+    	entityMaxTickTime = getInt("max-tick-time.entity", 50);
+    	log("Tile Max Tick Time: " + tileMaxTickTime + "ms Entity max Tick Time: " + entityMaxTickTime + "ms");
+    }
 }
