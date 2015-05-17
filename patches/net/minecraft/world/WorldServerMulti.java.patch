@@ -11,7 +11,7 @@
 +        // CraftBukkit end
 +        this.mapStorage = p_i45283_6_.mapStorage;
 +        this.worldScoreboard = p_i45283_6_.getScoreboard();
-+        //this.worldInfo = new DerivedWorldInfo(p_i45283_6_.getWorldInfo());
++        this.worldInfo = new DerivedWorldInfo(p_i45283_6_.getWorldInfo());
 +    }
 +
 +    // Cauldron start - vanilla compatibility

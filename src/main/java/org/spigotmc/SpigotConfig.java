@@ -267,4 +267,10 @@ public class SpigotConfig
     {
         playerShuffle = getInt( "settings.player-shuffle", 0 );
     }
+    
+    public static int fullMatchRate;
+    private static void fullMatchRate()
+    {
+    	fullMatchRate = getInt( "settings.fullMatchRate", 10);
+    }
 }
