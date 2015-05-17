@@ -211,14 +211,14 @@
 +            return chunk;
 +        }
 +
-+        /*if (p_73154_1_ != chunk.xPosition || p_73154_2_ != chunk.zPosition)
++        if ((p_73154_1_ != chunk.xPosition || p_73154_2_ != chunk.zPosition) && !worldObj.isProfilingWorld())
 +        {
 +            logger.error("Chunk (" + chunk.xPosition + ", " + chunk.zPosition + ") stored at  (" + p_73154_1_ + ", " + p_73154_2_ + ") in world '" + worldObj.getWorld().getName() + "'");
 +            logger.error(chunk.getClass().getName());
 +            Throwable ex = new Throwable();
 +            ex.fillInStackTrace();
 +            ex.printStackTrace();
-+        }*/ // Cauldron - workaroung of console spamming for mystcraft
++        }
 +        chunk.lastAccessedTick = MinecraftServer.getServer().getTickCounter(); // Cauldron
 +        return chunk;
 +        // CraftBukkit end
