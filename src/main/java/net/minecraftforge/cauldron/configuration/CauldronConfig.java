@@ -35,6 +35,7 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting logEntitySpeedRemoval = new BoolSetting(this, "logging.entity-speed-removal", false, "Whether to log entity removals due to speed");
     public final IntSetting largeCollisionLogSize = new IntSetting(this, "logging.collision-warn-size", 200, "Number of colliding entities in one spot before logging a warning. Set to 0 to disable");
     public final IntSetting largeEntityCountLogSize = new IntSetting(this, "logging.entity-count-warn-size", 0, "Number of entities in one dimension logging a warning. Set to 0 to disable");
+    public final BoolSetting userLogin = new BoolSetting(this, "logging.user-login", false, "Set true to enable debuggin user's login process");
 
     // General settings
     public final BoolSetting loadChunkOnRequest = new BoolSetting(this, "settings.load-chunk-on-request", true, "Forces Chunk Loading on 'Provide' requests (speedup for mods that don't check if a chunk is loaded");
@@ -93,6 +94,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(flowingLavaDecay.path, flowingLavaDecay);
         settings.put(fakePlayerLogin.path, fakePlayerLogin);
         settings.put(remapPluginFile.path, remapPluginFile);
+        settings.put(userLogin.path, userLogin);
         load();
     }
 

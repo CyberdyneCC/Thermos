@@ -42,10 +42,9 @@ class ThreadPlayerLookupUUID extends Thread
             }
             // Spigot End
             String s = (new BigInteger(CryptManager.getServerIdHash(NetHandlerLoginServer.getLoginServerId(this.field_151292_a), this.mcServer.getKeyPair().getPublic(), NetHandlerLoginServer.getSecretKey(this.field_151292_a)))).toString(16);
-            NetHandlerLoginServer.processPlayerLoginGameProfile(this.field_151292_a, this.mcServer.func_147130_as().hasJoinedServer(new GameProfile((UUID)null, gameprofile.getName()), s));
-
-            if (NetHandlerLoginServer.getGameProfile(this.field_151292_a) != null)
-            {
+            GameProfile profile = this.mcServer.func_147130_as().hasJoinedServer(new GameProfile((UUID)null, gameprofile.getName()), s);
+            if (profile != null) {
+            	NetHandlerLoginServer.processPlayerLoginGameProfile(this.field_151292_a, profile);
                 fireLoginEvents(); // Spigot
             }
             else if (this.mcServer.isSinglePlayer())
