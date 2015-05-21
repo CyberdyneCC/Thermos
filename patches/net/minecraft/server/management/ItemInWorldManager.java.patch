@@ -264,7 +264,7 @@
 +                // Cauldron end
 +            }
 +
-+            if (p_73078_3_ != null && !denyItem && !denyBlock)
++            if (p_73078_3_ != null && !denyResult)
              {
 -                p_73078_3_.setItemDamage(meta);
 -                p_73078_3_.stackSize = size;
