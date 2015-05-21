@@ -8,7 +8,7 @@
  import net.minecraft.item.ItemStack;
  import net.minecraft.item.ItemSword;
  import net.minecraft.network.play.server.S23PacketBlockChange;
-@@ -13,13 +14,28 @@
+@@ -13,13 +14,32 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraftforge.common.ForgeHooks;
  import net.minecraftforge.common.MinecraftForge;
@@ -28,19 +28,23 @@
 +import org.bukkit.event.Event;
 +import org.bukkit.event.block.Action;
 +import org.bukkit.event.player.PlayerInteractEvent;
++
 +// CraftBukkit end
 +// Cauldron start
 +import net.minecraft.inventory.ContainerPlayer;
 +import net.minecraft.inventory.IInventory;
 +import net.minecraft.server.MinecraftServer;
++
 +import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 +import org.bukkit.event.inventory.InventoryType;
 +// Cauldron end
 +
++import cpw.mods.fml.common.FMLLog;
++
  public class ItemInWorldManager
  {
      /** Forge reach distance */
-@@ -135,15 +151,29 @@
+@@ -135,15 +155,29 @@
  
      public void onBlockClicked(int p_73074_1_, int p_73074_2_, int p_73074_3_, int p_73074_4_)
      {
@@ -73,7 +77,7 @@
              if (this.isCreative())
              {
                  if (!this.theWorld.extinguishFire((EntityPlayer)null, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_))
-@@ -157,30 +187,56 @@
+@@ -157,30 +191,56 @@
                  float f = 1.0F;
                  Block block = this.theWorld.getBlock(p_73074_1_, p_73074_2_, p_73074_3_);
  
@@ -142,7 +146,7 @@
                  if (!block.isAir(theWorld, p_73074_1_, p_73074_2_, p_73074_3_) && f >= 1.0F)
                  {
                      this.tryHarvestBlock(p_73074_1_, p_73074_2_, p_73074_3_);
-@@ -269,6 +325,12 @@
+@@ -269,6 +329,12 @@
                  return false;
              }
              Block block = this.theWorld.getBlock(p_73084_1_, p_73084_2_, p_73084_3_);
@@ -155,7 +159,7 @@
              int l = this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_);
              this.theWorld.playAuxSFXAtEntity(this.thisPlayerMP, 2001, p_73084_1_, p_73084_2_, p_73084_3_, Block.getIdFromBlock(block) + (this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_) << 12));
              boolean flag = false;
-@@ -350,57 +412,104 @@
+@@ -350,57 +416,105 @@
  
      public boolean activateBlockOrUseItem(EntityPlayer p_73078_1_, World p_73078_2_, ItemStack p_73078_3_, int p_73078_4_, int p_73078_5_, int p_73078_6_, int p_73078_7_, float p_73078_8_, float p_73078_9_, float p_73078_10_)
      {
@@ -177,8 +181,9 @@
 -        boolean isAir = block.isAir(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_);
 -        boolean useBlock = !p_73078_1_.isSneaking() || p_73078_1_.getHeldItem() == null;
 -        if (!useBlock) useBlock = p_73078_1_.getHeldItem().getItem().doesSneakBypassUse(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_);
+-        boolean result = false;
 +        boolean isAir = block.isAir(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_); // Cauldron
-         boolean result = false;
++        boolean denyResult = false, denyItem = false, denyBlock = false;
  
 -        if (useBlock)
 +        if (!isAir)
@@ -190,12 +195,19 @@
 +            // if forge event is explicitly cancelled, return
 +            if (forgeEvent.isCanceled())
              {
+-                result = block.onBlockActivated(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
 +                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
 +                return false;
-+            }
+             }
+-            else
++            denyItem = event.useItemInHand() == org.bukkit.event.Event.Result.DENY || forgeEvent.useItem == cpw.mods.fml.common.eventhandler.Event.Result.DENY;
++            denyBlock = event.useInteractedBlock() == org.bukkit.event.Event.Result.DENY || forgeEvent.useBlock == cpw.mods.fml.common.eventhandler.Event.Result.DENY;
++            denyResult = denyItem || denyBlock;
 +            // if we have no explicit deny, check if item can be used
-+            if (event.useItemInHand() != org.bukkit.event.Event.Result.DENY && forgeEvent.useItem != cpw.mods.fml.common.eventhandler.Event.Result.DENY)
-+            {
++            if (!denyItem)
+             {
+-                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
+-                result = event.useItem != Event.Result.ALLOW;
 +                Item item = (p_73078_3_ != null ? p_73078_3_.getItem() : null);
 +                // try to use an item in hand before activating a block. Used for items such as IC2's wrench.
 +                if (item != null && item.onItemUseFirst(p_73078_3_, p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_))
@@ -203,9 +215,10 @@
 +                    if (p_73078_3_.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, p_73078_3_);
 +                        return true;
 +                }
-+            }
+             }
+-        }
 +            // Cauldron end
-+            if (event.useInteractedBlock() == org.bukkit.event.Event.Result.DENY || forgeEvent.useBlock == cpw.mods.fml.common.eventhandler.Event.Result.DENY)
++            if (denyBlock)
 +            {
 +                // If we denied a door from opening, we need to send a correcting update to the client, as it already opened the door.
 +                if (block == Blocks.wooden_door)
@@ -213,12 +226,10 @@
 +                    boolean bottom = (p_73078_2_.getBlockMetadata(p_73078_4_, p_73078_5_, p_73078_6_) & 8) == 0;
 +                    ((EntityPlayerMP) p_73078_1_).playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_ + (bottom ? 1 : -1), p_73078_6_, p_73078_2_));
 +                }
-+
-+                result = (event.useItemInHand() != org.bukkit.event.Event.Result.ALLOW);
 +            }
 +            else if (!p_73078_1_.isSneaking() || p_73078_3_ == null || p_73078_1_.getHeldItem().getItem().doesSneakBypassUse(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_))
 +            {
-                 result = block.onBlockActivated(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
++                denyResult |= block.onBlockActivated(p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_1_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
 +                // Cauldron start - if bukkitView is null, create one. Required for Ender Chests since they do not use NetworkRegistry.openRemoteGUI
 +                if (thisPlayerMP != null && !(thisPlayerMP.openContainer instanceof ContainerPlayer))
 +                {
@@ -235,7 +246,13 @@
 +                        {
 +                            thisPlayerMP.openContainer.bukkitView = new CraftInventoryView(thisPlayerMP.getBukkitEntity(), MinecraftServer.getServer().server.createInventory(thisPlayerMP.getBukkitEntity(), InventoryType.CHEST), thisPlayerMP.openContainer);
 +                        }
-+
+ 
+-        if (p_73078_3_ != null && !result && event.useItem != Event.Result.DENY)
+-        {
+-            int meta = p_73078_3_.getItemDamage();
+-            int size = p_73078_3_.stackSize;
+-            result = p_73078_3_.tryPlaceItemIntoWorld(p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
+-            if (isCreative())
 +                        thisPlayerMP.openContainer = CraftEventFactory.callInventoryOpenEvent(thisPlayerMP, thisPlayerMP.openContainer, false);
 +                        if (thisPlayerMP.openContainer == null)
 +                        {
@@ -245,16 +262,15 @@
 +                    }
 +                }
 +                // Cauldron end
-             }
--            else
++            }
 +
-+            if (p_73078_3_ != null && !result)
++            if (p_73078_3_ != null && !denyItem && !denyBlock)
              {
--                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73078_4_, p_73078_5_, p_73078_6_, theWorld));
--                result = event.useItem != Event.Result.ALLOW;
+-                p_73078_3_.setItemDamage(meta);
+-                p_73078_3_.stackSize = size;
 +                int meta = p_73078_3_.getItemDamage();
 +                int size = p_73078_3_.stackSize;
-+                result = p_73078_3_.tryPlaceItemIntoWorld(p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
++                denyResult = p_73078_3_.tryPlaceItemIntoWorld(p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
 +
 +                // The item count should not decrement in Creative mode.
 +                if (this.isCreative())
@@ -268,22 +284,13 @@
 +                    ForgeEventFactory.onPlayerDestroyItem(this.thisPlayerMP, p_73078_3_);
 +                }
              }
--        }
- 
--        if (p_73078_3_ != null && !result && event.useItem != Event.Result.DENY)
--        {
--            int meta = p_73078_3_.getItemDamage();
--            int size = p_73078_3_.stackSize;
--            result = p_73078_3_.tryPlaceItemIntoWorld(p_73078_1_, p_73078_2_, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_8_, p_73078_9_, p_73078_10_);
--            if (isCreative())
-+            // If we have 'true' and no explicit deny *or* an explicit allow -- run the item part of the hook
-+            if (p_73078_3_ != null && ((!result && event.useItemInHand() != org.bukkit.event.Event.Result.DENY) || event.useItemInHand() == org.bukkit.event.Event.Result.ALLOW))
-             {
--                p_73078_3_.setItemDamage(meta);
--                p_73078_3_.stackSize = size;
-+                this.tryUseItem(p_73078_1_, p_73078_2_, p_73078_3_);
-             }
 -            if (p_73078_3_.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, p_73078_3_);
++
++            // If we have 'true' and no explicit deny *or* an explicit allow -- run the item part of the hook
++            if (p_73078_3_ != null && ((!denyResult && event.useItemInHand() != org.bukkit.event.Event.Result.DENY) || event.useItemInHand() == org.bukkit.event.Event.Result.ALLOW))
++            {
++                this.tryUseItem(p_73078_1_, p_73078_2_, p_73078_3_);
++            }
          }
  
 -        /* Re-enable if this causes bukkit incompatibility, or re-write client side to only send a single packet per right click.
@@ -291,7 +298,8 @@
 -        {
 -            this.tryUseItem(thisPlayerMP, par2World, par3ItemStack);
 -        }*/
-         return result;
+-        return result;
++        return denyResult;
 +        // CraftBukkit end
      }
  
