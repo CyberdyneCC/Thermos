@@ -51,6 +51,7 @@ public class CauldronConfig extends ConfigBase
     // Server options
     public final BoolSetting infiniteWaterSource = new BoolSetting(this, "world-settings.default.infinite-water-source", true, "Vanilla water source behavior - is infinite");
     public final BoolSetting flowingLavaDecay = new BoolSetting(this, "world-settings.default.flowing-lava-decay", false, "Lava behaves like vanilla water when source block is removed");
+    public final BoolSetting allowTntPunishment = new BoolSetting(this, "world-settings.default.allow-tnt-punishment", true, "TNT ability to push other entities (including other TNTs)");
     public final BoolSetting fakePlayerLogin = new BoolSetting(this, "fake-players.do-login", false, "Raise login events for fake players");
 
     // Plug-in options
@@ -95,6 +96,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(fakePlayerLogin.path, fakePlayerLogin);
         settings.put(remapPluginFile.path, remapPluginFile);
         settings.put(userLogin.path, userLogin);
+        settings.put(allowTntPunishment.path, allowTntPunishment);
         load();
     }
 

@@ -1,9 +1,24 @@
 --- ../src-base/minecraft/net/minecraft/world/Explosion.java
 +++ ../src-work/minecraft/net/minecraft/world/Explosion.java
-@@ -20,6 +20,12 @@
+@@ -7,6 +7,7 @@
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Random;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.enchantment.EnchantmentProtection;
+@@ -15,11 +16,19 @@
+ import net.minecraft.entity.item.EntityTNTPrimed;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.init.Blocks;
++import net.minecraft.server.MinecraftServer;
+ import net.minecraft.util.AxisAlignedBB;
+ import net.minecraft.util.DamageSource;
  import net.minecraft.util.MathHelper;
  import net.minecraft.util.Vec3;
  
++
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.event.entity.EntityExplodeEvent;
@@ -13,7 +28,7 @@
  public class Explosion
  {
      public boolean isFlaming;
-@@ -34,6 +40,7 @@
+@@ -34,6 +43,7 @@
      public float explosionSize;
      public List affectedBlockPositions = new ArrayList();
      private Map field_77288_k = new HashMap();
@@ -21,7 +36,7 @@
      private static final String __OBFID = "CL_00000134";
  
      public Explosion(World p_i1948_1_, Entity p_i1948_2_, double p_i1948_3_, double p_i1948_5_, double p_i1948_7_, float p_i1948_9_)
-@@ -48,6 +55,12 @@
+@@ -48,6 +58,12 @@
  
      public void doExplosionA()
      {
@@ -34,7 +49,7 @@
          float f = this.explosionSize;
          HashSet hashset = new HashSet();
          int i;
-@@ -135,7 +148,15 @@
+@@ -135,7 +151,15 @@
                      d7 /= d9;
                      double d10 = (double)this.worldObj.getBlockDensity(vec3, entity.boundingBox);
                      double d11 = (1.0D - d4) * d10;
@@ -45,13 +60,13 @@
 +                            * (double) this.explosionSize + 1.0D))))
 +                    {
 +                        CraftEventFactory.entityDamage = null;
-+                        continue;
 +                    }
++                    if (!MinecraftServer.cauldronConfig.allowTntPunishment.getValue()) continue;
 +                    // CraftBukkit end
                      double d8 = EnchantmentProtection.func_92092_a(entity, d11);
                      entity.motionX += d5 * d8;
                      entity.motionY += d6 * d8;
-@@ -174,6 +195,39 @@
+@@ -174,6 +198,39 @@
  
          if (this.isSmoking)
          {
@@ -91,7 +106,7 @@
              iterator = this.affectedBlockPositions.iterator();
  
              while (iterator.hasNext())
-@@ -209,7 +263,8 @@
+@@ -209,7 +266,8 @@
                  {
                      if (block.canDropFromExplosion(this))
                      {
@@ -101,7 +116,7 @@
                      }
  
                      block.onBlockExploded(this.worldObj, i, j, k, this);
-@@ -232,7 +287,12 @@
+@@ -232,7 +290,12 @@
  
                  if (block.getMaterial() == Material.air && block1.func_149730_j() && this.explosionRNG.nextInt(3) == 0)
                  {
