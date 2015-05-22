@@ -1,69 +1,43 @@
-Compilation
------------
+# KCauldron
+### KCauldron - continuation of Cauldron minecraft server
+[![Donate PayPal USD][donate_paypal_usd_img]][donate_paypal_usd_url] [![Donate PayPal RUB][donate_paypal_rub_img]][donate_paypal_rub_url]
 
-We use Gradle to handle our dependencies.
+## Building KCauldron
+* Checkout project
+  * You can use your's IDE gui or clone from console:
+  `git clone https://prok.pw/git/prototik/kcauldron.git`
+* Init submodules
+  * Since this project is merger of two other we need both.
+  * Again, you can use IDE gui or do it from console:
+  `git submodule update --init --recursive`
+* Setup initial workspace
+  * This process download minecraft and apply patches
+  * If you have gradle integration in IDE - you can still use gui
+  `./gradlew setupCauldron`
+* Build server & installer
+  `./gradlew buildPackages`
 
-1. Checkout project.
-2. Init submodules : git submodule update --init --recursive
-3. Setup workspace : gradlew setupCauldron
-4. Build binaries  : gradlew buildPackages
-Note: all binaries will be in distributions folder
-
-Profiling
----------
-
-We use YourKit as our Java Profiler.
-
-YourKit is kindly supporting open source projects with its full-featured Java Profiler.
-YourKit, LLC is the creator of innovative and intelligent tools for profiling
-Java. Take a look at YourKit's leading software products:
-* [YourKit Java Profiler](http://www.yourkit.com/java/profiler/index.jsp)
+## Updating sources
+If you're once checkout source - you not need to do it again
+* Update sources
+  * `git pull origin master`
+* Reapply patches & build binaries
+  * `./gradle clean setupCauldron buildPackages`
 
 
-Coding and Pull Request Conventions
------------
+## Issue submitting rule
+* First check the bug in single player and vanilla forge, if bug still present - mod issue
+* Check with minimal server environment
+  * Remove all unnecessary plugins and mods
+  * Reset all configs to default
+  If bug present - mod compatibility issue
+* If you're using beta-release of KCauldron - check on latest stable
+  * All versions situated [there](https://prok.pw/git/Prototik/KCauldron/releases)
+* If bug still present - KCauldron issue
+  * Make sure that similar issue not exists already
+  * Please fill [issue form](https://prok.pw/git/Prototik/KCauldron/issues/new) else
 
-* We generally follow the Sun/Oracle coding standards.
-* No tabs; use 4 spaces instead.
-* No trailing whitespaces.
-* No CRLF line endings, LF only; will be converted automatically by git
-* No 80 column limit or 'weird' midstatement newlines.
-* The number of commits in a pull request should be kept to a minimum (squish them into one most of the time - use common sense!).
-* No merges should be included in pull requests unless the pull request's purpose is a merge.
-* Pull requests should be tested (does it compile? AND does it work?) before submission.
-* Any major additions should have documentation ready and provided if applicable (this is usually the case).
-* Most pull requests should be accompanied by a corresponding GitHub ticket so we can associate commits with GitHub issues (this is primarily for changelog generation on ci.md-5.net).
-* Try to follow test driven development where applicable.
-
-If you make changes to or add upstream classes (net.minecraft, net.minecraftforge, cpw.mods.fml, org.bukkit, org.spigotmc) it is mandatory to:
-
-* Make a separate commit adding the new net.minecraft classes (commit message: "Added x for diff visibility" or so).
-* Then make further commits with your changes.
-* Mark your changes with:
-    * 1 line; add a trailing: `// Cauldron [- Optional reason]`
-    * 2+ lines; add
-        * Before: `// Cauldron start [- Optional comment]`
-        * After: `// Cauldron end`
-* Keep the diffs to a minimum (*somewhat* important)
-
-Tips to get your pull request accepted
------------
-Making sure you follow the above conventions is important, but just the beginning. Follow these tips to better the chances of your pull request being accepted and pulled.
-
-* Make sure you follow all of our conventions to the letter.
-* Make sure your code compiles under Java 6.
-* Provide proper JavaDocs where appropriate.
-* Provide proper accompanying documentation where appropriate.
-* Test your code.
-* Make sure to follow coding best practices.
-* Provide a test plugin/mod binary and source for us to test your code with.
-* Your pull request should link to accompanying pull requests.
-* The description of your pull request should provide detailed information on the pull along with justification of the changes where applicable.
-
-Credits
--------
-
-* [MCP](http://mcp.ocean-labs.de) - permission to use data to make Cauldron.
-* [Forge](http://www.minecraftforge.net) - mod support.
-* [CraftBukkit](http://bukkit.org) - plugin support.
-* [Spigot](http://www.spigotmc.org) - performance optimizations.
+[donate_paypal_usd_url]: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=me%40prok%2epw&lc=US&item_name=ProK&item_number=KCauldron%20USD&currency_code=USD&bn=PP%2dDonationsBF%3adonate_paypal_usd%2epng%3aNonHosted
+[donate_paypal_usd_img]: https://prok.pw/donate_paypal_usd.png
+[donate_paypal_rub_url]: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=me%40prok%2epw&lc=US&item_name=ProK&item_number=KCauldron%20RUB&currency_code=RUB&bn=PP%2dDonationsBF%3adonate_paypal_rub%2epng%3aNonHosted
+[donate_paypal_rub_img]: https://prok.pw/donate_paypal_rub.png
