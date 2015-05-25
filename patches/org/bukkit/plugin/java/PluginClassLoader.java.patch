@@ -164,7 +164,7 @@
 +            jarMapping.setFallbackInheritanceProvider(new ClassLoaderProvider(this));
 +        }
 +
-+        remapper = new JarRemapper(jarMapping);
++        remapper = new kcauldron.KCauldronRemapper(jarMapping);
 +
 +        if (pluginInherit || reflectFields || reflectClass) {
 +            remapperProcessor = new RemapperProcessor(
