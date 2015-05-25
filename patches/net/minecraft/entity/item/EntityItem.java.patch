@@ -36,7 +36,18 @@
          this.setEntityItemStack(p_i1710_8_);
          this.lifespan = (p_i1710_8_.getItem() == null ? 6000 : p_i1710_8_.getItem().getEntityLifespan(p_i1710_8_, p_i1710_1_));
      }
-@@ -89,93 +104,103 @@
+@@ -81,6 +96,10 @@
+     public void onUpdate()
+     {
+         ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
++        if (stack == null || stack.stackSize == 0) {
++        	setDead();
++        	return;
++        }
+         if (stack != null && stack.getItem() != null)
+         {
+             if (stack.getItem().onEntityItemUpdate(this))
+@@ -89,93 +108,103 @@
              }
          }
  
@@ -199,7 +210,7 @@
  
          while (iterator.hasNext())
          {
-@@ -225,11 +250,13 @@
+@@ -225,11 +254,13 @@
              }
              else
              {
@@ -218,7 +229,7 @@
                  return true;
              }
          }
-@@ -316,8 +343,27 @@
+@@ -316,8 +347,27 @@
          }
  
          NBTTagCompound nbttagcompound1 = p_70037_1_.getCompoundTag("Item");
@@ -247,7 +258,7 @@
          ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
  
          if (item == null || item.stackSize <= 0)
-@@ -350,6 +396,31 @@
+@@ -350,6 +400,31 @@
              ItemStack itemstack = this.getEntityItem();
              int i = itemstack.stackSize;
  
@@ -279,3 +290,12 @@
              if (this.delayBeforeCanPickup <= 0 && (this.field_145802_g == null || lifespan - this.age <= 200 || this.field_145802_g.equals(p_70100_1_.getCommandSenderName())) && (event.getResult() == Result.ALLOW || i <= 0 || p_70100_1_.inventory.addItemStackToInventory(itemstack)))
              {
                  if (itemstack.getItem() == Item.getItemFromBlock(Blocks.log))
+@@ -423,7 +498,7 @@
+     public ItemStack getEntityItem()
+     {
+         ItemStack itemstack = this.getDataWatcher().getWatchableObjectItemStack(10);
+-        return itemstack == null ? new ItemStack(Blocks.stone) : itemstack;
++        return itemstack == null ? new ItemStack(Blocks.air, 0) : itemstack;
+     }
+ 
+     public void setEntityItemStack(ItemStack p_92058_1_)
