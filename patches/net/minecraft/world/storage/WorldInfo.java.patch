@@ -46,3 +46,12 @@
      public int getVanillaDimension()
      {
          return this.dimension;
+@@ -556,4 +574,8 @@
+     {
+         return this.additionalProperties!=null? this.additionalProperties.get(additionalProperty) : null;
+     }
++    
++    public void tick() {
++    	totalTime++;
++    }
+ }

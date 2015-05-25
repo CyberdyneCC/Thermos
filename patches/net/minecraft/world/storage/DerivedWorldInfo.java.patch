@@ -19,7 +19,7 @@
      public void setSaveVersion(int p_76078_1_) {}
  
      public void setThundering(boolean p_76069_1_) {}
-@@ -174,4 +173,12 @@
+@@ -174,4 +173,17 @@
      {
          return this.theWorldInfo.getGameRulesInstance();
      }
@@ -30,5 +30,10 @@
 +    
 +    public void setDimension(int dim) {
 +    	this.theWorldInfo.setDimension(dim);
++    }
++    
++    @Override
++    public void tick() {
++    	theWorldInfo.tick();
 +    }
  }
