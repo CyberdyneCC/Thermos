@@ -65,7 +65,18 @@
  
      }
  
-@@ -424,8 +450,11 @@
+@@ -322,6 +348,10 @@
+                 FMLRelaunchLog.fine("Not found coremod data in %s", coreMod.getName());
+                 continue;
+             }
++            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin)) {
++                FMLRelaunchLog.warning("Found FastCraft coremod, ignoring...");
++            	continue;
++            }
+             // Support things that are mod jars, but not FML mod jars
+             try
+             {
+@@ -424,8 +454,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {
