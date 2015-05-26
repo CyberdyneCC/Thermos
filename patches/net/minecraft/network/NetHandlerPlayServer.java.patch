@@ -532,7 +532,7 @@
              this.playerEntity.isChangingQuantityOnly = false;
  
 -            if (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), p_147346_1_.func_149574_g()) || !placeResult) // force client itemstack update if place event was cancelled
-+            if (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), p_147346_1_.func_149574_g()) || !placeResult) // Cauldron - always is needed to update client itemstack if placement is cancelled
++            if (slot != null && (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), p_147346_1_.func_149574_g()) || !placeResult)) // Cauldron - always is needed to update client itemstack if placement is cancelled
              {
                  this.sendPacket(new S2FPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
              }
