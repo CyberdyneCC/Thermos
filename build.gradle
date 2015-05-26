@@ -52,6 +52,12 @@ def retrieveBuildNumber() {
 	new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))['nextBuildNumber']
 }
 
+def retrieveGitHash() {
+	if (file('.git').exists())
+		return ['git', 'log', '--format=%H', '-n', '1'].execute().text.trim()
+	return 'NOTGIT'
+}
+
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1403"
 ext.revision = retrieveBuildNumber()
@@ -65,6 +71,7 @@ launch4j {
 tasks.packageUniversal {
     classifier = 'server'
     manifest.attributes([
+        'KCauldron-Git-Hash': retrieveGitHash(),
         'Implementation-Vendor': 'Prototik',
         'Implementationk-Title': 'KCauldron',
         'Implementation-Version': 'KCauldron-'+project.version,
