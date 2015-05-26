@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         mavenCentral()
@@ -16,8 +18,14 @@ buildscript {
     }
 }
 
+tasks.whenTaskAdded {
+    if (it.name.startsWith('publish')) it.dependsOn 'preparePublication'
+}
+
 apply plugin: 'maven'
 apply plugin: 'cauldron'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 minecraft {
     version = '1.7.10'
@@ -27,28 +35,28 @@ minecraft {
     installerVersion = "1.4"
     subprojects {
         repositories {
-            mavenLocal()
+            mavenCentral()
             maven {
                 name = "sonatype"
                 url = "https://oss.sonatype.org/content/repositories/snapshots/"
-            }
-            flatDir {
-                name "fileRepo"
-                dirs "repo"
             }
         }
     }
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'pw.prok.kcauldron'
-archivesBaseName = 'kcauldron'
+group = 'pw.prok'
+
+def retrieveBuildNumber() {
+	if (!project.hasProperty('officialBuild')) return 'UNOFFICIAL'
+	new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))['nextBuildNumber']
+}
 
 ext.mcVersion = "1.7.10"
-ext.cauldronVersion = "5"
 ext.forgeVersion = "1403"
-ext.revision = "71"
-version = "${mcVersion}-${cauldronVersion}.${forgeVersion}.${revision}"
+ext.revision = retrieveBuildNumber()
+version = "${mcVersion}-${forgeVersion}.${revision}"
+println "Updated KCauldron version: ${version}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -56,16 +64,60 @@ launch4j {
 
 tasks.packageUniversal {
     classifier = 'server'
+    manifest.attributes([
+        'Implementation-Vendor': 'Prototik',
+        'Implementationk-Title': 'KCauldron',
+        'Implementation-Version': 'KCauldron-'+project.version,
+        'Forge-Version': '10.13.3.1403',
+        'Specification-Vendor': 'Bukkit Team',
+        'Specification-Title': 'Bukkit',
+        'Specification-Version': '1.7.10-R0.1-SNAPSHOT'
+    ])
 }
 
-tasks.packageUniversal.manifest { 
-    attributes([
-    'Implementation-Vendor': 'Prototik',
-    'Implementation-Title': 'KCauldron',
-    'Implementation-Version': 'KCauldron-'+project.version,
-    'Forge-Version': '10.13.3.1403',
-    'Specification-Vendor': 'Bukkit Team',
-    'Specification-Title': 'Bukkit',
-    'Specification-Version': '1.7.10-R0.1-SNAPSHOT'
-    ])
+tasks.createChangelog.onlyIf { false }
+
+task signJars(type: Sign, dependsOn: [packageUniversal, packageInstaller]) {
+    sign packageInstaller
+    sign packageUniversal
+}
+
+task preparePublication(dependsOn: signJars) {}
+
+def getSignatureFiles = {
+    def allFiles = project.tasks.signJars.signatureFiles.collect { it }
+    def signedServer = allFiles.find { it.name.contains('-server') }
+    def signedInstaller = allFiles.find { it.name.contains('-installer') }
+    return [
+            [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
+            [archive: signedInstaller, classifier: 'installer', extension: 'jar.asc']
+    ]
+}
+
+publishing {
+    repositories {
+        maven {
+            name 'ProK'
+            url 'https://prok.pw/repo/'
+            credentials  {
+                username project.hasProperty('prokRepoUsername') ? prokRepoUsername : null
+                password project.hasProperty('prokRepoPassword') ? prokRepoPassword : null
+            }
+        }
+    }
+
+    publications {
+        gpg(MavenPublication) {
+            getSignatureFiles().each { signature ->
+                artifact(signature.archive) {
+                    classifier = signature.classifier
+                    extension = signature.extension
+                }
+            }
+        }
+        jar(MavenPublication) {
+            artifact packageUniversal
+            artifact packageInstaller
+        }
+    }
 }
