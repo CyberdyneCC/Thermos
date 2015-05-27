@@ -1,6 +1,7 @@
 # KCauldron
 ### KCauldron - continuation of Cauldron minecraft server
-[![Donate PayPal USD][donate_paypal_usd_img]][donate_paypal_usd_url] [![Donate PayPal RUB][donate_paypal_rub_img]][donate_paypal_rub_url]
+[![Donate PayPal USD][donate_paypal_usd_img]][donate_paypal_usd_url] [![Donate PayPal RUB][donate_paypal_rub_img]][donate_paypal_rub_url]  
+[![Donate Yandex Money][donate_yandex_img]][donate_yandex_url] [![Download][download_img]][download_url]
 
 ## Building KCauldron
 * Checkout project
@@ -41,3 +42,7 @@ If you're once checkout source - you not need to do it again
 [donate_paypal_usd_img]: https://prok.pw/donate_paypal_usd.png
 [donate_paypal_rub_url]: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=me%40prok%2epw&lc=US&item_name=ProK&item_number=KCauldron%20RUB&currency_code=RUB&bn=PP%2dDonationsBF%3adonate_paypal_rub%2epng%3aNonHosted
 [donate_paypal_rub_img]: https://prok.pw/donate_paypal_rub.png
+[donate_yandex_url]: https://prok.pw/donate/donate_yandex.htm
+[donate_yandex_img]: https://prok.pw/donate_yandex.png
+[download_url]: https://prok.pw/repo/pw/prok/KCauldron/
+[download_img]: https://prok.pw/download.png
