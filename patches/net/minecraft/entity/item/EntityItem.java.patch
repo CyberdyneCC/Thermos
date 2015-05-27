@@ -307,6 +307,6 @@
 +    @Override
 +    public boolean entityAllowedToSpawn() {
 +    	ItemStack stack = getDataWatcher().getWatchableObjectItemStack(10);
-+    	return stack != null && stack.stackSize > 0;
++    	return stack != null && stack.getItem() != null && stack.stackSize > 0;
 +    }
  }
