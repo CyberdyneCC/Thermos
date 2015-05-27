@@ -59,7 +59,7 @@ def retrieveGitHash() {
 }
 
 ext.mcVersion = "1.7.10"
-ext.forgeVersion = "1403"
+ext.forgeVersion = "1408"
 ext.revision = retrieveBuildNumber()
 version = "${mcVersion}-${forgeVersion}.${revision}"
 println "Updated KCauldron version: ${version}"
@@ -75,7 +75,7 @@ tasks.packageUniversal {
         'Implementation-Vendor': 'Prototik',
         'Implementationk-Title': 'KCauldron',
         'Implementation-Version': 'KCauldron-'+project.version,
-        'Forge-Version': '10.13.3.1403',
+        'Forge-Version': '10.13.3.1408',
         'Specification-Vendor': 'Bukkit Team',
         'Specification-Title': 'Bukkit',
         'Specification-Version': '1.7.10-R0.1-SNAPSHOT'

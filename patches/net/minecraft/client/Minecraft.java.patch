@@ -8,7 +8,7 @@
  import net.minecraft.world.WorldProviderEnd;
  import net.minecraft.world.WorldProviderHell;
  import net.minecraft.world.WorldSettings;
-@@ -2656,7 +2657,14 @@
+@@ -2655,7 +2656,14 @@
  
              if (integratedserver != null)
              {
