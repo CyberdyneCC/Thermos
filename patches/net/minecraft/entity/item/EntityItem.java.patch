@@ -299,3 +299,14 @@
      }
  
      public void setEntityItemStack(ItemStack p_92058_1_)
+@@ -451,4 +526,10 @@
+     {
+         this.field_145801_f = p_145799_1_;
+     }
++    
++    @Override
++    public boolean entityAllowedToSpawn() {
++    	ItemStack stack = getDataWatcher().getWatchableObjectItemStack(10);
++    	return stack != null && stack.stackSize > 0;
++    }
+ }
