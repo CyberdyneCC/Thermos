@@ -48,13 +48,13 @@ minecraft {
 group = 'pw.prok'
 
 def retrieveBuildNumber() {
-	if (!project.hasProperty('officialBuild')) return 'UNOFFICIAL'
+	if (!project.hasProperty('officialBuild')) return 'UNOFFICIAL.' + retrieveGitHash(false)
 	new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))['nextBuildNumber']
 }
 
-def retrieveGitHash() {
+def retrieveGitHash(full = true) {
 	if (file('.git').exists())
-		return ['git', 'log', '--format=%H', '-n', '1'].execute().text.trim()
+		return ['git', 'log', "--format=%${full?'H':'h'}", '-n', '1'].execute().text.trim()
 	return 'NOTGIT'
 }
 
