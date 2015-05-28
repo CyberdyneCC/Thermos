@@ -154,7 +154,7 @@ repositories {
 }
 
 dependencies {
-	exported 'pw.prok:KImagine:+'
+	exported 'pw.prok:KImagine:+@jar'
 }
 
 packageUniversal {
