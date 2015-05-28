@@ -62,7 +62,7 @@ ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1408"
 ext.revision = retrieveBuildNumber()
 version = "${mcVersion}-${forgeVersion}.${revision}"
-println "Updated KCauldron version: ${version}"
+println " # Updated KCauldron version: ${version}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -127,4 +127,36 @@ publishing {
             artifact packageInstaller
         }
     }
+}
+
+tasks.generateProjectCauldron << {
+	def file = new File('eclipse/cauldron/build.gradle')
+	file.append('''
+repositories {
+	maven {
+		url 'https://prok.pw/repo'
+	}
+}
+dependencies {
+	compile 'pw.prok:KImagine:+@jar'
+}
+''')
+}
+
+configurations {
+	compile.extendsFrom exported
+}
+
+repositories {
+        maven {
+                url 'https://prok.pw/repo'
+        }
+}
+
+dependencies {
+	exported 'pw.prok:KImagine:+'
+}
+
+packageUniversal {
+	from { configurations.exported.collect { it.isDirectory() ? it : zipTree(it) } }
 }

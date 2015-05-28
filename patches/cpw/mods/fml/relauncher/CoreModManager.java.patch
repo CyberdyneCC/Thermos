@@ -23,19 +23,24 @@
  import cpw.mods.fml.common.FMLLog;
  import cpw.mods.fml.common.asm.transformers.ModAccessTransformer;
  import cpw.mods.fml.common.launcher.FMLInjectionAndSortingTweaker;
-@@ -94,6 +99,11 @@
+@@ -53,7 +58,7 @@
+     private static final Attributes.Name COREMODCONTAINSFMLMOD = new Attributes.Name("FMLCorePluginContainsFMLMod");
+     private static final Attributes.Name MODTYPE = new Attributes.Name("ModType");
+     private static final Attributes.Name MODSIDE = new Attributes.Name("ModSide");
+-    private static String[] rootPlugins = { "cpw.mods.fml.relauncher.FMLCorePlugin", "net.minecraftforge.classloading.FMLForgePlugin" };
++    private static String[] rootPlugins = { "cpw.mods.fml.relauncher.FMLCorePlugin", "net.minecraftforge.classloading.FMLForgePlugin", "pw.prok.imagine.ImagineLoadingPlugin" };
+     private static List<String> loadedCoremods = Lists.newArrayList();
+     private static List<FMLPluginWrapper> loadPlugins;
+     private static boolean deobfuscatedEnvironment;
+@@ -94,6 +99,7 @@
          @Override
          public void injectIntoClassLoader(LaunchClassLoader classLoader)
          {
-+        	// Cauldron start
-+        	// Register own ClassTransformer for some needs
-+        	classLoader.registerTransformer("kcauldron.KCauldronClassTransformer");
-+        	KCauldronClassTransformer.DEV = deobfuscatedEnvironment;
 +        	// Cauldron end
              FMLRelaunchLog.fine("Injecting coremod %s {%s} class transformers", name, coreModInstance.getClass().getName());
              if (coreModInstance.getASMTransformerClass() != null) for (String transformer : coreModInstance.getASMTransformerClass())
              {
-@@ -153,6 +163,9 @@
+@@ -153,6 +159,9 @@
  
      }
  
@@ -45,7 +50,7 @@
      public static void handleLaunch(File mcDir, LaunchClassLoader classLoader, FMLTweaker tweaker)
      {
          CoreModManager.mcDir = mcDir;
-@@ -212,6 +225,19 @@
+@@ -212,6 +221,19 @@
              loadCoreMod(classLoader, coreModClassName, null);
          }
          discoverCoreMods(mcDir, classLoader);
@@ -65,7 +70,7 @@
  
      }
  
-@@ -322,6 +348,10 @@
+@@ -322,6 +344,10 @@
                  FMLRelaunchLog.fine("Not found coremod data in %s", coreMod.getName());
                  continue;
              }
@@ -76,7 +81,7 @@
              // Support things that are mod jars, but not FML mod jars
              try
              {
-@@ -424,8 +454,11 @@
+@@ -424,8 +450,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {
