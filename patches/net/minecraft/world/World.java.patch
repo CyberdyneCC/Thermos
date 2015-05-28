@@ -573,6 +573,15 @@
          if (p_72805_1_ >= -30000000 && p_72805_3_ >= -30000000 && p_72805_1_ < 30000000 && p_72805_3_ < 30000000)
          {
              if (p_72805_2_ < 0)
+@@ -511,7 +892,7 @@
+                 Chunk chunk = this.getChunkFromChunkCoords(p_72805_1_ >> 4, p_72805_3_ >> 4);
+                 p_72805_1_ &= 15;
+                 p_72805_3_ &= 15;
+-                return chunk.getBlockMetadata(p_72805_1_, p_72805_2_, p_72805_3_);
++                return chunk == null ? 0 : chunk.getBlockMetadata(p_72805_1_, p_72805_2_, p_72805_3_);
+             }
+         }
+         else
 @@ -610,6 +991,12 @@
  
      public void notifyBlockChange(int p_147444_1_, int p_147444_2_, int p_147444_3_, Block p_147444_4_)
