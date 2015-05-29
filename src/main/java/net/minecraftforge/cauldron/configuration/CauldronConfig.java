@@ -53,6 +53,7 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting flowingLavaDecay = new BoolSetting(this, "world-settings.default.flowing-lava-decay", false, "Lava behaves like vanilla water when source block is removed");
     public final BoolSetting allowTntPunishment = new BoolSetting(this, "world-settings.default.allow-tnt-punishment", true, "TNT ability to push other entities (including other TNTs)");
     public final BoolSetting fakePlayerLogin = new BoolSetting(this, "fake-players.do-login", false, "Raise login events for fake players");
+    public final IntSetting maxPlayersVisible = new IntSetting(this, "world-settings.max-players-visible", -1, "How many players will visible in the tab list");
 
     // Plug-in options
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");

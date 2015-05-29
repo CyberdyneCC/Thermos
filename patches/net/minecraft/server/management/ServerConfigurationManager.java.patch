@@ -87,6 +87,7 @@
          ChunkCoordinates chunkcoordinates = worldserver.getSpawnPoint();
          this.func_72381_a(p_72355_2_, (EntityPlayerMP)null, worldserver);
          p_72355_2_.playerNetServerHandler = nethandlerplayserver;
+-        nethandlerplayserver.sendPacket(new S01PacketJoinGame(p_72355_2_.getEntityId(), p_72355_2_.theItemInWorldManager.getGameType(), worldserver.getWorldInfo().isHardcoreModeEnabled(), worldserver.provider.dimensionId, worldserver.difficultySetting, this.getMaxPlayers(), worldserver.getWorldInfo().getTerrainType()));
 +        // CraftBukkit start -- Don't send a higher than 60 MaxPlayer size, otherwise the PlayerInfo window won't render correctly.
 +        int maxPlayers = this.getMaxPlayers();
 +
@@ -105,7 +106,7 @@
 +            serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(p_72355_2_.dimension, worldserver.getWorld().getEnvironment().getId()));
 +        }
 +        // Cauldron end
-         nethandlerplayserver.sendPacket(new S01PacketJoinGame(p_72355_2_.getEntityId(), p_72355_2_.theItemInWorldManager.getGameType(), worldserver.getWorldInfo().isHardcoreModeEnabled(), worldserver.provider.dimensionId, worldserver.difficultySetting, this.getMaxPlayers(), worldserver.getWorldInfo().getTerrainType()));
++        nethandlerplayserver.sendPacket(new S01PacketJoinGame(p_72355_2_.getEntityId(), p_72355_2_.theItemInWorldManager.getGameType(), worldserver.getWorldInfo().isHardcoreModeEnabled(), worldserver.provider.dimensionId, worldserver.difficultySetting, this.getMaxVisiblePlayers(), worldserver.getWorldInfo().getTerrainType()));
 +        p_72355_2_.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
          nethandlerplayserver.sendPacket(new S3FPacketCustomPayload("MC|Brand", this.getServerInstance().getServerModName().getBytes(Charsets.UTF_8)));
          nethandlerplayserver.sendPacket(new S05PacketSpawnPosition(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ));
@@ -905,8 +906,15 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -963,7 +1487,10 @@
+@@ -961,9 +1485,17 @@
+         return this.maxPlayers;
+     }
  
++    public int getMaxVisiblePlayers() {
++    		int max = mcServer.cauldronConfig.maxPlayersVisible.getValue();
++    		return max > 0 ? max : maxPlayers;
++    }
++
      public String[] getAvailablePlayerDat()
      {
 -        return this.mcServer.worldServers[0].getSaveHandler().getSaveHandler().getAvailablePlayerDat();
@@ -917,7 +925,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1559,30 @@
+@@ -1032,12 +1564,30 @@
  
      public void removeAllPlayers()
      {
