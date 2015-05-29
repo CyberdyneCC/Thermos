@@ -51,6 +51,29 @@
      public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
      {
          this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
+@@ -512,10 +534,10 @@
+ 
+             if (extendedblockstorage != null)
+             {
+-                try
+-                {
++                /*try
++                {*/ // Exception handled by high-level class with safier deletion
+                     block = extendedblockstorage.getBlockByExtId(p_150810_1_, p_150810_2_ & 15, p_150810_3_);
+-                }
++                /*}
+                 catch (Throwable throwable)
+                 {
+                     CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Getting block");
+@@ -529,7 +551,7 @@
+                         }
+                     });
+                     throw new ReportedException(crashreport);
+-                }
++                }*/
+             }
+         }
+ 
 @@ -589,9 +611,10 @@
  
              if (!this.worldObj.isRemote)
