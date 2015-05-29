@@ -70,18 +70,29 @@
  
      }
  
-@@ -322,6 +344,10 @@
+@@ -293,6 +315,10 @@
+             String cascadedTweaker = mfAttributes.getValue("TweakClass");
+             if (cascadedTweaker != null)
+             {
++            	if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
++            		FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
++            		continue;
++            	}
+                 FMLRelaunchLog.info("Loading tweaker %s from %s", cascadedTweaker, coreMod.getName());
+                 Integer sortOrder = Ints.tryParse(Strings.nullToEmpty(mfAttributes.getValue("TweakOrder")));
+                 sortOrder = (sortOrder == null ? Integer.valueOf(0) : sortOrder);
+@@ -322,6 +348,10 @@
                  FMLRelaunchLog.fine("Not found coremod data in %s", coreMod.getName());
                  continue;
              }
-+            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin)) {
-+                FMLRelaunchLog.warning("Found FastCraft coremod, ignoring...");
++            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
++                FMLRelaunchLog.warning("Found FastCraft coremod, skipping...");
 +            	continue;
 +            }
              // Support things that are mod jars, but not FML mod jars
              try
              {
-@@ -424,8 +450,11 @@
+@@ -424,8 +454,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {
