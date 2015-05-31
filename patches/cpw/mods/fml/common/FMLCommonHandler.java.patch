@@ -11,7 +11,15 @@
  
  import com.google.common.base.Joiner;
  import com.google.common.base.Strings;
-@@ -385,10 +389,11 @@
+@@ -282,6 +286,7 @@
+     {
+         Loader.instance().serverStarted();
+         sidedDelegate.allowLogins();
++        kcauldron.updater.KVersionRetriever.init(MinecraftServer.getServer());
+     }
+ 
+     public void handleServerStopping()
+@@ -385,10 +390,11 @@
          {
              return;
          }
@@ -24,7 +32,7 @@
          handlerSet.add(handler);
          handlerToCheck = new WeakReference<SaveHandler>(handler); // for confirmBackupLevelDatUse
          Map<String,NBTBase> additionalProperties = Maps.newHashMap();
-@@ -496,7 +501,13 @@
+@@ -496,7 +502,13 @@
  
      public String getModName()
      {
@@ -39,7 +47,7 @@
          modNames.add("fml");
          if (!noForge)
          {
-@@ -540,8 +551,17 @@
+@@ -540,8 +552,17 @@
          bus().post(new InputEvent.KeyInputEvent());
      }
  

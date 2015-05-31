@@ -97,9 +97,9 @@ public class VersionInfo {
     private void doFileExtract(File path) throws IOException
     {
         InputStream inputStream = getClass().getResourceAsStream("/"+getContainedFile());
-        OutputSupplier<FileOutputStream> outputSupplier = Files.newOutputStreamSupplier(path);
-        System.out.println("doFileExtract path = " + path.getAbsolutePath() + ", inputStream = " + inputStream + ", outputSupplier = " + outputSupplier);
-        ByteStreams.copy(inputStream, outputSupplier);
+        FileOutputStream outputStream = new FileOutputStream(path);
+        System.out.println("doFileExtract path = " + path.getAbsolutePath() + ", inputStream = " + inputStream + ", outputStream = " + outputStream);
+        ByteStreams.copy(inputStream, outputStream);
     }
 
     public static String getMinecraftVersion()

@@ -2,6 +2,7 @@ package net.minecraftforge.cauldron.configuration;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.command.CauldronCommand;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class CauldronConfig extends ConfigBase

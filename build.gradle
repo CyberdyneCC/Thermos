@@ -58,6 +58,12 @@ def retrieveGitHash(full = true) {
 	return 'NOTGIT'
 }
 
+def retrieveGitBranch() {
+	if (file('.git').exists())
+		return ['git', 'symbolic-ref', '--short', 'HEAD'].execute().text.trim();
+	return 'NOTGIT'
+}
+
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1408"
 ext.revision = retrieveBuildNumber()
@@ -71,7 +77,9 @@ launch4j {
 tasks.packageUniversal {
     classifier = 'server'
     manifest.attributes([
+	'KCauldron-Git-Branch': retrieveGitBranch(),
         'KCauldron-Git-Hash': retrieveGitHash(),
+	'KCauldron-Version': project.version,
         'Implementation-Vendor': 'Prototik',
         'Implementationk-Title': 'KCauldron',
         'Implementation-Version': 'KCauldron-'+project.version,
@@ -139,6 +147,7 @@ repositories {
 }
 dependencies {
 	compile 'pw.prok:KImagine:+@jar'
+	compile 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 ''')
 }
@@ -155,6 +164,7 @@ repositories {
 
 dependencies {
 	exported 'pw.prok:KImagine:+@jar'
+	exported 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 
 packageUniversal {
