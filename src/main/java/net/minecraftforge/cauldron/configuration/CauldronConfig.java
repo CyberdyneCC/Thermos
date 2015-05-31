@@ -99,6 +99,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(remapPluginFile.path, remapPluginFile);
         settings.put(userLogin.path, userLogin);
         settings.put(allowTntPunishment.path, allowTntPunishment);
+        settings.put(maxPlayersVisible.path, maxPlayersVisible);
         load();
     }
 
