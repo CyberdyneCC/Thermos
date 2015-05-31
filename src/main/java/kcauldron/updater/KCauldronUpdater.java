@@ -174,9 +174,7 @@ public class KCauldronUpdater implements Runnable {
 					mSender.sendMessage(ChatColor.RED + "Create symlink "
 							+ ChatColor.GOLD + symlinkPath.getAbsolutePath());
 				}
-				if (symlinkPath.exists()) {
-					symlinkPath.delete();
-				}
+				Files.deleteIfExists(symlinkPath.toPath());
 				Files.createSymbolicLink(symlinkPath.toPath(), newPath.toPath());
 			}
 		} catch (Exception e) {
