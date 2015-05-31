@@ -31,11 +31,18 @@ public class KCauldronUpdater implements Runnable {
 
 		@Override
 		public void upToDate(String version) {
+			KCauldron.sUpdateInProgress = false;
 			CommandSender sender = getSender();
 			if (sender != null) {
 				sender.sendMessage(ChatColor.DARK_PURPLE + "Current version ("
 						+ version + ") is up to date");
 			}
+		}
+		
+		@Override
+		public void error(Throwable t) {
+			super.error(t);
+			KCauldron.sUpdateInProgress = false;
 		}
 	}
 

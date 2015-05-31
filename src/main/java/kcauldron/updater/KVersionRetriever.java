@@ -81,8 +81,10 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 			JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
 					response.getEntity().getContent()));
 			String version = (String) json.get("version");
-			sLogger.info("Got the latest version: %s", version);
-			sLogger.info("Current version is %s", sCurrentVersion);
+			if (DEBUG) {
+				sLogger.info("Got the latest version: %s", version);
+				sLogger.info("Current version is %s", sCurrentVersion);
+			}
 			if (!sCurrentVersion.equals(version)) {
 				mCallback.newVersion(sCurrentVersion, version);
 			} else {
