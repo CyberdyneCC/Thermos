@@ -65,10 +65,10 @@ def retrieveGitBranch() {
 }
 
 ext.mcVersion = "1.7.10"
-ext.forgeVersion = "1408"
+ext.forgeVersion = "1420"
 ext.revision = retrieveBuildNumber()
 version = "${mcVersion}-${forgeVersion}.${revision}"
-println " # Updated KCauldron version: ${version}"
+println "Updated KCauldron version: ${version}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -83,7 +83,7 @@ tasks.packageUniversal {
         'Implementation-Vendor': 'Prototik',
         'Implementationk-Title': 'KCauldron',
         'Implementation-Version': 'KCauldron-'+project.version,
-        'Forge-Version': '10.13.3.1408',
+        'Forge-Version': '10.13.3.1420',
         'Specification-Vendor': 'Bukkit Team',
         'Specification-Title': 'Bukkit',
         'Specification-Version': '1.7.10-R0.1-SNAPSHOT'
