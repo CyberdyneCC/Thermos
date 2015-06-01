@@ -1,10 +1,17 @@
 --- ../src-base/minecraft/net/minecraft/network/rcon/RConThreadClient.java
 +++ ../src-work/minecraft/net/minecraft/network/rcon/RConThreadClient.java
-@@ -45,13 +45,15 @@
+@@ -41,20 +41,21 @@
+ 
+     public void run()
+     {
+-        while (true)
++        try
          {
-             try
-             {
+-            try
+-            {
 -                if (!this.running)
++        	while (true)
++        	{
 +                if (!this.running || clientSocket == null)
                  {
                      break;
@@ -12,12 +19,47 @@
  
                  BufferedInputStream bufferedinputstream = new BufferedInputStream(this.clientSocket.getInputStream());
                  int i = bufferedinputstream.read(this.buffer, 0, 1460);
+-
+-                if (10 > i)
 +                
-+                if (i == -1) this.running = false; // Cauldron
- 
-                 if (10 > i)
++                if (i < 10)
                  {
-@@ -167,6 +169,7 @@
++                	this.running = false; // Cauldron
+                     return;
+                 }
+ 
+@@ -109,27 +110,24 @@
+                             continue;
+                     }
+                 }
++        	}
+             }
+             catch (SocketTimeoutException sockettimeoutexception)
+             {
+-                break;
++                return;
+             }
+             catch (IOException ioexception)
+             {
+-                break;
++                return;
+             }
+             catch (Exception exception1)
+             {
+                 field_164005_h.error("Exception whilst parsing RCON input", exception1);
+-                break;
+             }
+             finally
+             {
+                 this.closeSocket();
+             }
+-
+-            return;
+-        }
+     }
+ 
+     private void sendResponse(int p_72654_1_, int p_72654_2_, String p_72654_3_) throws IOException
+@@ -167,6 +165,7 @@
  
      private void closeSocket()
      {
