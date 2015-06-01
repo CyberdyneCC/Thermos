@@ -3,6 +3,10 @@
 # eclipse
 /eclipse
 
+# idea
+.idea
+*.iml
+
 # gradle
 build
 .gradle

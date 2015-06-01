@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import kcauldron.CreateChangelog
 
 buildscript {
     repositories {
@@ -47,26 +48,48 @@ minecraft {
 
 group = 'pw.prok'
 
-def retrieveBuildNumber() {
-	if (!project.hasProperty('officialBuild')) return 'UNOFFICIAL.' + retrieveGitHash(false)
-	new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))['nextBuildNumber']
+ext.buildInfoCached = null;
+
+def buildInfo(String key) {
+    if (!buildInfoCached) {
+        if (project.hasProperty('officialBuild')) {
+            buildInfoCached = new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))
+        } else {
+            buildInfoCached = [
+                    nextBuildNumber: 'UNOFFICIAL.' + gitInfo('hash'),
+                    version        : 'NONE'
+            ]
+        }
+    }
+    return key ? buildInfoCached[key] : buildInfoCached;
 }
 
-def retrieveGitHash(full = true) {
-	if (file('.git').exists())
-		return ['git', 'log', "--format=%${full?'H':'h'}", '-n', '1'].execute().text.trim()
-	return 'NOTGIT'
-}
+ext.gitInfoCached = null;
 
-def retrieveGitBranch() {
-	if (file('.git').exists())
-		return ['git', 'symbolic-ref', '--short', 'HEAD'].execute().text.trim();
-	return 'NOTGIT'
+def gitInfo(String key) {
+    if (!gitInfoCached) {
+        if (file('.git').exists()) {
+            gitInfoCached = [
+                    hash    : ['git', 'log', "--format=%h", '-n', '1'].execute().text.trim(),
+                    fullHash: ['git', 'log', "--format=%H", '-n', '1'].execute().text.trim(),
+                    branch  : ['git', 'symbolic-ref', '--short', 'HEAD'].execute().text.trim(),
+                    message : ['git', 'log', "--format=%B", '-n', '1'].execute().text.trim()
+            ]
+        } else {
+            gitInfoCached = [
+                    hash    : 'NOT_A_GIT',
+                    fullHash: 'NOT_A_GIT',
+                    branch  : 'NOT_A_GIT',
+                    message : 'NOT_A_GIT'
+            ]
+        }
+    }
+    return key ? gitInfoCached[key] : gitInfoCached;
 }
 
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1420"
-ext.revision = retrieveBuildNumber()
+ext.revision = buildInfo('nextBuildNumber')
 version = "${mcVersion}-${forgeVersion}.${revision}"
 println "Updated KCauldron version: ${version}"
 
@@ -77,24 +100,35 @@ launch4j {
 tasks.packageUniversal {
     classifier = 'server'
     manifest.attributes([
-	'KCauldron-Git-Branch': retrieveGitBranch(),
-        'KCauldron-Git-Hash': retrieveGitHash(),
-	'KCauldron-Version': project.version,
-        'Implementation-Vendor': 'Prototik',
-        'Implementationk-Title': 'KCauldron',
-        'Implementation-Version': 'KCauldron-'+project.version,
-        'Forge-Version': '10.13.3.1420',
-        'Specification-Vendor': 'Bukkit Team',
-        'Specification-Title': 'Bukkit',
-        'Specification-Version': '1.7.10-R0.1-SNAPSHOT'
+            'KCauldron-Git-Branch'  : gitInfo('branch'),
+            'KCauldron-Git-Hash'    : gitInfo('fullHash'),
+            'KCauldron-Version'     : project.version,
+            'Implementation-Vendor' : 'Prototik',
+            'Implementation-Title'  : 'KCauldron',
+            'Implementation-Version': project.version,
+            'Forge-Version'         : '10.13.3.1420',
+            'Specification-Vendor'  : 'Bukkit Team',
+            'Specification-Title'   : 'Bukkit',
+            'Specification-Version' : '1.7.10-R0.1-SNAPSHOT'
     ])
 }
 
 tasks.createChangelog.onlyIf { false }
 
+task packageChangelog(type: CreateChangelog) {
+    onlyIf { project.hasProperty('officialBuild') }
+    classifier = 'changelog'
+    extension = 'txt'
+    oldChangelogUrl = "https://prok.pw/repo/${project.group.replace('.','/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
+    hash = gitInfo('hash')
+    message = gitInfo('message')
+    version = project.version
+}
+
 task signJars(type: Sign, dependsOn: [packageUniversal, packageInstaller]) {
     sign packageInstaller
     sign packageUniversal
+    sign packageChangelog
 }
 
 task preparePublication(dependsOn: signJars) {}
@@ -103,9 +137,11 @@ def getSignatureFiles = {
     def allFiles = project.tasks.signJars.signatureFiles.collect { it }
     def signedServer = allFiles.find { it.name.contains('-server') }
     def signedInstaller = allFiles.find { it.name.contains('-installer') }
+    def signedChangelog = allFiles.find { it.name.contains('-changelog') }
     return [
             [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
-            [archive: signedInstaller, classifier: 'installer', extension: 'jar.asc']
+            [archive: signedInstaller, classifier: 'installer', extension: 'jar.asc'],
+            [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc']
     ]
 }
 
@@ -114,7 +150,7 @@ publishing {
         maven {
             name 'ProK'
             url 'https://prok.pw/repo/'
-            credentials  {
+            credentials {
                 username project.hasProperty('prokRepoUsername') ? prokRepoUsername : null
                 password project.hasProperty('prokRepoPassword') ? prokRepoPassword : null
             }
@@ -122,24 +158,23 @@ publishing {
     }
 
     publications {
-        gpg(MavenPublication) {
+        maven(MavenPublication) {
             getSignatureFiles().each { signature ->
                 artifact(signature.archive) {
                     classifier = signature.classifier
                     extension = signature.extension
                 }
             }
-        }
-        jar(MavenPublication) {
             artifact packageUniversal
             artifact packageInstaller
+            artifact packageChangelog
         }
     }
 }
 
 tasks.generateProjectCauldron << {
-	def file = new File('eclipse/cauldron/build.gradle')
-	file.append('''
+    def file = new File('eclipse/cauldron/build.gradle')
+    file.append('''
 repositories {
 	maven {
 		url 'https://prok.pw/repo'
@@ -153,20 +188,20 @@ dependencies {
 }
 
 configurations {
-	compile.extendsFrom exported
+    compile.extendsFrom exported
 }
 
 repositories {
-        maven {
-                url 'https://prok.pw/repo'
-        }
+    maven {
+        url 'https://prok.pw/repo'
+    }
 }
 
 dependencies {
-	exported 'pw.prok:KImagine:+@jar'
-	exported 'org.apache.httpcomponents:httpclient:4.4.1'
+    exported 'pw.prok:KImagine:+@jar'
+    exported 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 
 packageUniversal {
-	from { configurations.exported.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.exported.collect { it.isDirectory() ? it : zipTree(it) } }
 }
