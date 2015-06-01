@@ -5,7 +5,7 @@
      public String getWorldName()
      {
 -        return this.theWorldInfo.getWorldName();
-+    	String name = super.getWorldName();
++        String name = super.getWorldName();
 +        return name != null ? name : this.theWorldInfo.getWorldName();
      }
  
@@ -25,15 +25,15 @@
      }
 +    
 +    public int getDimension() {
-+    	return this.theWorldInfo.getDimension();
++        return this.theWorldInfo.getDimension();
 +    }
 +    
 +    public void setDimension(int dim) {
-+    	this.theWorldInfo.setDimension(dim);
++        this.theWorldInfo.setDimension(dim);
 +    }
 +    
 +    @Override
 +    public void tick() {
-+    	theWorldInfo.tick();
++        theWorldInfo.tick();
 +    }
  }

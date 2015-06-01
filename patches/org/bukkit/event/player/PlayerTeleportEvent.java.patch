@@ -18,12 +18,12 @@
          UNKNOWN;
 +        
 +        public boolean isPortal() {
-+        	switch(this) {
-+        	case NETHER_PORTAL:
-+        	case END_PORTAL:
-+        		return true;
-+        	}
-+        	return false;
++            switch(this) {
++            case NETHER_PORTAL:
++            case END_PORTAL:
++            	return true;
++            }
++            return false;
 +        }
      }
  

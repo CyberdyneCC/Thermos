@@ -41,8 +41,8 @@
      {
          ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
 +        if (stack == null || stack.stackSize == 0) {
-+        	setDead();
-+        	return;
++            setDead();
++            return;
 +        }
          if (stack != null && stack.getItem() != null)
          {
@@ -306,7 +306,7 @@
 +    
 +    @Override
 +    public boolean entityAllowedToSpawn() {
-+    	ItemStack stack = getDataWatcher().getWatchableObjectItemStack(10);
-+    	return stack != null && stack.getItem() != null && stack.stackSize > 0;
++        ItemStack stack = getDataWatcher().getWatchableObjectItemStack(10);
++        return stack != null && stack.getItem() != null && stack.stackSize > 0;
 +    }
  }

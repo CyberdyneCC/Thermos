@@ -532,10 +532,10 @@
 +            {
 +                float armorDamage = (float) (event.getDamage() + event.getDamage(DamageModifier.BLOCKING) + event.getDamage(DamageModifier.HARD_HAT));
 +                if (this instanceof EntityPlayer) {
-+                	EntityPlayer player = (EntityPlayer) this;
-+                	armorDamage = ArmorProperties.ApplyArmor(player, player.inventory.armorInventory, damagesource, armorDamage, true);
++                    EntityPlayer player = (EntityPlayer) this;
++                    armorDamage = ArmorProperties.ApplyArmor(player, player.inventory.armorInventory, damagesource, armorDamage, true);
 +                } else {
-+                	this.damageArmor(armorDamage);
++                    this.damageArmor(armorDamage);
 +                }
 +            }
 +

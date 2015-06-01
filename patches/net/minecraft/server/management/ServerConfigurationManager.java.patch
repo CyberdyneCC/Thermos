@@ -912,8 +912,8 @@
      }
  
 +    public int getMaxVisiblePlayers() {
-+    		int max = mcServer.cauldronConfig.maxPlayersVisible.getValue();
-+    		return max > 0 ? max : maxPlayers;
++        	int max = mcServer.cauldronConfig.maxPlayersVisible.getValue();
++        	return max > 0 ? max : maxPlayers;
 +    }
 +
      public String[] getAvailablePlayerDat()

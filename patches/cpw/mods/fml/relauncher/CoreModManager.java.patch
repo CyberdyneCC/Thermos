@@ -36,7 +36,7 @@
          @Override
          public void injectIntoClassLoader(LaunchClassLoader classLoader)
          {
-+        	// Cauldron end
++            // Cauldron end
              FMLRelaunchLog.fine("Injecting coremod %s {%s} class transformers", name, coreModInstance.getClass().getName());
              if (coreModInstance.getASMTransformerClass() != null) for (String transformer : coreModInstance.getASMTransformerClass())
              {
@@ -74,10 +74,10 @@
              String cascadedTweaker = mfAttributes.getValue("TweakClass");
              if (cascadedTweaker != null)
              {
-+            	if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
-+            		FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
-+            		continue;
-+            	}
++                if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
++                	FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
++                	continue;
++                }
                  FMLRelaunchLog.info("Loading tweaker %s from %s", cascadedTweaker, coreMod.getName());
                  Integer sortOrder = Ints.tryParse(Strings.nullToEmpty(mfAttributes.getValue("TweakOrder")));
                  sortOrder = (sortOrder == null ? Integer.valueOf(0) : sortOrder);
@@ -87,7 +87,7 @@
              }
 +            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
 +                FMLRelaunchLog.warning("Found FastCraft coremod, skipping...");
-+            	continue;
++                continue;
 +            }
              // Support things that are mod jars, but not FML mod jars
              try

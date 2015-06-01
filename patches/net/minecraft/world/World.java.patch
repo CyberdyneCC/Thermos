@@ -256,7 +256,7 @@
 +            org.bukkit.World.Environment env)
 +    {
 +        this.spigotConfig = new org.spigotmc.SpigotWorldConfig(p_i45369_2_); // Spigot
-+    	initLimiter(); // Spigot
++        initLimiter(); // Spigot
 +        // Cauldron start
 +        this.cauldronConfig = new CauldronWorldConfig(p_i45369_2_, MinecraftServer.getServer().cauldronConfig);
 +        this.tileentityConfig = new TileEntityWorldConfig(p_i45369_2_, MinecraftServer.getServer().tileEntityConfig);
@@ -401,7 +401,7 @@
 +        if (DimensionManager.getWorld(0) != null)
 +        {
 +            this.spigotConfig = new org.spigotmc.SpigotWorldConfig(p_i45369_2_); // Spigot
-+        	initLimiter(); // Spigot
++            initLimiter(); // Spigot
 +            this.cauldronConfig = new CauldronWorldConfig(p_i45369_2_, MinecraftServer.getServer().cauldronConfig);
 +            this.tileentityConfig = new TileEntityWorldConfig(p_i45369_2_, MinecraftServer.getServer().tileEntityConfig);
 +            this.world = DimensionManager.getWorld(0).getWorld();
@@ -627,7 +627,7 @@
 +
 +    public boolean addEntity(Entity p_72838_1_, SpawnReason spawnReason) // Changed signature, added SpawnReason
 +    {
-+    	if (!p_72838_1_.entityAllowedToSpawn()) return false; // Cauldron
++        if (!p_72838_1_.entityAllowedToSpawn()) return false; // Cauldron
          // do not drop any items while restoring blocksnapshots. Prevents dupes
          if (!this.isRemote && (p_72838_1_ == null || (p_72838_1_ instanceof net.minecraft.entity.item.EntityItem && this.restoringBlockSnapshots))) return false;
  
@@ -875,7 +875,7 @@
 +        int entitiesThisCycle = 0;
 +        if (tickPosition < 0) tickPosition = 0;
 +        for (entityLimiter.initTick(); entitiesThisCycle < loadedEntityList.size() && (entitiesThisCycle % 10 == 0 || entityLimiter.shouldContinue()); tickPosition++, entitiesThisCycle++) { 
-+        	tickPosition = (tickPosition < loadedEntityList.size()) ? tickPosition : 0;
++            tickPosition = (tickPosition < loadedEntityList.size()) ? tickPosition : 0;
 +            entity = (Entity)this.loadedEntityList.get(this.tickPosition);
  
              if (entity.ridingEntity != null)
@@ -925,9 +925,9 @@
 -            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
 +        int tilesThisCycle = 0;
 +        for (tileLimiter.initTick(); tilesThisCycle < loadedTileEntityList.size() && (tilesThisCycle % 10 == 0 || tileLimiter.shouldContinue()); tileTickPosition++, tilesThisCycle++) {
-+        	tileTickPosition = (tileTickPosition < loadedTileEntityList.size()) ? tileTickPosition : 0;
-+        	TileEntity tileentity = (TileEntity) this.loadedTileEntityList.get(tileTickPosition);
-+        	
++            tileTickPosition = (tileTickPosition < loadedTileEntityList.size()) ? tileTickPosition : 0;
++            TileEntity tileentity = (TileEntity) this.loadedTileEntityList.get(tileTickPosition);
++            
 +            // Spigot start
 +            if (tileentity == null)
              {
@@ -1365,14 +1365,14 @@
 +    
 +    // Spigot start
 +    private void initLimiter() {
-+    	entityLimiter = new TickLimiter(spigotConfig.entityMaxTickTime);
-+    	tileLimiter = new TickLimiter(spigotConfig.tileMaxTickTime);
++        entityLimiter = new TickLimiter(spigotConfig.entityMaxTickTime);
++        tileLimiter = new TickLimiter(spigotConfig.tileMaxTickTime);
 +    }
 +    // Spigot end
 +    
 +    // Cauldron start
 +    public boolean isProfilingWorld() {
-+    	return provider.dimensionId == Integer.MIN_VALUE; // Mystcraft
++        return provider.dimensionId == Integer.MIN_VALUE; // Mystcraft
 +    }
 +    // Cauldron end
  }

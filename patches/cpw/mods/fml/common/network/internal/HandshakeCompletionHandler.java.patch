@@ -10,8 +10,8 @@
 +        io.netty.util.Attribute<NetworkDispatcher> attr = ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER);
 +        if (attr != null)
 +        {
-+        	NetworkDispatcher dispatcher = attr.getAndRemove();
-+        	if (dispatcher != null) dispatcher.completeHandshake(msg.target);
++            NetworkDispatcher dispatcher = attr.getAndRemove();
++            if (dispatcher != null) dispatcher.completeHandshake(msg.target);
 +        }
 +        // Cauldron end
      }

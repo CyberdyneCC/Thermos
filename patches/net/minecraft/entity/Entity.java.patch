@@ -787,7 +787,7 @@
 +    
 +    // Cauldron start
 +    public boolean entityAllowedToSpawn() {
-+    	return true;
++        return true;
 +    }
 +    // Cauldron end
  }

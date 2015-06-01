@@ -226,7 +226,7 @@
 +    
 +    // Spigot start
 +    public boolean areItemStacksEqual(ItemStack is1, ItemStack is2) {
-+    	return tickCount % fullMatchRate == 0 ? ItemStack.areItemStacksEqual(is1, is2) : ItemStack.fastMatches(is1, is2);
++        return tickCount % fullMatchRate == 0 ? ItemStack.areItemStacksEqual(is1, is2) : ItemStack.fastMatches(is1, is2);
 +    }
 +    // Spigot
  }

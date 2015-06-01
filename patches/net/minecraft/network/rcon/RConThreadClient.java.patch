@@ -10,8 +10,8 @@
 -            try
 -            {
 -                if (!this.running)
-+        	while (true)
-+        	{
++            while (true)
++            {
 +                if (!this.running || clientSocket == null)
                  {
                      break;
@@ -24,7 +24,7 @@
 +                
 +                if (i < 10)
                  {
-+                	this.running = false; // Cauldron
++                    this.running = false; // Cauldron
                      return;
                  }
  
@@ -32,7 +32,7 @@
                              continue;
                      }
                  }
-+        	}
++            }
              }
              catch (SocketTimeoutException sockettimeoutexception)
              {
@@ -63,7 +63,7 @@
  
      private void closeSocket()
      {
-+    	this.running = false;
++        this.running = false;
          if (null != this.clientSocket)
          {
              try

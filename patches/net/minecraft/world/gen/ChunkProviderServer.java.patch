@@ -100,7 +100,7 @@
      public void unloadAllChunks()
      {
 -        Iterator iterator = this.loadedChunks.iterator();
-+    	mUnloading = true;
++        mUnloading = true;
 +        Iterator iterator = this.loadedChunkHashMap.values().iterator(); // CraftBukkit
  
          while (iterator.hasNext())
@@ -119,7 +119,7 @@
 -        long k = ChunkCoordIntPair.chunkXZ2Int(par1, par2);
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
-+    	if (mUnloading) return null;
++        if (mUnloading) return null;
 +        this.chunksToUnload.remove(par1, par2);
 +        Chunk chunk = (Chunk) this.loadedChunkHashMap.get(LongHash.toLong(par1, par2));
 +        boolean newChunk = false;
@@ -142,7 +142,7 @@
 -        long k = ChunkCoordIntPair.chunkXZ2Int(p_73158_1_, p_73158_2_);
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
-+    	if (mUnloading) return null;
++        if (mUnloading) return null;
 +        this.chunksToUnload.remove(p_73158_1_, p_73158_2_);
 +        Chunk chunk = (Chunk) this.loadedChunkHashMap.get(LongHash.toLong(p_73158_1_, p_73158_2_));
 +        boolean newChunk = false; // CraftBukkit
@@ -213,7 +213,7 @@
      {
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(p_73154_1_, p_73154_2_));
 -        return chunk == null ? (!this.worldObj.findingSpawnPoint && !this.loadChunkOnProvideRequest ? this.defaultEmptyChunk : this.loadChunk(p_73154_1_, p_73154_2_)) : chunk;
-+    	if (mUnloading) return null;
++        if (mUnloading) return null;
 +        // CraftBukkit start
 +        Chunk chunk = (Chunk) this.loadedChunkHashMap.get(LongHash.toLong(p_73154_1_, p_73154_2_));
 +        chunk = chunk == null ? (shouldLoadChunk() ? this.loadChunk(p_73154_1_, p_73154_2_) : this.defaultEmptyChunk) : chunk; // Cauldron handle forge server tick events and load the chunk within 5 seconds of the world being loaded (for chunk loaders)

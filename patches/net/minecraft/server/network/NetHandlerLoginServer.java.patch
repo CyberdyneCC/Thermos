@@ -143,22 +143,22 @@
      public void processLoginStart(C00PacketLoginStart p_147316_1_)
      {
 -        Validate.validState(this.field_147328_g == NetHandlerLoginServer.LoginState.HELLO, "Unexpected hello packet", new Object[0]);
-+    	if (debug) logger.info("Login attempt");
++        if (debug) logger.info("Login attempt");
 +        Validate.validState(this.field_147328_g == LoginState.HELLO, "Unexpected hello packet", new Object[0]);
          this.field_147337_i = p_147316_1_.func_149304_c();
-+    	if (debug) logger.info("Received profile: " + this.field_147337_i.getName());
++        if (debug) logger.info("Received profile: " + this.field_147337_i.getName());
  
          if (this.field_147327_f.isServerInOnlineMode() && !this.field_147333_a.isLocalChannel())
          {
 -            this.field_147328_g = NetHandlerLoginServer.LoginState.KEY;
-+        	if (debug) logger.info("Send encryption request to " + this.field_147337_i.getName());
++            if (debug) logger.info("Send encryption request to " + this.field_147337_i.getName());
 +            this.field_147328_g = LoginState.KEY;
              this.field_147333_a.scheduleOutboundPacket(new S01PacketEncryptionRequest(this.field_147334_j, this.field_147327_f.getKeyPair().getPublic(), this.field_147330_e), new GenericFutureListener[0]);
          }
          else
          {
 -            this.field_147328_g = NetHandlerLoginServer.LoginState.READY_TO_ACCEPT;
-+        	if (debug) logger.info("Lookup offline UUID for " + this.field_147337_i.getName());
++            if (debug) logger.info("Lookup offline UUID for " + this.field_147337_i.getName());
 +            (new ThreadPlayerLookupUUID(this, "User Authenticator #" + field_147331_b.incrementAndGet())).start(); // Spigot
          }
      }
@@ -174,7 +174,7 @@
          }
          else
          {
-+        	if (debug) logger.info("Enabling encryption for " + this.field_147337_i.getName());
++            if (debug) logger.info("Enabling encryption for " + this.field_147337_i.getName());
              this.field_147335_k = p_147315_1_.func_149300_a(privatekey);
              this.field_147328_g = NetHandlerLoginServer.LoginState.AUTHENTICATING;
              this.field_147333_a.enableEncryption(this.field_147335_k);
@@ -223,7 +223,7 @@
 -                    }
 -                }
 -            }).start();
-+        	if (debug) logger.info("Lookup online UUID for " + this.field_147337_i.getName());
++            if (debug) logger.info("Lookup online UUID for " + this.field_147337_i.getName());
 +            (new ThreadPlayerLookupUUID(this, "User Authenticator #" + field_147331_b.incrementAndGet())).start();
          }
      }
@@ -246,7 +246,7 @@
 +    }
 +
 +    static GameProfile processPlayerLoginGameProfile(NetHandlerLoginServer loginServer, GameProfile gameprofile) {
-+    	if (loginServer.debug) logger.info("Player logged in: " + gameprofile);
++        if (loginServer.debug) logger.info("Player logged in: " + gameprofile);
 +        return loginServer.field_147337_i = gameprofile;
 +    }
 +
