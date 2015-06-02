@@ -94,7 +94,7 @@ version = "${mcVersion}-${forgeVersion}.${revision}"
 println "Updated KCauldron version: ${version}"
 
 launch4j {
-    jreMinVersion = '1.6.0'
+    jreMinVersion = '1.7.0'
 }
 
 tasks.packageUniversal {
@@ -175,6 +175,9 @@ publishing {
 tasks.generateProjectCauldron << {
     def file = new File('eclipse/cauldron/build.gradle')
     file.append('''
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
 repositories {
 	maven {
 		url 'https://prok.pw/repo'
