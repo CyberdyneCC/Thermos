@@ -8,10 +8,9 @@
 +        try
          {
 -            try
--            {
--                if (!this.running)
 +            while (true)
-+            {
+             {
+-                if (!this.running)
 +                if (!this.running || clientSocket == null)
                  {
                      break;
@@ -28,12 +27,11 @@
                      return;
                  }
  
-@@ -109,27 +110,24 @@
-                             continue;
+@@ -110,26 +111,23 @@
                      }
                  }
-+            }
              }
++            }
              catch (SocketTimeoutException sockettimeoutexception)
              {
 -                break;

@@ -38,7 +38,7 @@ public class KCauldronUpdater implements Runnable {
 						+ version + ") is up to date");
 			}
 		}
-		
+
 		@Override
 		public void error(Throwable t) {
 			super.error(t);
@@ -117,8 +117,9 @@ public class KCauldronUpdater implements Runnable {
 			}
 			HttpUriRequest request = RequestBuilder
 					.get()
-					.setUri("https://prok.pw/repo/pw/prok/KCauldron/"
-							+ mVersion + "/" + filename)
+					.setUri("https://prok.pw/repo/pw/prok/"
+							+ KCauldron.getChannel() + "/" + mVersion + "/"
+							+ filename)
 					.addParameter("hostname", server.getHostname())
 					.addParameter("port", "" + server.getPort()).build();
 			HttpResponse response = HttpClientBuilder.create()

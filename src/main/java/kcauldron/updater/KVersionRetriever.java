@@ -71,8 +71,10 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 		if (DEBUG)
 			sLogger.info("Requesting for new version...");
 		try {
-			HttpUriRequest request = RequestBuilder.get()
-					.setUri("https://prok.pw/version/pw.prok/KCauldron")
+			HttpUriRequest request = RequestBuilder
+					.get()
+					.setUri("https://prok.pw/version/pw.prok/"
+							+ KCauldron.getChannel())
 					.addParameter("hostname", sServer.getHostname())
 					.addParameter("port", "" + sServer.getPort()).build();
 			HttpResponse response = HttpClientBuilder.create()

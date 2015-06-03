@@ -7,11 +7,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 public class KCauldron {
-	private static String sCurrentVersion;
-
-	public static String getCurrentVersion() {
-		if (sCurrentVersion != null)
-			return sCurrentVersion;
+	private static boolean sManifestParsed = false;
+	
+	private static void parseManifest() {
+		if (sManifestParsed) return;
+		sManifestParsed = true;
+		
 		try {
 			Enumeration<URL> resources = KCauldron.class.getClassLoader()
 					.getResources("META-INF/MANIFEST.MF");
@@ -25,21 +26,45 @@ public class KCauldron {
 				    String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
 				    jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
 				    sServerLocation = new File(jarFilePath);
-					return sCurrentVersion = version;
+				    
+					sCurrentVersion = version;
+					sBranch = manifest.getProperty("KCauldron-Branch");
+					sChannel = manifest.getProperty("KCauldron-Channel");
 				}
 				manifest.clear();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return sCurrentVersion = "UNKNOWN";
+
+	}
+	
+	private static String sCurrentVersion;
+
+	public static String getCurrentVersion() {
+		parseManifest();
+		return sCurrentVersion;
 	}
 
 	private static File sServerLocation;
 
 	public static File getServerLocation() {
-		getCurrentVersion();
+		parseManifest();
 		return sServerLocation;
+	}
+	
+	private static String sBranch;
+	
+	public static String getBranch() {
+		parseManifest();
+		return sBranch;
+	}
+	
+	private static String sChannel;
+	
+	public static String getChannel() {
+		parseManifest();
+		return sChannel;
 	}
 	
 	public static File sNewServerLocation;
