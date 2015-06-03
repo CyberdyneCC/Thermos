@@ -24,6 +24,9 @@ public class KCauldronConfig extends ConfigBase {
 	public StringSetting updatecheckerInstallAs = new StringSetting(this,
 			"updatechecker.installAs", "", "Install new version with specified name");
 
+	public BoolSetting loggingMaterialInjection = new BoolSetting(this,
+			"loggin.materialInjection", false, "Log material injection event");
+	
 	public KCauldronConfig() {
 		super("kcauldron.yml", "kc");
 		register(commandEnable);
@@ -33,6 +36,7 @@ public class KCauldronConfig extends ConfigBase {
 		register(updatecheckerAutoinstall);
 		register(updatecheckerQuite);
 		register(updatecheckerInstallAs);
+		register(loggingMaterialInjection);
 		load();
 	}
 
