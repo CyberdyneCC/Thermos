@@ -89,7 +89,7 @@ public class KCauldronUpdater implements Runnable {
 			boolean quite = MinecraftServer.kcauldronConfig.updatecheckerQuite
 					.getValue();
 			MinecraftServer server = MinecraftServer.getServer();
-			final String filename = "KCauldron-" + mVersion + "-server.jar";
+			final String filename = KCauldron.getChannel() + "-" + mVersion + "-server.jar";
 			File path = KCauldron.getServerLocation();
 			File newPath = new File(path.getParentFile(),
 					getInstallAs(filename));
@@ -124,6 +124,9 @@ public class KCauldronUpdater implements Runnable {
 					.addParameter("port", "" + server.getPort()).build();
 			HttpResponse response = HttpClientBuilder.create()
 					.setUserAgent("KCauldron Updater").build().execute(request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException("Could not download new version");
+			}
 			InputStream is = response.getEntity().getContent();
 			Files.copy(is, newPath.toPath());
 			if (mSender != null && !quite) {
