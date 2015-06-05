@@ -258,12 +258,23 @@
                      s0epacketspawnobject.func_148996_a(MathHelper.floor_float((float)(entityleashknot.field_146063_b * 32)));
                      s0epacketspawnobject.func_148995_b(MathHelper.floor_float((float)(entityleashknot.field_146064_c * 32)));
                      s0epacketspawnobject.func_149005_c(MathHelper.floor_float((float)(entityleashknot.field_146062_d * 32)));
-@@ -607,7 +705,7 @@
+@@ -607,13 +705,17 @@
                  {
                      throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
                  }
 -            }
 +            //}
          }
-         else
+-        else
++        else if (myEntity instanceof EntityLivingBase)
          {
+             this.lastHeadMotion = MathHelper.floor_float(this.myEntity.getRotationYawHead() * 256.0F / 360.0F);
+             return new S0FPacketSpawnMob((EntityLivingBase)this.myEntity);
+         }
++        else
++        {
++            throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "! Report this error to mod author.");
++        }
+     }
+ 
+     public void removePlayerFromTracker(EntityPlayerMP p_73123_1_)
