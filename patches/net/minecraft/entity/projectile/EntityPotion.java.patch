@@ -1,12 +1,26 @@
 --- ../src-base/minecraft/net/minecraft/entity/projectile/EntityPotion.java
 +++ ../src-work/minecraft/net/minecraft/entity/projectile/EntityPotion.java
-@@ -14,9 +14,16 @@
+@@ -2,8 +2,10 @@
+ 
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++
+ import java.util.Iterator;
+ import java.util.List;
++
+ import net.minecraft.entity.EntityLivingBase;
+ import net.minecraft.init.Items;
+ import net.minecraft.item.ItemStack;
+@@ -14,9 +16,19 @@
  import net.minecraft.util.MovingObjectPosition;
  import net.minecraft.world.World;
  
++
 +// CraftBukkit start
 +import java.util.HashMap;
++
 +import net.minecraft.entity.player.EntityPlayerMP;
++
 +import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 +import org.bukkit.entity.LivingEntity;
 +// CraftBukkit end
@@ -18,7 +32,7 @@
      private static final String __OBFID = "CL_00001727";
  
      public EntityPotion(World p_i1788_1_)
-@@ -88,14 +95,16 @@
+@@ -88,14 +100,16 @@
          {
              List list = Items.potionitem.getEffects(this.potionDamage);
  
@@ -37,7 +51,7 @@
  
                      while (iterator.hasNext())
                      {
-@@ -111,6 +120,25 @@
+@@ -111,6 +125,25 @@
                                  d1 = 1.0D;
                              }
  
@@ -63,7 +77,7 @@
                              Iterator iterator1 = list.iterator();
  
                              while (iterator1.hasNext())
-@@ -118,9 +146,22 @@
+@@ -118,9 +151,22 @@
                                  PotionEffect potioneffect = (PotionEffect)iterator1.next();
                                  int i = potioneffect.getPotionID();
  
@@ -87,3 +101,15 @@
                                  }
                                  else
                                  {
+@@ -170,4 +216,11 @@
+             p_70014_1_.setTag("Potion", this.potionDamage.writeToNBT(new NBTTagCompound()));
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

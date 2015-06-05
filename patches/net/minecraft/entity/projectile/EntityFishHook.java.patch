@@ -114,3 +114,15 @@
              }
          }
      }
+@@ -594,4 +645,11 @@
+             this.field_146042_b.fishEntity = null;
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

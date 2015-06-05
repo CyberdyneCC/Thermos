@@ -55,3 +55,15 @@
      }
  
      protected void writeEntityToNBT(NBTTagCompound p_70014_1_)
+@@ -107,4 +124,11 @@
+     {
+         return this.tntPlacedBy;
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

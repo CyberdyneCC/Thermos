@@ -36,3 +36,15 @@
              this.setDead();
          }
      }
+@@ -125,4 +136,11 @@
+     {
+         this.dataWatcher.updateObject(10, Byte.valueOf((byte)(p_82343_1_ ? 1 : 0)));
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

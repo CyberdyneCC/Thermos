@@ -1,9 +1,10 @@
 --- ../src-base/minecraft/net/minecraft/entity/item/EntityXPOrb.java
 +++ ../src-work/minecraft/net/minecraft/entity/item/EntityXPOrb.java
-@@ -12,13 +12,18 @@
+@@ -12,13 +12,19 @@
  import net.minecraftforge.common.MinecraftForge;
  import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
  
++
 +// CraftBukkit start
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
 +import org.bukkit.event.entity.EntityTargetEvent;
@@ -20,7 +21,7 @@
      private EntityPlayer closestPlayer;
      private int xpTargetColor;
      private static final String __OBFID = "CL_00001544";
-@@ -115,18 +120,27 @@
+@@ -115,18 +121,27 @@
  
          if (this.closestPlayer != null)
          {
@@ -58,7 +59,7 @@
              }
          }
  
-@@ -210,7 +224,7 @@
+@@ -210,7 +225,7 @@
                  p_70100_1_.xpCooldown = 2;
                  this.worldObj.playSoundAtEntity(p_70100_1_, "random.orb", 0.1F, 0.5F * ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.8F));
                  p_70100_1_.onItemPickup(this, 1);
@@ -67,7 +68,7 @@
                  this.setDead();
              }
          }
-@@ -229,6 +243,88 @@
+@@ -229,6 +244,88 @@
  
      public static int getXPSplit(int p_70527_0_)
      {
@@ -156,3 +157,15 @@
          return p_70527_0_ >= 2477 ? 2477 : (p_70527_0_ >= 1237 ? 1237 : (p_70527_0_ >= 617 ? 617 : (p_70527_0_ >= 307 ? 307 : (p_70527_0_ >= 149 ? 149 : (p_70527_0_ >= 73 ? 73 : (p_70527_0_ >= 37 ? 37 : (p_70527_0_ >= 17 ? 17 : (p_70527_0_ >= 7 ? 7 : (p_70527_0_ >= 3 ? 3 : 1)))))))));
      }
  
+@@ -236,4 +333,11 @@
+     {
+         return false;
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

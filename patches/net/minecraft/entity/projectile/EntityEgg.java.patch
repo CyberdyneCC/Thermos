@@ -1,22 +1,24 @@
 --- ../src-base/minecraft/net/minecraft/entity/projectile/EntityEgg.java
 +++ ../src-work/minecraft/net/minecraft/entity/projectile/EntityEgg.java
-@@ -6,6 +6,15 @@
+@@ -6,6 +6,17 @@
  import net.minecraft.util.MovingObjectPosition;
  import net.minecraft.world.World;
  
 +// CraftBukkit start
 +import net.minecraft.entity.player.EntityPlayerMP;
++
 +import org.bukkit.entity.Ageable;
 +import org.bukkit.entity.EntityType;
 +import org.bukkit.entity.Player;
 +import org.bukkit.event.player.PlayerEggThrowEvent;
++
 +import net.minecraft.entity.Entity;
 +// CraftBukkit end
 +
  public class EntityEgg extends EntityThrowable
  {
      private static final String __OBFID = "CL_00001724";
-@@ -32,24 +41,43 @@
+@@ -32,24 +43,43 @@
              p_70184_1_.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
          }
  
@@ -71,3 +73,15 @@
          for (int j = 0; j < 8; ++j)
          {
              this.worldObj.spawnParticle("snowballpoof", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+@@ -60,4 +90,11 @@
+             this.setDead();
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

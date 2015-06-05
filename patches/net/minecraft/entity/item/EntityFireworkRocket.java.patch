@@ -9,3 +9,15 @@
      private static final String __OBFID = "CL_00001718";
  
      public EntityFireworkRocket(World p_i1762_1_)
+@@ -199,4 +199,11 @@
+     {
+         return false;
+     }
++    
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

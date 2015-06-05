@@ -14,3 +14,15 @@
                  this.func_146065_b(p_70097_1_.getEntity(), false);
                  this.setDisplayedItem((ItemStack)null);
              }
+@@ -203,4 +210,11 @@
+ 
+         return true;
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

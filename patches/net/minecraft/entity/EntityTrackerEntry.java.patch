@@ -214,3 +214,56 @@
          }
  
          Packet pkt = FMLNetworkHandler.getEntitySpawningPacket(this.myEntity);
+@@ -491,7 +589,7 @@
+         {
+             return new S0EPacketSpawnObject(this.myEntity, 1);
+         }
+-        else if (!(this.myEntity instanceof IAnimals) && !(this.myEntity instanceof EntityDragon))
++        else if (myEntity.entityProjectileHook())
+         {
+             if (this.myEntity instanceof EntityFishHook)
+             {
+@@ -528,13 +626,13 @@
+                 return new S0EPacketSpawnObject(this.myEntity, 76);
+             }
+             else
+-            {
+-                S0EPacketSpawnObject s0epacketspawnobject;
++            //{
++            //    S0EPacketSpawnObject s0epacketspawnobject;
+ 
+                 if (this.myEntity instanceof EntityFireball)
+                 {
+                     EntityFireball entityfireball = (EntityFireball)this.myEntity;
+-                    s0epacketspawnobject = null;
++                    S0EPacketSpawnObject s0epacketspawnobject = null;
+                     byte b0 = 63;
+ 
+                     if (this.myEntity instanceof EntitySmallFireball)
+@@ -584,7 +682,7 @@
+                 else if (this.myEntity instanceof EntityItemFrame)
+                 {
+                     EntityItemFrame entityitemframe = (EntityItemFrame)this.myEntity;
+-                    s0epacketspawnobject = new S0EPacketSpawnObject(this.myEntity, 71, entityitemframe.hangingDirection);
++                    S0EPacketSpawnObject s0epacketspawnobject = new S0EPacketSpawnObject(this.myEntity, 71, entityitemframe.hangingDirection);
+                     s0epacketspawnobject.func_148996_a(MathHelper.floor_float((float)(entityitemframe.field_146063_b * 32)));
+                     s0epacketspawnobject.func_148995_b(MathHelper.floor_float((float)(entityitemframe.field_146064_c * 32)));
+                     s0epacketspawnobject.func_149005_c(MathHelper.floor_float((float)(entityitemframe.field_146062_d * 32)));
+@@ -593,7 +691,7 @@
+                 else if (this.myEntity instanceof EntityLeashKnot)
+                 {
+                     EntityLeashKnot entityleashknot = (EntityLeashKnot)this.myEntity;
+-                    s0epacketspawnobject = new S0EPacketSpawnObject(this.myEntity, 77);
++                    S0EPacketSpawnObject s0epacketspawnobject = new S0EPacketSpawnObject(this.myEntity, 77);
+                     s0epacketspawnobject.func_148996_a(MathHelper.floor_float((float)(entityleashknot.field_146063_b * 32)));
+                     s0epacketspawnobject.func_148995_b(MathHelper.floor_float((float)(entityleashknot.field_146064_c * 32)));
+                     s0epacketspawnobject.func_149005_c(MathHelper.floor_float((float)(entityleashknot.field_146062_d * 32)));
+@@ -607,7 +705,7 @@
+                 {
+                     throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
+                 }
+-            }
++            //}
+         }
+         else
+         {

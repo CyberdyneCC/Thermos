@@ -47,3 +47,15 @@
                      }
                  }
              }
+@@ -101,4 +116,11 @@
+             return true;
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

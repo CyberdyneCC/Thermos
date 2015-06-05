@@ -1,9 +1,10 @@
 --- ../src-base/minecraft/net/minecraft/entity/item/EntityEnderPearl.java
 +++ ../src-work/minecraft/net/minecraft/entity/item/EntityEnderPearl.java
-@@ -12,6 +12,12 @@
+@@ -12,6 +12,13 @@
  import net.minecraftforge.common.MinecraftForge;
  import net.minecraftforge.event.entity.living.EnderTeleportEvent;
  
++
 +// CraftBukkit start
 +import org.bukkit.Bukkit;
 +import org.bukkit.craftbukkit.event.CraftEventFactory;
@@ -13,7 +14,7 @@
  public class EntityEnderPearl extends EntityThrowable
  {
      private static final String __OBFID = "CL_00001725";
-@@ -52,18 +58,31 @@
+@@ -52,22 +59,42 @@
  
                  if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj)
                  {
@@ -54,3 +55,14 @@
                  }
              }
  
+             this.setDead();
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }

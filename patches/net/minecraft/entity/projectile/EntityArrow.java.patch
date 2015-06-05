@@ -1,11 +1,22 @@
 --- ../src-base/minecraft/net/minecraft/entity/projectile/EntityArrow.java
 +++ ../src-work/minecraft/net/minecraft/entity/projectile/EntityArrow.java
-@@ -23,6 +23,13 @@
+@@ -2,7 +2,9 @@
+ 
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++
+ import java.util.List;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.enchantment.EnchantmentHelper;
+@@ -23,6 +25,14 @@
  import net.minecraft.util.Vec3;
  import net.minecraft.world.World;
  
 +// CraftBukkit start
 +import net.minecraft.entity.item.EntityItem;
++
 +import org.bukkit.entity.LivingEntity;
 +import org.bukkit.event.entity.EntityCombustByEntityEvent;
 +import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -14,7 +25,7 @@
  public class EntityArrow extends Entity implements IProjectile
  {
      private int field_145791_d = -1;
-@@ -30,14 +37,14 @@
+@@ -30,14 +40,14 @@
      private int field_145789_f = -1;
      private Block field_145790_g;
      private int inData;
@@ -31,7 +42,7 @@
      private static final String __OBFID = "CL_00001715";
  
      public EntityArrow(World p_i1753_1_)
-@@ -61,6 +68,7 @@
+@@ -61,6 +71,7 @@
          super(p_i1755_1_);
          this.renderDistanceWeight = 10.0D;
          this.shootingEntity = p_i1755_2_;
@@ -39,7 +50,7 @@
  
          if (p_i1755_2_ instanceof EntityPlayer)
          {
-@@ -91,6 +99,7 @@
+@@ -91,6 +102,7 @@
          super(p_i1756_1_);
          this.renderDistanceWeight = 10.0D;
          this.shootingEntity = p_i1756_2_;
@@ -47,7 +58,7 @@
  
          if (p_i1756_2_ instanceof EntityPlayer)
          {
-@@ -199,7 +208,7 @@
+@@ -199,7 +211,7 @@
              {
                  ++this.ticksInGround;
  
@@ -56,7 +67,7 @@
                  {
                      this.setDead();
                  }
-@@ -246,7 +255,7 @@
+@@ -246,7 +258,7 @@
  
                      if (movingobjectposition1 != null)
                      {
@@ -65,7 +76,7 @@
  
                          if (d1 < d0 || d0 == 0.0D)
                          {
-@@ -277,6 +286,8 @@
+@@ -277,6 +289,8 @@
  
              if (movingobjectposition != null)
              {
@@ -74,7 +85,7 @@
                  if (movingobjectposition.entityHit != null)
                  {
                      f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-@@ -298,13 +309,23 @@
+@@ -298,13 +312,23 @@
                          damagesource = DamageSource.causeArrowDamage(this, this.shootingEntity);
                      }
  
@@ -103,7 +114,7 @@
                          if (movingobjectposition.entityHit instanceof EntityLivingBase)
                          {
                              EntityLivingBase entitylivingbase = (EntityLivingBase)movingobjectposition.entityHit;
-@@ -487,6 +508,23 @@
+@@ -487,6 +511,23 @@
      {
          if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0)
          {
@@ -127,7 +138,7 @@
              boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && p_70100_1_.capabilities.isCreativeMode;
  
              if (this.canBePickedUp == 1 && !p_70100_1_.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1)))
-@@ -553,4 +591,11 @@
+@@ -553,4 +594,18 @@
          byte b0 = this.dataWatcher.getWatchableObjectByte(16);
          return (b0 & 1) != 0;
      }
@@ -138,4 +149,11 @@
 +        return inGround;
 +    }
 +    // CraftBukkit end
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
  }

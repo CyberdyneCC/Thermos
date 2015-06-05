@@ -22,3 +22,15 @@
              while (i > 0)
              {
                  int j = EntityXPOrb.getXPSplit(i);
+@@ -56,4 +67,11 @@
+             this.setDead();
+         }
+     }
++
++    // Cauldron start
++    @Override
++    public boolean entityProjectileHook() {
++    	return true;
++    }
++    // Cauldron end
+ }
