@@ -791,7 +791,7 @@
 +    }
 +    
 +    public boolean entityProjectileHook() {
-+    	return false;
++        return false;
 +    }
 +    // Cauldron end
  }

@@ -21,7 +21,7 @@
 +            switch(this) {
 +            case NETHER_PORTAL:
 +            case END_PORTAL:
-+            	return true;
++                return true;
 +            }
 +            return false;
 +        }

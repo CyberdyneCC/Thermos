@@ -139,11 +139,11 @@
 -            this.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
 -        }
 +        this.loadedChunkHashMap.forEachValue(new TObjectProcedure<Chunk>() {
-+        	@Override
-+        	public boolean execute(Chunk chunk) {
-+        		unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
-+        		return true;
-+        	}
++            @Override
++            public boolean execute(Chunk chunk) {
++                unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
++                return true;
++            }
 +        });
      }
  

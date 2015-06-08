@@ -17,11 +17,11 @@
 +        if (!"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
 +            java.util.Iterator<ModContainer> iterator = modList.iterator();
 +            while(iterator.hasNext()) {
-+            	ModContainer container = iterator.next();
-+            	if ("FastCraft".equals(container.getModId())) {
-+            		FMLLog.log(Level.WARN, "Found FastCraft mod, removing it...");
-+            		iterator.remove();
-+            	}
++                ModContainer container = iterator.next();
++                if ("FastCraft".equals(container.getModId())) {
++                    FMLLog.log(Level.WARN, "Found FastCraft mod, removing it...");
++                    iterator.remove();
++                }
 +            }
 +        }
 +

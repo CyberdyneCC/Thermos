@@ -75,8 +75,8 @@
              if (cascadedTweaker != null)
              {
 +                if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
-+                	FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
-+                	continue;
++                    FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
++                    continue;
 +                }
                  FMLRelaunchLog.info("Loading tweaker %s from %s", cascadedTweaker, coreMod.getName());
                  Integer sortOrder = Ints.tryParse(Strings.nullToEmpty(mfAttributes.getValue("TweakOrder")));

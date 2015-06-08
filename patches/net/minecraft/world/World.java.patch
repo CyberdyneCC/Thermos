@@ -1037,7 +1037,7 @@
  
      public void updateEntityWithOptionalForce(Entity p_72866_1_, boolean p_72866_2_)
      {
-+    	if (p_72866_1_.isDead) return;
++        if (p_72866_1_.isDead) return;
          int i = MathHelper.floor_double(p_72866_1_.posX);
          int j = MathHelper.floor_double(p_72866_1_.posZ);
          boolean isForced = getPersistentChunks().containsKey(new ChunkCoordIntPair(i >> 4, j >> 4));

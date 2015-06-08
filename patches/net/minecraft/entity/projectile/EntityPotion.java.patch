@@ -109,7 +109,7 @@
 +    // Cauldron start
 +    @Override
 +    public boolean entityProjectileHook() {
-+    	return true;
++        return true;
 +    }
 +    // Cauldron end
  }
