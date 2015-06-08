@@ -182,7 +182,7 @@ repositories {
 	}
 }
 dependencies {
-	compile 'pw.prok:KImagine:+@jar'
+	compile 'pw.prok:KImagine:0.1.8+@jar'
 	compile 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 ''')
@@ -199,7 +199,7 @@ repositories {
 }
 
 dependencies {
-    exported 'pw.prok:KImagine:+@jar'
+    exported 'pw.prok:KImagine:0.1.8+@jar'
     exported 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 
