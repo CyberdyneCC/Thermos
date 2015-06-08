@@ -36,7 +36,17 @@
          if (p_72785_2_ > this.entityViewDistance)
          {
              p_72785_2_ = this.entityViewDistance;
-@@ -246,6 +248,7 @@
+@@ -223,7 +225,9 @@
+             });
+             p_72785_1_.addEntityCrashInfo(crashreportcategory);
+             CrashReportCategory crashreportcategory1 = crashreport.makeCategory("Entity That Is Already Tracked");
++            try {
+             ((EntityTrackerEntry)this.trackedEntityIDs.lookup(p_72785_1_.getEntityId())).myEntity.addEntityCrashInfo(crashreportcategory1);
++            } catch(Exception ignored) {}
+ 
+             try
+             {
+@@ -246,6 +250,7 @@
              while (iterator.hasNext())
              {
                  EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -44,7 +54,7 @@
                  entitytrackerentry.removeFromWatchingList(entityplayermp);
              }
          }
-@@ -267,12 +270,14 @@
+@@ -267,12 +272,14 @@
          while (iterator.hasNext())
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -59,7 +69,7 @@
          }
  
          for (int i = 0; i < arraylist.size(); ++i)
-@@ -284,12 +289,13 @@
+@@ -284,12 +291,13 @@
              {
                  EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)iterator1.next();
  
@@ -74,7 +84,7 @@
      }
  
      public void func_151247_a(Entity p_151247_1_, Packet p_151247_2_)
-@@ -319,6 +325,7 @@
+@@ -319,6 +327,7 @@
          while (iterator.hasNext())
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -82,7 +92,7 @@
              entitytrackerentry.removePlayerFromTracker(p_72787_1_);
          }
      }
-@@ -331,7 +338,7 @@
+@@ -331,7 +340,7 @@
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
  
