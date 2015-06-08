@@ -1,5 +1,7 @@
 package org.bukkit.craftbukkit;
 
+import gnu.trove.procedure.TObjectProcedure;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.util.BlockSnapshot;
 
 import org.apache.commons.lang.Validate;
@@ -135,7 +138,7 @@ public class CraftWorld implements World {
     }
 
     public Chunk[] getLoadedChunks() {
-        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap.values().toArray();
+        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap.values();
         org.bukkit.Chunk[] craftChunks = new CraftChunk[chunks.length];
 
         for (int i = 0; i < chunks.length; i++) {
@@ -275,6 +278,7 @@ public class CraftWorld implements World {
         if (chunk != null) {
             world.theChunkProviderServer.loadedChunkHashMap.put(LongHash.toLong(x, z), chunk);
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
+            world.theChunkProviderServer.loadedChunkHashMap_vanilla.add(ChunkCoordIntPair.chunkXZ2Int(x, z), chunk);
 
             chunk.onChunkLoad();
 
@@ -1390,21 +1394,25 @@ public class CraftWorld implements World {
             return;
         }
 
-        net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
-        for (net.minecraft.world.chunk.Chunk chunk : cps.loadedChunkHashMap.values()) {
-            // If in use, skip it
-            if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
-                continue;
-            }
+        final net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
+        cps.loadedChunkHashMap.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
+			@Override
+			public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
+	            // If in use, skip it
+	            if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
+					return true;
+	            }
 
-            // Already unloading?
-            if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
-                continue;
-            }
+	            // Already unloading?
+	            if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
+					return true;
+	            }
 
-            // Add unload request
-            cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
-        }
+	            // Add unload request
+	            cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
+				return true;
+			}
+		});
     }
 
     // Spigot start
