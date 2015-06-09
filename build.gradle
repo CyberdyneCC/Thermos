@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import kcauldron.CreateChangelog
+import kcauldron.InstallBundle
 
 buildscript {
     repositories {
@@ -126,10 +127,26 @@ task packageChangelog(type: CreateChangelog) {
     version = project.version
 }
 
-task signJars(type: Sign, dependsOn: [packageUniversal, packageInstaller]) {
+task installBundle(type: InstallBundle, dependsOn: packageInstaller) {
+    installer packageInstaller.archivePath
+}
+
+task packageBundle(type: Zip, dependsOn: installBundle) {
+    onlyIf { project.hasProperty('officialBuild') }
+    classifier = 'bundle'
+	from packageInstaller
+	from packageUniversal
+    from fileTree(installBundle.installLocation, {
+        include 'libraries/**'
+        include 'minecraft_server.*.jar'
+    })
+}
+
+task signJars(type: Sign, dependsOn: [packageUniversal, packageInstaller, packageChangelog, packageBundle]) {
     sign packageInstaller
     sign packageUniversal
     sign packageChangelog
+    sign packageBundle
 }
 
 task preparePublication(dependsOn: signJars) {}
@@ -139,10 +156,12 @@ def getSignatureFiles = {
     def signedServer = allFiles.find { it.name.contains('-server') }
     def signedInstaller = allFiles.find { it.name.contains('-installer') }
     def signedChangelog = allFiles.find { it.name.contains('-changelog') }
+    def signedBundle = allFiles.find { it.name.contains('-bundle') }
     return [
             [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
             [archive: signedInstaller, classifier: 'installer', extension: 'jar.asc'],
-            [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc']
+            [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc'],
+            [archive: signedBundle, classifier: 'bundle', extension: 'jar.asc']
     ]
 }
 
@@ -169,6 +188,7 @@ publishing {
             artifact packageUniversal
             artifact packageInstaller
             artifact packageChangelog
+            artifact packageBundle
         }
     }
 }
