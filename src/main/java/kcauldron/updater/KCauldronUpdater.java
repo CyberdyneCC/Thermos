@@ -85,11 +85,12 @@ public class KCauldronUpdater implements Runnable {
 
 	@Override
 	public void run() {
+		boolean quite = MinecraftServer.kcauldronConfig.updatecheckerQuite
+				.getValue();
 		try {
-			boolean quite = MinecraftServer.kcauldronConfig.updatecheckerQuite
-					.getValue();
 			MinecraftServer server = MinecraftServer.getServer();
-			final String filename = KCauldron.getChannel() + "-" + mVersion + "-server.jar";
+			final String filename = KCauldron.getChannel() + "-" + mVersion
+					+ "-server.jar";
 			File path = KCauldron.getServerLocation();
 			File newPath = new File(path.getParentFile(),
 					getInstallAs(filename));
@@ -125,7 +126,8 @@ public class KCauldronUpdater implements Runnable {
 			HttpResponse response = HttpClientBuilder.create()
 					.setUserAgent("KCauldron Updater").build().execute(request);
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new IllegalStateException("Could not download new version");
+				throw new IllegalStateException(
+						"Could not download new version");
 			}
 			InputStream is = response.getEntity().getContent();
 			Files.copy(is, newPath.toPath());
@@ -151,7 +153,9 @@ public class KCauldronUpdater implements Runnable {
 			KCauldron.sNewServerLocation = newPath;
 			KCauldron.sNewServerVersion = mVersion;
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (!quite) {
+				e.printStackTrace();
+			}
 			if (mSender != null) {
 				mSender.sendMessage(ChatColor.RED + "Failed update to "
 						+ mVersion);
