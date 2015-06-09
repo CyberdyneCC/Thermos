@@ -30,7 +30,9 @@ public class KCauldronClassTransformer implements Transformer {
 	@Override
 	public void transform(final ImagineASM asm) {
 		if (asm.is("net.minecraft.world.gen.ChunkProviderServer")
-				|| asm.is("net.minecraftforge.common.chunkio.ChunkIOProvider")) {
+				|| asm.is("net.minecraftforge.common.chunkio.ChunkIOProvider")
+				|| asm.is("org.bukkit.craftbukkit.CraftWorld")
+				|| asm.is("org.bukkit.craftbukkit.v1_7_R4.CraftWorld")) {
 			FMLLog.log(Level.INFO, "KCauldron: Patching " + asm.getActualName() + " for compatibility with Mystcraft");
 			ClassReader reader = new ClassReader(asm.build());
 			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
