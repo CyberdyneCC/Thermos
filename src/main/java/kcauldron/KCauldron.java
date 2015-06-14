@@ -6,13 +6,16 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.spigotmc.RestartCommand;
+
 public class KCauldron {
 	private static boolean sManifestParsed = false;
-	
+
 	private static void parseManifest() {
-		if (sManifestParsed) return;
+		if (sManifestParsed)
+			return;
 		sManifestParsed = true;
-		
+
 		try {
 			Enumeration<URL> resources = KCauldron.class.getClassLoader()
 					.getResources("META-INF/MANIFEST.MF");
@@ -23,10 +26,11 @@ public class KCauldron {
 				String version = manifest.getProperty("KCauldron-Version");
 				if (version != null) {
 					String path = url.getPath();
-				    String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
-				    jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
-				    sServerLocation = new File(jarFilePath);
-				    
+					String jarFilePath = path.substring(path.indexOf(":") + 1,
+							path.indexOf("!"));
+					jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
+					sServerLocation = new File(jarFilePath);
+
 					sCurrentVersion = version;
 					sBranch = manifest.getProperty("KCauldron-Branch");
 					sChannel = manifest.getProperty("KCauldron-Channel");
@@ -38,7 +42,7 @@ public class KCauldron {
 		}
 
 	}
-	
+
 	private static String sCurrentVersion;
 
 	public static String getCurrentVersion() {
@@ -52,22 +56,26 @@ public class KCauldron {
 		parseManifest();
 		return sServerLocation;
 	}
-	
+
 	private static String sBranch;
-	
+
 	public static String getBranch() {
 		parseManifest();
 		return sBranch;
 	}
-	
+
 	private static String sChannel;
-	
+
 	public static String getChannel() {
 		parseManifest();
 		return sChannel;
 	}
-	
+
 	public static File sNewServerLocation;
 	public static String sNewServerVersion;
 	public static boolean sUpdateInProgress;
+
+	public static void restart() {
+		RestartCommand.restart(true);
+	}
 }

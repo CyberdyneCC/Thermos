@@ -152,6 +152,12 @@ public class KCauldronUpdater implements Runnable {
 			}
 			KCauldron.sNewServerLocation = newPath;
 			KCauldron.sNewServerVersion = mVersion;
+			if (MinecraftServer.kcauldronConfig.updatecheckerAutorestart.getValue()) {
+				if (mSender != null) {
+					mSender.sendMessage(ChatColor.DARK_RED + "Initiate server restart");
+				}
+				KCauldron.restart();
+			}
 		} catch (Exception e) {
 			if (!quite) {
 				e.printStackTrace();

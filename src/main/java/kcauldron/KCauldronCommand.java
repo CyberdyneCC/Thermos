@@ -9,16 +9,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class KCauldronCommand extends Command {
-	public static final String NAME = "kcauldron";
+	public static final String NAME = "kc";
 	public static final String CHECK = NAME + ".check";
 	public static final String UPDATE = NAME + ".update";
+	public static final String RESTART = NAME + ".restart";
 
 	public KCauldronCommand() {
 		super(NAME);
 
 		StringBuilder builder = new StringBuilder();
-		builder.append(String.format("/%s check\n", NAME));
-		builder.append(String.format("/%s update [version]\n", NAME));
+		builder.append(String.format("/%s check - Check to update\n", NAME));
+		builder.append(String
+				.format("/%s update [version] - Update to specified or latest version\n",
+						NAME));
+		builder.append(String.format("/%s restart - Restart server\n", NAME));
 		setUsage(builder.toString());
 
 		setPermission("kcauldron");
@@ -50,6 +54,7 @@ public class KCauldronCommand extends Command {
 			return true;
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.YELLOW + "Please specify action");
+			sender.sendMessage(ChatColor.AQUA + usageMessage);
 			return true;
 		}
 		String action = args[0];
@@ -62,6 +67,10 @@ public class KCauldronCommand extends Command {
 		} else if ("update".equals(action)) {
 			KCauldronUpdater.initUpdate(sender, args.length > 1 ? args[1]
 					: null);
+		} else if ("restart".equals(action)) {
+			if (!testPermission(sender, RESTART))
+				return true;
+			KCauldron.restart();
 		} else {
 			sender.sendMessage(ChatColor.RED + "Unknown action");
 		}

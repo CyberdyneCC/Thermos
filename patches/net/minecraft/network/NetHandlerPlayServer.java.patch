@@ -1795,7 +1795,7 @@
          {
              packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
 @@ -1093,16 +2398,18 @@
-                 {
+ 
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
 -                        itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));

@@ -26,8 +26,12 @@ public class RestartCommand extends Command
         }
         return true;
     }
+    
+    public static void restart() {
+    	restart(false);
+    }
 
-    public static void restart()
+    public static void restart(boolean forbidShutdown)
     {
         try
         {
@@ -98,9 +102,13 @@ public class RestartCommand extends Command
                 Runtime.getRuntime().addShutdownHook( shutdownHook );
             } else
             {
+            	if (forbidShutdown) {
+            		System.out.println("Attempt to restart server without restart script, decline request");
+            		return;
+            	}
                 System.out.println( "Startup script '" + SpigotConfig.restartScript + "' does not exist! Stopping server." );
             }
-            System.exit( 0 );
+            cpw.mods.fml.common.FMLCommonHandler.instance().exitJava(0, false);
         } catch ( Exception ex )
         {
             ex.printStackTrace();

@@ -1,5 +1,7 @@
 package kcauldron;
 
+import static org.objectweb.asm.Opcodes.*;
+
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -11,19 +13,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 
-import pw.prok.imagine.api.Pair;
 import pw.prok.imagine.asm.ImagineASM;
-import pw.prok.imagine.asm.ImagineMethod;
-import pw.prok.imagine.asm.ImagineRemapper;
 import pw.prok.imagine.asm.Transformer;
-
-import com.avaje.ebean.annotation.Transactional;
-
 import cpw.mods.fml.common.FMLLog;
-import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.IChunkProvider;
-import static org.objectweb.asm.Opcodes.*;
 
 @Transformer.RegisterTransformer
 public class KCauldronClassTransformer implements Transformer {
