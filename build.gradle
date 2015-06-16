@@ -53,7 +53,7 @@ def buildInfo(String key) {
             buildInfoCached = new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))
         } else {
             buildInfoCached = [
-                    nextBuildNumber: 'UNOFFICIAL.' + gitInfo('hash'),
+                    nextBuildNumber: 'UNOFFICIAL',
                     version        : 'NONE'
             ]
         }
@@ -88,7 +88,7 @@ ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1448"
 ext.revision = buildInfo('nextBuildNumber')
 version = "${mcVersion}-${forgeVersion}.${revision}"
-println "Updated KCauldron version: ${version}"
+if (project.hasProperty('officialBuild')) println "Updated KCauldron version: ${version}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -101,7 +101,7 @@ configurations {
 }
 
 dependencies {
-    bootstrap 'pw.prok:KBootstrap:0.0.9+'
+    bootstrap 'pw.prok:KBootstrap:0.0.10+'
 
     libraries 'net.minecraft:launchwrapper:1.11'
     libraries 'org.ow2.asm:asm-all:5.0.3'
@@ -158,8 +158,9 @@ def generateManifest(boolean legacy = false) {
     [
             'KCauldron-Git-Branch'  : gitInfo('branch'),
             'KCauldron-Git-Hash'    : gitInfo('fullHash'),
-            'KCauldron-Version'     : project.version,
+            'KCauldron-Group'       : project.group,
             'KCauldron-Channel'     : project.name,
+            'KCauldron-Version'     : project.version,
             'KCauldron-Legacy'      : legacy,
             'Implementation-Vendor' : 'Prototik',
             'Implementation-Title'  : project.name,
@@ -225,6 +226,10 @@ task signPom(type: Sign, dependsOn: 'generatePomFileForMavenPublication') {
 
 task preparePublication(dependsOn: [signJars, signPom]) {}
 
+def getPomSignature = {
+    return project.tasks.signPom.signatureFiles.collect { it }[0]
+}
+
 def getSignatureFiles = {
     def allFiles = project.tasks.signJars.signatureFiles.collect { it }
     def signedServer = allFiles.find { it.name.contains('-server') }
@@ -258,6 +263,10 @@ publishing {
                     classifier = signature.classifier
                     extension = signature.extension
                 }
+            }
+            artifact(getPomSignature()) {
+                classifier = null
+                extension = 'pom.asc'
             }
             artifact packageUniversal
             artifact packageChangelog
