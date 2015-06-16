@@ -1,10 +1,14 @@
 package kcauldron.updater;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import kcauldron.KCauldron;
+import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.http.HttpResponse;
@@ -15,9 +19,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.google.common.base.Splitter;
+import com.google.common.base.Joiner;
 
-public class KCauldronUpdater implements Runnable {
+public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
 	private static final class LatestVersionCallback extends
 			CommandSenderUpdateCallback {
 		public LatestVersionCallback(CommandSender sender) {
@@ -25,17 +29,17 @@ public class KCauldronUpdater implements Runnable {
 		}
 
 		@Override
-		public void newVersion(String currentVersion, String newVersion) {
+		public void newVersion(String newVersion) {
 			startUpdate(getSender(), newVersion);
 		}
 
 		@Override
-		public void upToDate(String version) {
+		public void upToDate() {
 			KCauldron.sUpdateInProgress = false;
 			CommandSender sender = getSender();
 			if (sender != null) {
 				sender.sendMessage(ChatColor.DARK_PURPLE + "Current version ("
-						+ version + ") is up to date");
+						+ KCauldron.getCurrentVersion() + ") is up to date");
 			}
 		}
 
@@ -56,7 +60,8 @@ public class KCauldronUpdater implements Runnable {
 		if (version == null) {
 			sender.sendMessage(ChatColor.DARK_PURPLE
 					+ "Fetching latest version...");
-			new KVersionRetriever(new LatestVersionCallback(sender), false);
+			KVersionRetriever.startServer(new LatestVersionCallback(sender),
+					false);
 		} else {
 			startUpdate(sender, version);
 		}
@@ -85,78 +90,66 @@ public class KCauldronUpdater implements Runnable {
 
 	@Override
 	public void run() {
+		if (!MinecraftServer.kcauldronConfig.updatecheckerQuite.getValue()) {
+			mSender.sendMessage(ChatColor.DARK_PURPLE
+					+ "Retrieving latest KBootstrap version...");
+		}
+		new KVersionRetriever(this, false, false, "pw.prok", "KBootstrap");
+	}
+
+	@Override
+	public void upToDate() {
+
+	}
+
+	@Override
+	public void newVersion(String kbootstrapVersion) {
 		boolean quite = MinecraftServer.kcauldronConfig.updatecheckerQuite
 				.getValue();
 		try {
-			MinecraftServer server = MinecraftServer.getServer();
-			final String filename = KCauldron.getChannel() + "-" + mVersion
-					+ "-server.jar";
-			File path = KCauldron.getServerLocation();
-			File newPath = new File(path.getParentFile(),
-					getInstallAs(filename));
-			if (mSender != null) {
-				if (!quite) {
-					mSender.sendMessage(ChatColor.DARK_PURPLE
-							+ "Current version is located in " + ChatColor.GOLD
-							+ path.getAbsolutePath());
-					mSender.sendMessage(ChatColor.DARK_PURPLE
-							+ "Installing new version in " + ChatColor.GOLD
-							+ newPath.getAbsolutePath());
-				}
-				if (newPath.exists()) {
-					Bukkit.getConsoleSender().sendMessage(
-							"ERROR: Install location already exists: "
-									+ newPath.getAbsolutePath());
-					mSender.sendMessage(ChatColor.RED
-							+ "ERROR: Install location already exists");
-					return;
-				}
-				if (!quite) {
-					mSender.sendMessage(ChatColor.DARK_PURPLE
-							+ "Downloading new version...");
-				}
-			}
-			HttpUriRequest request = RequestBuilder
-					.get()
-					.setUri("https://prok.pw/repo/pw/prok/"
-							+ KCauldron.getChannel() + "/" + mVersion + "/"
-							+ filename)
-					.addParameter("hostname", server.getHostname())
-					.addParameter("port", "" + server.getPort()).build();
-			HttpResponse response = HttpClientBuilder.create()
-					.setUserAgent("KCauldron Updater").build().execute(request);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new IllegalStateException(
-						"Could not download new version");
-			}
-			InputStream is = response.getEntity().getContent();
-			Files.copy(is, newPath.toPath());
-			if (mSender != null && !quite) {
+			if (!quite) {
 				mSender.sendMessage(ChatColor.DARK_PURPLE
-						+ "Download completed");
+						+ "Downloading KBootstrap " + kbootstrapVersion + "...");
 			}
-			makeSymlinks(newPath);
-			if (MinecraftServer.kcauldronConfig.updatecheckerDeleteOld
-					.getValue()) {
-				if (mSender != null && !quite) {
-					mSender.sendMessage(ChatColor.DARK_PURPLE
-							+ "Mark old version for deletion");
-				}
-				path.deleteOnExit();
-				if (KCauldron.sNewServerLocation != null) {
-					KCauldron.sNewServerLocation.deleteOnExit();
-				}
+			File kbootstrap = File.createTempFile("kbootstrap",
+					String.valueOf(System.currentTimeMillis()));
+			download("https://prok.pw/repo/pw/prok/KBootstrap/"
+					+ kbootstrapVersion + "/KBootstrap-" + kbootstrapVersion
+					+ "-app.jar", kbootstrap);
+			if (!quite) {
+				mSender.sendMessage(ChatColor.DARK_PURPLE
+						+ "Installing KCauldron " + mVersion
+						+ " via KBootstrap " + kbootstrapVersion + "...");
 			}
-			if (mSender != null) {
-				mSender.sendMessage(ChatColor.DARK_PURPLE + "Update completed");
-			}
-			KCauldron.sNewServerLocation = newPath;
-			KCauldron.sNewServerVersion = mVersion;
-			if (MinecraftServer.kcauldronConfig.updatecheckerAutorestart.getValue()) {
-				if (mSender != null) {
-					mSender.sendMessage(ChatColor.DARK_RED + "Initiate server restart");
-				}
-				KCauldron.restart();
+
+			String javahome = System.getProperty("java.home");
+			String javapath = javahome + "/bin/java";
+
+			List<String> command = new ArrayList<String>();
+			command.add(javapath);
+			command.add("-jar");
+			command.add(kbootstrap.getCanonicalPath());
+			command.add("--serverDir");
+			command.add(KCauldron.getServerLocation().getCanonicalPath());
+			command.add("--installKCauldron");
+			command.add(mVersion);
+			command.add("--serverSymlinks");
+			command.add(MinecraftServer.kcauldronConfig.updatecheckerSymlinks
+					.getValue());
+
+			Bukkit.getConsoleSender().sendMessage(
+					"Starting command: " + Joiner.on(' ').join(command));
+
+			ProcessBuilder builder = new ProcessBuilder(command);
+			builder.environment().put("JAVA_HOME", javahome);
+			switch (builder.start().waitFor()) {
+			case 0:
+				mSender.sendMessage(ChatColor.GREEN + "KCauldron " + mVersion
+						+ " installed");
+				break;
+			default:
+				mSender.sendMessage(ChatColor.RED
+						+ "Failed to install KCauldron " + mVersion);
 			}
 		} catch (Exception e) {
 			if (!quite) {
@@ -171,35 +164,29 @@ public class KCauldronUpdater implements Runnable {
 		}
 	}
 
-	private String getInstallAs(String filename) {
-		String path = MinecraftServer.kcauldronConfig.updatecheckerInstallAs
-				.getValue().trim();
-		if (path.length() > 0) {
-			return path.replace("%version%", mVersion);
-		}
-		return filename;
+	@Override
+	public void error(Throwable t) {
+		KCauldron.sUpdateInProgress = false;
+		t.printStackTrace();
 	}
 
-	private void makeSymlinks(File newPath) {
-		try {
-			for (String symlink : Splitter.on(File.pathSeparatorChar).split(
-					MinecraftServer.kcauldronConfig.updatecheckerSymlinks
-							.getValue())) {
-				symlink = symlink.trim();
-				if (symlink.length() == 0)
-					continue;
-				File symlinkPath = new File(symlink);
-				if (mSender != null
-						&& !MinecraftServer.kcauldronConfig.updatecheckerQuite
-								.getValue()) {
-					mSender.sendMessage(ChatColor.RED + "Create symlink "
-							+ ChatColor.GOLD + symlinkPath.getAbsolutePath());
-				}
-				Files.deleteIfExists(symlinkPath.toPath());
-				Files.createSymbolicLink(symlinkPath.toPath(), newPath.toPath());
-			}
-		} catch (Exception e) {
-
+	private static void download(String url, File destination)
+			throws IOException {
+		HttpUriRequest request = RequestBuilder
+				.get()
+				.setUri(url)
+				.addParameter("hostname",
+						MinecraftServer.getServer().getHostname())
+				.addParameter("port",
+						String.valueOf(MinecraftServer.getServer().getPort()))
+				.build();
+		HttpResponse response = HttpClientBuilder.create()
+				.setUserAgent("KCauldron Updater").build().execute(request);
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new IllegalStateException("Could not download " + url);
 		}
+		InputStream is = response.getEntity().getContent();
+		Files.copy(is, destination.toPath());
+		is.close();
 	}
 }

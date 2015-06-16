@@ -62,8 +62,8 @@ public class KCauldronCommand extends Command {
 			if (!testPermission(sender, CHECK))
 				return true;
 			sender.sendMessage(ChatColor.GREEN + "Initiated version check...");
-			new KVersionRetriever(new CommandSenderUpdateCallback(sender),
-					false);
+			KVersionRetriever.startServer(new CommandSenderUpdateCallback(
+					sender), false);
 		} else if ("update".equals(action)) {
 			KCauldronUpdater.initUpdate(sender, args.length > 1 ? args[1]
 					: null);

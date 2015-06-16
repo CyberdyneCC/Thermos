@@ -34,13 +34,17 @@ public class KCauldron {
 					sCurrentVersion = version;
 					sBranch = manifest.getProperty("KCauldron-Branch");
 					sChannel = manifest.getProperty("KCauldron-Channel");
+					break;
 				}
 				manifest.clear();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		String home = System.getenv("KCAULDRON_HOME");
+		if (home != null) {
+			sServerLocation = new File(home);
+		}
 	}
 
 	private static String sCurrentVersion;

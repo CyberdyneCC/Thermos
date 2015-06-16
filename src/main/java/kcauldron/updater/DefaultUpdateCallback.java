@@ -41,15 +41,15 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
 	}
 
 	@Override
-	public void upToDate(String version) {
+	public void upToDate() {
 		mHasUpdate = false;
-		mCurrentVersion = version;
+		mCurrentVersion = KCauldron.getCurrentVersion();
 		mNewVersion = null;
 	}
 
 	@Override
-	public void newVersion(String currentVersion, String newVersion) {
-		mCurrentVersion = currentVersion;
+	public void newVersion(String newVersion) {
+		mCurrentVersion = KCauldron.getCurrentVersion();
 		mNewVersion = newVersion;
 		if (!mHasUpdate) {
 			Bukkit.getConsoleSender().sendMessage(

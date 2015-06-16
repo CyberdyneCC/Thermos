@@ -3,6 +3,7 @@ package kcauldron.updater;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+import kcauldron.KCauldron;
 import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
 
 import org.bukkit.ChatColor;
@@ -14,38 +15,39 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
 	public CommandSenderUpdateCallback(CommandSender sender) {
 		mSender = new WeakReference<CommandSender>(sender);
 	}
-	
+
 	protected CommandSender getSender() {
 		return mSender.get();
 	}
 
 	@Override
-	public void upToDate(String version) {
+	public void upToDate() {
 		CommandSender sender = mSender.get();
 		if (sender != null) {
 			sender.sendMessage(ChatColor.GREEN
-					+ "Running version of KCauldron is up-to-date: " + version);
+					+ "Running version of KCauldron is up-to-date: "
+					+ KCauldron.getCurrentVersion());
 		}
-		DefaultUpdateCallback.INSTANCE.upToDate(version);
+		DefaultUpdateCallback.INSTANCE.upToDate();
 	}
 
 	@Override
-	public void newVersion(String currentVersion, String newVersion) {
+	public void newVersion(String newVersion) {
 		CommandSender sender = mSender.get();
 		if (sender != null) {
-			newVersion(sender, currentVersion, newVersion);
+			newVersion(sender, KCauldron.getCurrentVersion(), newVersion);
 		}
-		DefaultUpdateCallback.INSTANCE.newVersion(currentVersion, newVersion);
+		DefaultUpdateCallback.INSTANCE.newVersion(newVersion);
 	}
 
-	public static void newVersion(CommandSender sender, String currentVersion, String newVersion) {
+	public static void newVersion(CommandSender sender, String currentVersion,
+			String newVersion) {
 		sender.sendMessage(new String[] {
 				ChatColor.YELLOW + "Found new version of KCauldron: "
 						+ newVersion,
 				ChatColor.YELLOW + "Current is " + currentVersion,
-				ChatColor.YELLOW + "Type '" + ChatColor.BLUE
-						+ "/kc update" + ChatColor.YELLOW
-						+ "' to update" });
+				ChatColor.YELLOW + "Type '" + ChatColor.BLUE + "/kc update"
+						+ ChatColor.YELLOW + "' to update" });
 	}
 
 	@Override

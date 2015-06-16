@@ -13,18 +13,14 @@ public class KCauldronConfig extends ConfigBase {
 			true, "Enable KCauldron command");
 	public BoolSetting updatecheckerEnable = new BoolSetting(this,
 			"updatechecker.enable", true, "Enable KCauldron update checker");
-	public BoolSetting updatecheckerDeleteOld = new BoolSetting(this,
-			"updatechecker.deleteOld", true, "Delete old version after update");
 	public StringSetting updatecheckerSymlinks = new StringSetting(this,
-			"updatechecker.symlinks", "", "(Re)create symlinks after update");
+			"updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
 	public BoolSetting updatecheckerAutoinstall = new BoolSetting(this,
 			"updatechecker.autoinstall", false, "Install updates without confirming");
 	public BoolSetting updatecheckerAutorestart = new BoolSetting(this,
 			"updatechecker.autorestart", false, "Restart server after updating without confirming (set restart script in spigot.yml)");
 	public BoolSetting updatecheckerQuite = new BoolSetting(this,
 			"updatechecker.quite", false, "Print less info during update");
-	public StringSetting updatecheckerInstallAs = new StringSetting(this,
-			"updatechecker.installAs", "", "Install new version with specified name");
 
 	public BoolSetting loggingMaterialInjection = new BoolSetting(this,
 			"logging.materialInjection", false, "Log material injection event");
@@ -33,12 +29,10 @@ public class KCauldronConfig extends ConfigBase {
 		super("kcauldron.yml", "kc");
 		register(commandEnable);
 		register(updatecheckerEnable);
-		register(updatecheckerDeleteOld);
 		register(updatecheckerSymlinks);
 		register(updatecheckerAutoinstall);
 		register(updatecheckerAutorestart);
 		register(updatecheckerQuite);
-		register(updatecheckerInstallAs);
 		register(loggingMaterialInjection);
 		load();
 	}

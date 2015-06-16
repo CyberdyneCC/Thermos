@@ -18,33 +18,42 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 	private static final boolean DEBUG;
 	private static final KLog sLogger;
 	private static final JSONParser sParser;
-	private static final String sCurrentVersion;
 	private static MinecraftServer sServer;
 
 	static {
 		DEBUG = false;
 		sLogger = KLog.get(KVersionRetriever.class.getSimpleName());
 
-		sCurrentVersion = KCauldron.getCurrentVersion();
 		sParser = new JSONParser();
 	}
 
 	public static void init(MinecraftServer server) {
 		sServer = server;
 		if (MinecraftServer.kcauldronConfig.updatecheckerEnable.getValue()) {
-			new KVersionRetriever(DefaultUpdateCallback.INSTANCE, true);
+			startServer(DefaultUpdateCallback.INSTANCE, true);
 		}
+	}
+
+	public static void startServer(IVersionCheckCallback callback, boolean loop) {
+		new KVersionRetriever(callback, loop, true, "pw.prok",KCauldron.getChannel());
 	}
 
 	private final IVersionCheckCallback mCallback;
 	private final boolean mLoop;
 	private final Thread mThread;
+	private final String mGroup;
+	private final String mName;
+	private final boolean mUpToDateSupport;
 
-	public KVersionRetriever(IVersionCheckCallback callback, boolean loop) {
+	public KVersionRetriever(IVersionCheckCallback callback, boolean loop,
+			boolean upToDateSupport, String group, String name) {
 		if (DEBUG)
 			sLogger.info("Created new version retrivier");
 		mCallback = callback;
 		mLoop = loop;
+		mUpToDateSupport = upToDateSupport;
+		mGroup = group;
+		mName = name;
 		mThread = new Thread(this);
 		mThread.setName("KCauldron version retrievier");
 		mThread.setPriority(Thread.MIN_PRIORITY);
@@ -68,13 +77,9 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 	}
 
 	private void check() {
-		if (DEBUG)
-			sLogger.info("Requesting for new version...");
 		try {
-			HttpUriRequest request = RequestBuilder
-					.get()
-					.setUri("https://prok.pw/version/pw.prok/"
-							+ KCauldron.getChannel())
+			HttpUriRequest request = RequestBuilder.get()
+					.setUri("https://prok.pw/version/" + mGroup + "/" + mName)
 					.addParameter("hostname", sServer.getHostname())
 					.addParameter("port", "" + sServer.getPort()).build();
 			HttpResponse response = HttpClientBuilder.create()
@@ -83,14 +88,11 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 			JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
 					response.getEntity().getContent()));
 			String version = (String) json.get("version");
-			if (DEBUG) {
-				sLogger.info("Got the latest version: %s", version);
-				sLogger.info("Current version is %s", sCurrentVersion);
-			}
-			if (!sCurrentVersion.equals(version)) {
-				mCallback.newVersion(sCurrentVersion, version);
+			if (!mUpToDateSupport
+					|| !KCauldron.getCurrentVersion().equals(version)) {
+				mCallback.newVersion(version);
 			} else {
-				mCallback.upToDate(version);
+				mCallback.upToDate();
 			}
 		} catch (Exception e) {
 			uncaughtException(null, e);
@@ -106,9 +108,9 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 	}
 
 	public interface IVersionCheckCallback {
-		void upToDate(String version);
+		void upToDate();
 
-		void newVersion(String currentVersion, String newVersion);
+		void newVersion(String newVersion);
 
 		void error(Throwable t);
 	}
