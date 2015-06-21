@@ -32,6 +32,7 @@ public class KCauldron {
 					sServerLocation = new File(jarFilePath);
 
 					sCurrentVersion = version;
+					sGroup = manifest.getProperty("KCauldron-Group");
 					sBranch = manifest.getProperty("KCauldron-Branch");
 					sChannel = manifest.getProperty("KCauldron-Channel");
 					break;
@@ -40,10 +41,6 @@ public class KCauldron {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		String home = System.getenv("KCAULDRON_HOME");
-		if (home != null) {
-			sServerLocation = new File(home);
 		}
 	}
 
@@ -59,6 +56,28 @@ public class KCauldron {
 	public static File getServerLocation() {
 		parseManifest();
 		return sServerLocation;
+	}
+	
+	private static File sServerHome;
+	
+	public static File getServerHome() {
+		if (sServerHome == null) {
+			String home = System.getenv("KCAULDRON_HOME");
+			if (home != null) {
+				sServerHome = new File(home);
+			} else {
+				parseManifest();
+				sServerHome = sServerLocation.getParentFile();
+			}
+		}
+		return sServerHome;
+	}
+
+	private static String sGroup;
+
+	public static String getGroup() {
+		parseManifest();
+		return sGroup;
 	}
 
 	private static String sBranch;

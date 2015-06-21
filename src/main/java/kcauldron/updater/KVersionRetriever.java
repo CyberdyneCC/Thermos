@@ -11,6 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -35,7 +36,8 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 	}
 
 	public static void startServer(IVersionCheckCallback callback, boolean loop) {
-		new KVersionRetriever(callback, loop, true, "pw.prok",KCauldron.getChannel());
+		new KVersionRetriever(callback, loop, true, KCauldron.getGroup(),
+				KCauldron.getChannel());
 	}
 
 	private final IVersionCheckCallback mCallback;
@@ -78,18 +80,26 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
 
 	private void check() {
 		try {
-			HttpUriRequest request = RequestBuilder.get()
-					.setUri("https://prok.pw/version/" + mGroup + "/" + mName)
+			HttpUriRequest request = RequestBuilder
+					.get()
+					.setUri("https://api.prok.pw/repo/version/" + mGroup + "/"
+							+ mName)
 					.addParameter("hostname", sServer.getHostname())
 					.addParameter("port", "" + sServer.getPort()).build();
 			HttpResponse response = HttpClientBuilder.create()
-					.setUserAgent("KCauldron Version Retriever").build()
+					.setUserAgent("KCauldron Version Retriever")
+					.setRedirectStrategy(new LaxRedirectStrategy()).build()
 					.execute(request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				uncaughtException(mThread, new IllegalStateException(
+						"Status code isn't OK"));
+				return;
+			}
 			JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
 					response.getEntity().getContent()));
 			String version = (String) json.get("version");
-			if (!mUpToDateSupport
-					|| !KCauldron.getCurrentVersion().equals(version)) {
+			if (!mUpToDateSupport || KCauldron.getCurrentVersion() == null
+					|| !version.equals(KCauldron.getCurrentVersion())) {
 				mCallback.newVersion(version);
 			} else {
 				mCallback.upToDate();

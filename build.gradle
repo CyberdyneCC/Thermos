@@ -21,7 +21,7 @@ buildscript {
 }
 
 repositories {
-    maven { url 'https://prok.pw/repo' }
+    maven { url 'https://repo.prok.pw/' }
     jcenter()
 }
 
@@ -50,7 +50,7 @@ ext.buildInfoCached = null;
 def buildInfo(String key) {
     if (!buildInfoCached) {
         if (project.hasProperty('officialBuild')) {
-            buildInfoCached = new JsonSlurper().parse(new URL("https://prok.pw/version/${group}/${name}"))
+            buildInfoCached = new JsonSlurper().parse(new URL("https://api.prok.pw/repo/version/${group}/${name}"))
         } else {
             buildInfoCached = [
                     nextBuildNumber: 'UNOFFICIAL',
@@ -194,7 +194,7 @@ task packageChangelog(type: CreateChangelog) {
     onlyIf { project.hasProperty('officialBuild') }
     classifier = 'changelog'
     extension = 'txt'
-    oldChangelogUrl = "https://prok.pw/repo/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
+    oldChangelogUrl = "https://repo.prok.pw/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
     hash = gitInfo('hash')
     message = gitInfo('message')
     version = project.version
@@ -239,7 +239,7 @@ def getSignatureFiles = {
     return [
             [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
             [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc'],
-            [archive: signedBundle, classifier: 'bundle', extension: 'jar.asc'],
+            [archive: signedBundle, classifier: 'bundle', extension: 'zip.asc'],
             [archive: signedJar, classifier: null, extension: 'jar.asc']
     ]
 }
@@ -248,7 +248,7 @@ publishing {
     repositories {
         maven {
             name 'ProK'
-            url 'https://prok.pw/repo/'
+            url 'https://repo.prok.pw/'
             credentials {
                 username project.hasProperty('prokRepoUsername') ? prokRepoUsername : null
                 password project.hasProperty('prokRepoPassword') ? prokRepoPassword : null
