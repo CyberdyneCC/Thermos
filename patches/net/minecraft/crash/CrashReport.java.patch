@@ -1,0 +1,35 @@
+--- ../src-base/minecraft/net/minecraft/crash/CrashReport.java
++++ ../src-work/minecraft/net/minecraft/crash/CrashReport.java
+@@ -3,6 +3,7 @@
+ import cpw.mods.fml.common.FMLCommonHandler;
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++
+ import java.io.File;
+ import java.io.FileWriter;
+ import java.io.PrintWriter;
+@@ -15,8 +16,11 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.Callable;
++
++import kcauldron.KCauldron;
+ import net.minecraft.util.ReportedException;
+ import net.minecraft.world.gen.layer.IntCache;
++
+ import org.apache.commons.io.IOUtils;
+ import org.apache.commons.lang3.ArrayUtils;
+ import org.apache.logging.log4j.LogManager;
+@@ -51,6 +55,12 @@
+                 return "1.7.10";
+             }
+         });
++        this.theReportCategory.addCrashSectionCallable("KCauldron Version", new Callable<String>() {
++        	@Override
++        	public String call() throws Exception {
++        		return String.format("%s:%s:%s", KCauldron.getGroup(), KCauldron.getChannel(), KCauldron.getCurrentVersion());
++        	}
++		});
+         this.theReportCategory.addCrashSectionCallable("Operating System", new Callable()
+         {
+             private static final String __OBFID = "CL_00001222";
