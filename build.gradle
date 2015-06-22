@@ -86,7 +86,7 @@ def gitInfo(String key) {
 
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = "1448"
-ext.revision = buildInfo('nextBuildNumber')
+ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
 version = "${mcVersion}-${forgeVersion}.${revision}"
 if (project.hasProperty('officialBuild')) println "Updated KCauldron version: ${version}"
 
@@ -200,14 +200,13 @@ task packageChangelog(type: CreateChangelog) {
     version = project.version
 }
 
-task installBundle(type: InstallBundle, dependsOn: packageUniversal) {
+task installBundle(type: InstallBundle, dependsOn: jar) {
     serverJar tasks.jar.archivePath
     bootstrapClasspath configurations.bootstrap
     bootstrapMain 'pw.prok.bootstrap.Main'
 }
 
 task packageBundle(type: Zip, dependsOn: installBundle) {
-    onlyIf { project.hasProperty('officialBuild') }
     classifier = 'bundle'
     from fileTree(installBundle.installLocation)
 }
