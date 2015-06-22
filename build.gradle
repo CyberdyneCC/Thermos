@@ -4,25 +4,19 @@ import kcauldron.InstallBundle
 
 buildscript {
     repositories {
+        maven {
+            name 'prok'
+            url 'https://repo.prok.pw/'
+        }
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven'
+        }
         mavenCentral()
-        mavenLocal()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
-}
-
-repositories {
-    maven { url 'https://repo.prok.pw/' }
-    jcenter()
 }
 
 tasks.whenTaskAdded {
@@ -33,6 +27,23 @@ apply plugin: 'maven'
 apply plugin: 'cauldron'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+
+repositories {
+    clear()
+    maven {
+        name 'prok'
+        url 'https://repo.prok.pw/'
+    }
+    maven {
+        name 'forge'
+        url 'http://files.minecraftforge.net/maven'
+    }
+    maven {
+        name 'minecraft'
+        url 'https://libraries.minecraft.net/'
+    }
+    mavenCentral()
+}
 
 minecraft {
     version = '1.7.10'
@@ -116,9 +127,8 @@ dependencies {
     libraries 'org.scala-lang:scala-reflect:2.11.1'
     libraries 'org.scala-lang:scala-swing_2.11:1.0.1'
     libraries 'org.scala-lang:scala-xml_2.11:1.0.2'
-    libraries 'net.sf.jopt-simple:jopt-simple:4.5'
+    libraries 'net.sf.jopt-simple:jopt-simple:4.7'
     libraries 'lzma:lzma:0.0.1'
-    libraries 'net.sf.jopt-simple:jopt-simple:4.5'
     libraries 'org.yaml:snakeyaml:1.9'
     libraries 'commons-lang:commons-lang:2.6'
     libraries 'org.avaje:ebean:2.7.3'
@@ -275,17 +285,24 @@ publishing {
     }
 }
 
-tasks.buildPackages {
-    dependsOn packageUniversal, packageChangelog, packageBundle, jar
-}
-
 tasks.generateProjectCauldron << {
     def file = new File('eclipse/cauldron/build.gradle')
     file.append('''
 repositories {
-	maven {
-		url 'https://prok.pw/repo'
-	}
+    clear()
+    maven {
+        name 'prok'
+        url 'https://repo.prok.pw/'
+    }
+    maven {
+        name 'forge'
+        url 'http://files.minecraftforge.net/maven'
+    }
+    maven {
+        name 'minecraft'
+        url 'https://libraries.minecraft.net/'
+    }
+    mavenCentral()
 }
 dependencies {
 ''')
