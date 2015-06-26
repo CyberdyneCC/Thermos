@@ -16,11 +16,13 @@
 
 package org.bukkit.craftbukkit.util;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
-public class LongHashSet {
+public class LongHashSet implements Set<Long> {
     private final static int INITIAL_SIZE = 3;
     private final static double LOAD_FACTOR = 0.75;
 
@@ -44,14 +46,17 @@ public class LongHashSet {
         modCount = 0;
     }
 
-    public Iterator iterator() {
+    @Override
+    public Iterator<Long> iterator() {
         return new Itr();
     }
 
+    @Override
     public int size() {
         return elements;
     }
 
+    @Override
     public boolean isEmpty() {
         return elements == 0;
     }
@@ -183,6 +188,7 @@ public class LongHashSet {
         }
     }
 
+	@Override
     public void clear() {
         elements = 0;
         for (int ix = 0; ix < values.length; ix++) {
@@ -194,7 +200,7 @@ public class LongHashSet {
         flat = new org.spigotmc.FlatMap<Boolean>();
     }
 
-    public long[] toArray() {
+    public long[] toPrimitiveArray() {
         long[] result = new long[elements];
         long[] values = Java15Compat.Arrays_copyOf(this.values, this.values.length);
         int pos = 0;
@@ -208,6 +214,26 @@ public class LongHashSet {
         return result;
     }
 
+	@Override
+    public Long[] toArray() {
+    	Long[] result = new Long[elements];
+        long[] values = Java15Compat.Arrays_copyOf(this.values, this.values.length);
+        int pos = 0;
+
+        for (long value : values) {
+            if (value != FREE && value != REMOVED) {
+                result[pos++] = value;
+            }
+        }
+
+        return result;
+    }
+    
+	@Override
+	public <T> T[] toArray(T[] arg0) {
+		throw new UnsupportedOperationException();
+	}
+
     public long popFirst() {
         for (long value : values) {
             if (value != FREE && value != REMOVED) {
@@ -220,7 +246,7 @@ public class LongHashSet {
     }
 
     public long[] popAll() {
-        long[] ret = toArray();
+        long[] ret = toPrimitiveArray();
         clear();
         return ret;
     }
@@ -273,7 +299,7 @@ public class LongHashSet {
         freeEntries = values.length - elements;
     }
 
-    private class Itr implements Iterator {
+    private class Itr implements Iterator<Long> {
         private int index;
         private int lastReturned = -1;
         private int expectedModCount;
@@ -285,10 +311,12 @@ public class LongHashSet {
             expectedModCount = modCount;
         }
 
+        @Override
         public boolean hasNext() {
             return index != values.length;
         }
 
+        @Override
         public Long next() {
             if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
@@ -312,6 +340,7 @@ public class LongHashSet {
             }
         }
 
+        @Override
         public void remove() {
             if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
@@ -329,4 +358,53 @@ public class LongHashSet {
             }
         }
     }
+
+	@Override
+	public boolean add(Long value) {
+		return add(value.longValue());
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Long> collection) {
+		boolean result = false;
+		for (Long value : collection) result |= add(value.longValue());
+		return result;
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return o instanceof Long ? contains(((Long) o).longValue()) : false;
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> collection) {
+		for (Object value : collection) if (!contains(value)) return false;
+		return true;
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		return o instanceof Long ? remove(((Long) o).longValue()) : false;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> collection) {
+		boolean result = false;
+		for (Object value : collection) result |= remove(value);
+		return result;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> collection) {
+		boolean result = false;
+		Iterator<Long> iterator = iterator();
+		while(iterator.hasNext()) {
+			Long l = iterator.next();
+			if (!collection.contains(l)) {
+				iterator.remove();
+				result = true;
+			}
+		}
+		return result;
+	}
 }
