@@ -106,29 +106,41 @@
      public int getFirstEmptyStack()
      {
          for (int i = 0; i < this.mainInventory.length; ++i)
-@@ -430,17 +505,17 @@
+@@ -430,25 +505,24 @@
  
          if (aitemstack[p_70298_1_] != null)
          {
 -            ItemStack itemstack;
-+            ItemStack itemstack = aitemstack[p_70298_1_];
++            ItemStack itemstack = aitemstack[p_70298_1_], result;
  
 -            if (aitemstack[p_70298_1_].stackSize <= p_70298_2_)
 +            if (itemstack.stackSize <= p_70298_2_)
              {
 -                itemstack = aitemstack[p_70298_1_];
-+            	itemstack.stackSize = 0;
++                result = itemstack.copy();
++                itemstack.stackSize = 0;
                  aitemstack[p_70298_1_] = null;
-                 return itemstack;
+-                return itemstack;
              }
              else
              {
 -                itemstack = aitemstack[p_70298_1_].splitStack(p_70298_2_);
-+                itemstack = itemstack.splitStack(p_70298_2_);
++                result = itemstack.splitStack(p_70298_2_);
  
-                 if (aitemstack[p_70298_1_].stackSize == 0)
+-                if (aitemstack[p_70298_1_].stackSize == 0)
++                if (itemstack.stackSize == 0)
                  {
-@@ -658,7 +733,7 @@
+-                    aitemstack[p_70298_1_] = null;
++                    itemstack = null;
+                 }
+-
+-                return itemstack;
+             }
++            return result;
+         }
+         else
+         {
+@@ -658,7 +732,7 @@
              if (this.mainInventory[i] != null)
              {
                  this.player.func_146097_a(this.mainInventory[i], true, false);
@@ -137,7 +149,7 @@
              }
          }
  
-@@ -667,7 +742,7 @@
+@@ -667,7 +741,7 @@
              if (this.armorInventory[i] != null)
              {
                  this.player.func_146097_a(this.armorInventory[i], true, false);

@@ -25,11 +25,11 @@
              }
          });
 +        this.theReportCategory.addCrashSectionCallable("KCauldron Version", new Callable<String>() {
-+        	@Override
-+        	public String call() throws Exception {
-+        		return String.format("%s:%s:%s", KCauldron.getGroup(), KCauldron.getChannel(), KCauldron.getCurrentVersion());
-+        	}
-+		});
++            @Override
++            public String call() throws Exception {
++                return String.format("%s:%s:%s", KCauldron.getGroup(), KCauldron.getChannel(), KCauldron.getCurrentVersion());
++            }
++        });
          this.theReportCategory.addCrashSectionCallable("Operating System", new Callable()
          {
              private static final String __OBFID = "CL_00001222";
