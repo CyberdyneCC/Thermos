@@ -159,7 +159,15 @@
              int l = this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_);
              this.theWorld.playAuxSFXAtEntity(this.thisPlayerMP, 2001, p_73084_1_, p_73084_2_, p_73084_3_, Block.getIdFromBlock(block) + (this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_) << 12));
              boolean flag = false;
-@@ -350,57 +416,105 @@
+@@ -312,6 +378,7 @@
+     public boolean tryUseItem(EntityPlayer p_73085_1_, World p_73085_2_, ItemStack p_73085_3_)
+     {
+         int i = p_73085_3_.stackSize;
++        if (i <= 0) return false;
+         int j = p_73085_3_.getItemDamage();
+         ItemStack itemstack1 = p_73085_3_.useItemRightClick(p_73085_2_, p_73085_1_);
+ 
+@@ -350,57 +417,105 @@
  
      public boolean activateBlockOrUseItem(EntityPlayer p_73078_1_, World p_73078_2_, ItemStack p_73078_3_, int p_73078_4_, int p_73078_5_, int p_73078_6_, int p_73078_7_, float p_73078_8_, float p_73078_9_, float p_73078_10_)
      {
@@ -264,7 +272,7 @@
 +                // Cauldron end
 +            }
 +
-+            if (p_73078_3_ != null && !denyResult)
++            if (p_73078_3_ != null && !denyResult && p_73078_3_.stackSize > 0)
              {
 -                p_73078_3_.setItemDamage(meta);
 -                p_73078_3_.stackSize = size;

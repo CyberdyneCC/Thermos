@@ -106,6 +106,28 @@
      public int getFirstEmptyStack()
      {
          for (int i = 0; i < this.mainInventory.length; ++i)
+@@ -430,17 +505,17 @@
+ 
+         if (aitemstack[p_70298_1_] != null)
+         {
+-            ItemStack itemstack;
++            ItemStack itemstack = aitemstack[p_70298_1_];
+ 
+-            if (aitemstack[p_70298_1_].stackSize <= p_70298_2_)
++            if (itemstack.stackSize <= p_70298_2_)
+             {
+-                itemstack = aitemstack[p_70298_1_];
++            	itemstack.stackSize = 0;
+                 aitemstack[p_70298_1_] = null;
+                 return itemstack;
+             }
+             else
+             {
+-                itemstack = aitemstack[p_70298_1_].splitStack(p_70298_2_);
++                itemstack = itemstack.splitStack(p_70298_2_);
+ 
+                 if (aitemstack[p_70298_1_].stackSize == 0)
+                 {
 @@ -658,7 +733,7 @@
              if (this.mainInventory[i] != null)
              {
