@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.spigotmc.RestartCommand;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 
 public class KCauldron {
     private static boolean sManifestParsed = false;
@@ -109,7 +110,7 @@ public class KCauldron {
 
     public static int lookupForgeRevision() {
         if (sForgeRevision != 0) return sForgeRevision;
-        int revision = 0;
+        int revision = Integer.parseInt(System.getProperty("kcauldron.forgeRevision", "0"));
         try {
             Properties p = new Properties();
             p.load(KCauldron.class

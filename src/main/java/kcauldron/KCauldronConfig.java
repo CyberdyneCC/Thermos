@@ -25,6 +25,9 @@ public class KCauldronConfig extends ConfigBase {
     public BoolSetting loggingMaterialInjection = new BoolSetting(this,
             "logging.materialInjection", false, "Log material injection event");
     
+    public BoolSetting commonAllowNetherPortal = new BoolSetting(this,
+            "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
+    
     public KCauldronConfig() {
         super("kcauldron.yml", "kc");
         register(commandEnable);
@@ -34,6 +37,7 @@ public class KCauldronConfig extends ConfigBase {
         register(updatecheckerAutorestart);
         register(updatecheckerQuite);
         register(loggingMaterialInjection);
+        register(commonAllowNetherPortal);
         load();
     }
 
