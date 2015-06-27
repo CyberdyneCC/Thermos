@@ -17,7 +17,20 @@
  
  public class ForgeHooks
  {
-@@ -439,6 +449,8 @@
+@@ -379,10 +389,12 @@
+     public static ChatComponentTranslation onServerChatEvent(NetHandlerPlayServer net, String raw, ChatComponentTranslation comp)
+     {
+         ServerChatEvent event = new ServerChatEvent(net.playerEntity, raw, comp);
++        synchronized (ServerChatEvent.class) {            
+         if (MinecraftForge.EVENT_BUS.post(event))
+         {
+             return null;
+         }
++        }
+         return event.component;
+     }
+ 
+@@ -439,6 +451,8 @@
  
      public static BlockEvent.BreakEvent onBlockBreakEvent(World world, GameType gameType, EntityPlayerMP entityPlayer, int x, int y, int z)
      {
@@ -26,7 +39,7 @@
          // Logic from tryHarvestBlock for pre-canceling the event
          boolean preCancelEvent = false;
          if (gameType.isAdventure() && !entityPlayer.isCurrentToolAdventureModeExempt(x, y, z))
-@@ -449,9 +461,9 @@
+@@ -449,9 +463,9 @@
          {
              preCancelEvent = true;
          }
@@ -38,7 +51,7 @@
          {
              S23PacketBlockChange packet = new S23PacketBlockChange(x, y, z, world);
              packet.field_148883_d = Blocks.air;
-@@ -463,11 +475,11 @@
+@@ -463,11 +477,11 @@
          Block block = world.getBlock(x, y, z);
          int blockMetadata = world.getBlockMetadata(x, y, z);
          BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, blockMetadata, entityPlayer);
@@ -52,7 +65,7 @@
          {
              // Let the client know the block still exists
              entityPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
-@@ -500,81 +512,137 @@
+@@ -500,81 +514,137 @@
          if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
          {
              world.captureBlockSnapshots = true;
