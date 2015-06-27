@@ -1,29 +1,6 @@
 --- ../src-base/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
 +++ ../src-work/minecraft/cpw/mods/fml/relauncher/CoreModManager.java
-@@ -27,10 +27,14 @@
- import java.util.Map;
- import java.util.jar.Attributes;
- import java.util.jar.JarFile;
-+
-+import kcauldron.KCauldronClassTransformer;
- import net.minecraft.launchwrapper.ITweaker;
- import net.minecraft.launchwrapper.Launch;
- import net.minecraft.launchwrapper.LaunchClassLoader;
-+
- import org.apache.logging.log4j.Level;
-+
- import com.google.common.base.Strings;
- import com.google.common.base.Throwables;
- import com.google.common.collect.ImmutableList;
-@@ -38,6 +42,7 @@
- import com.google.common.collect.Maps;
- import com.google.common.collect.ObjectArrays;
- import com.google.common.primitives.Ints;
-+
- import cpw.mods.fml.common.FMLLog;
- import cpw.mods.fml.common.asm.transformers.ModAccessTransformer;
- import cpw.mods.fml.common.launcher.FMLInjectionAndSortingTweaker;
-@@ -53,7 +58,7 @@
+@@ -60,7 +60,7 @@
      private static final Attributes.Name COREMODCONTAINSFMLMOD = new Attributes.Name("FMLCorePluginContainsFMLMod");
      private static final Attributes.Name MODTYPE = new Attributes.Name("ModType");
      private static final Attributes.Name MODSIDE = new Attributes.Name("ModSide");
@@ -32,7 +9,7 @@
      private static List<String> loadedCoremods = Lists.newArrayList();
      private static List<FMLPluginWrapper> loadPlugins;
      private static boolean deobfuscatedEnvironment;
-@@ -94,6 +99,7 @@
+@@ -101,6 +101,7 @@
          @Override
          public void injectIntoClassLoader(LaunchClassLoader classLoader)
          {
@@ -40,7 +17,7 @@
              FMLRelaunchLog.fine("Injecting coremod %s {%s} class transformers", name, coreModInstance.getClass().getName());
              if (coreModInstance.getASMTransformerClass() != null) for (String transformer : coreModInstance.getASMTransformerClass())
              {
-@@ -153,6 +159,9 @@
+@@ -160,6 +161,9 @@
  
      }
  
@@ -50,7 +27,7 @@
      public static void handleLaunch(File mcDir, LaunchClassLoader classLoader, FMLTweaker tweaker)
      {
          CoreModManager.mcDir = mcDir;
-@@ -212,6 +221,19 @@
+@@ -219,6 +223,19 @@
              loadCoreMod(classLoader, coreModClassName, null);
          }
          discoverCoreMods(mcDir, classLoader);
@@ -70,7 +47,7 @@
  
      }
  
-@@ -293,6 +315,10 @@
+@@ -336,6 +353,10 @@
              String cascadedTweaker = mfAttributes.getValue("TweakClass");
              if (cascadedTweaker != null)
              {
@@ -81,7 +58,7 @@
                  FMLRelaunchLog.info("Loading tweaker %s from %s", cascadedTweaker, coreMod.getName());
                  Integer sortOrder = Ints.tryParse(Strings.nullToEmpty(mfAttributes.getValue("TweakOrder")));
                  sortOrder = (sortOrder == null ? Integer.valueOf(0) : sortOrder);
-@@ -322,6 +348,10 @@
+@@ -365,6 +386,10 @@
                  FMLRelaunchLog.fine("Not found coremod data in %s", coreMod.getName());
                  continue;
              }
@@ -92,7 +69,7 @@
              // Support things that are mod jars, but not FML mod jars
              try
              {
-@@ -424,8 +454,11 @@
+@@ -467,8 +492,11 @@
              MCVersion requiredMCVersion = coreModClazz.getAnnotation(IFMLLoadingPlugin.MCVersion.class);
              if (!Arrays.asList(rootPlugins).contains(coreModClass) && (requiredMCVersion == null || Strings.isNullOrEmpty(requiredMCVersion.value())))
              {

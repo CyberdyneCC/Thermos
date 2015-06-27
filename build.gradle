@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurper
 import kcauldron.CreateChangelog
 import kcauldron.InstallBundle
+import kcauldron.VersionParser
 
 buildscript {
     repositories {
@@ -96,7 +97,7 @@ def gitInfo(String key) {
 }
 
 ext.mcVersion = "1.7.10"
-ext.forgeVersion = "1448"
+ext.forgeVersion = "1481"
 ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
 version = "${mcVersion}-${forgeVersion}.${revision}"
 if (project.hasProperty('officialBuild')) println "Updated KCauldron version: ${version}"
@@ -114,7 +115,7 @@ configurations {
 dependencies {
     bootstrap 'pw.prok:KBootstrap:0.0.10+'
 
-    libraries 'net.minecraft:launchwrapper:1.11'
+    libraries 'net.minecraft:launchwrapper:1.12@jar'
     libraries 'org.ow2.asm:asm-all:5.0.3'
     libraries 'com.typesafe.akka:akka-actor_2.11:2.3.3'
     libraries 'com.typesafe:config:1.2.1'
@@ -178,7 +179,7 @@ def generateManifest(boolean legacy = false) {
             'Specification-Vendor'  : 'Bukkit Team',
             'Specification-Title'   : 'Bukkit',
             'Specification-Version' : '1.7.10-R0.1-SNAPSHOT',
-            'Forge-Version'         : '10.13.3.1448',
+            'Forge-Version'         : VersionParser.parseForgeRevision(file('forge/src/main/java/net/minecraftforge/common/ForgeVersion.java'), file('src/main/resources/fmlversion.properties')),
             'TweakClass'            : 'cpw.mods.fml.common.launcher.FMLTweaker',
             'Main-Class'            : 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
             'Class-Path'            : generateClasspath(legacy)

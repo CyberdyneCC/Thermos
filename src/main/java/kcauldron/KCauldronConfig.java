@@ -10,70 +10,70 @@ import net.minecraftforge.cauldron.configuration.StringSetting;
 
 public class KCauldronConfig extends ConfigBase {
     public BoolSetting commandEnable = new BoolSetting(this, "command.enable",
-    		true, "Enable KCauldron command");
+            true, "Enable KCauldron command");
     public BoolSetting updatecheckerEnable = new BoolSetting(this,
-    		"updatechecker.enable", true, "Enable KCauldron update checker");
+            "updatechecker.enable", true, "Enable KCauldron update checker");
     public StringSetting updatecheckerSymlinks = new StringSetting(this,
-    		"updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
+            "updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
     public BoolSetting updatecheckerAutoinstall = new BoolSetting(this,
-    		"updatechecker.autoinstall", false, "Install updates without confirming");
+            "updatechecker.autoinstall", false, "Install updates without confirming");
     public BoolSetting updatecheckerAutorestart = new BoolSetting(this,
-    		"updatechecker.autorestart", false, "Restart server after updating without confirming (set restart script in spigot.yml)");
+            "updatechecker.autorestart", false, "Restart server after updating without confirming (set restart script in spigot.yml)");
     public BoolSetting updatecheckerQuite = new BoolSetting(this,
-    		"updatechecker.quite", false, "Print less info during update");
+            "updatechecker.quite", false, "Print less info during update");
 
     public BoolSetting loggingMaterialInjection = new BoolSetting(this,
-    		"logging.materialInjection", false, "Log material injection event");
+            "logging.materialInjection", false, "Log material injection event");
     
     public KCauldronConfig() {
-    	super("kcauldron.yml", "kc");
-    	register(commandEnable);
-    	register(updatecheckerEnable);
-    	register(updatecheckerSymlinks);
-    	register(updatecheckerAutoinstall);
-    	register(updatecheckerAutorestart);
-    	register(updatecheckerQuite);
-    	register(loggingMaterialInjection);
-    	load();
+        super("kcauldron.yml", "kc");
+        register(commandEnable);
+        register(updatecheckerEnable);
+        register(updatecheckerSymlinks);
+        register(updatecheckerAutoinstall);
+        register(updatecheckerAutorestart);
+        register(updatecheckerQuite);
+        register(loggingMaterialInjection);
+        load();
     }
 
     private void register(Setting<?> setting) {
-    	settings.put(setting.path, setting);
+        settings.put(setting.path, setting);
     }
 
     @Override
     public void registerCommands() {
-    	if (commandEnable.getValue()) {
-    		super.registerCommands();
-    	}
+        if (commandEnable.getValue()) {
+            super.registerCommands();
+        }
     }
 
     @Override
     protected void addCommands() {
-    	commands.put(commandName, new KCauldronCommand());
+        commands.put(commandName, new KCauldronCommand());
     }
 
     @Override
     protected void load() {
-    	try {
-    		config = YamlConfiguration.loadConfiguration(configFile);
-    		String header = "";
-    		for (Setting<?> toggle : settings.values()) {
-    			if (!toggle.description.equals(""))
-    				header += "Setting: " + toggle.path + " Default: "
-    						+ toggle.def + " # " + toggle.description + "\n";
+        try {
+            config = YamlConfiguration.loadConfiguration(configFile);
+            String header = "";
+            for (Setting<?> toggle : settings.values()) {
+                if (!toggle.description.equals(""))
+                    header += "Setting: " + toggle.path + " Default: "
+                            + toggle.def + " # " + toggle.description + "\n";
 
-    			config.addDefault(toggle.path, toggle.def);
-    			settings.get(toggle.path).setValue(
-    					config.getString(toggle.path));
-    		}
-    		config.options().header(header);
-    		config.options().copyDefaults(true);
-    		save();
-    	} catch (Exception ex) {
-    		MinecraftServer.getServer().logSevere(
-    				"Could not load " + this.configFile);
-    		ex.printStackTrace();
-    	}
+                config.addDefault(toggle.path, toggle.def);
+                settings.get(toggle.path).setValue(
+                        config.getString(toggle.path));
+            }
+            config.options().header(header);
+            config.options().copyDefaults(true);
+            save();
+        } catch (Exception ex) {
+            MinecraftServer.getServer().logSevere(
+                    "Could not load " + this.configFile);
+            ex.printStackTrace();
+        }
     }
 }
