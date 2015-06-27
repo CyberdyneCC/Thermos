@@ -138,7 +138,7 @@ public class CraftWorld implements World {
     }
 
     public Chunk[] getLoadedChunks() {
-        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap.values();
+        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap_KC.values();
         org.bukkit.Chunk[] craftChunks = new CraftChunk[chunks.length];
 
         for (int i = 0; i < chunks.length; i++) {
@@ -262,7 +262,7 @@ public class CraftWorld implements World {
         }
 
         world.theChunkProviderServer.chunksToUnload.remove(x, z);
-        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap.get(LongHash.toLong(x, z));
+        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_KC.get(LongHash.toLong(x, z));
 
         if (chunk == null) {
             world.timings.syncChunkLoadTimer.startTiming(); // Spigot
@@ -276,9 +276,8 @@ public class CraftWorld implements World {
 
     private void chunkLoadPostProcess(net.minecraft.world.chunk.Chunk chunk, int x, int z) {
         if (chunk != null) {
-            world.theChunkProviderServer.loadedChunkHashMap.put(LongHash.toLong(x, z), chunk);
+            world.theChunkProviderServer.loadedChunkHashMap_KC.put(LongHash.toLong(x, z), chunk);
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
-            world.theChunkProviderServer.loadedChunkHashMap_vanilla.add(ChunkCoordIntPair.chunkXZ2Int(x, z), chunk);
 
             chunk.onChunkLoad();
 
@@ -1395,7 +1394,7 @@ public class CraftWorld implements World {
         }
 
         final net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
-        cps.loadedChunkHashMap.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
+        cps.loadedChunkHashMap_KC.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
 			@Override
 			public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
 	            // If in use, skip it

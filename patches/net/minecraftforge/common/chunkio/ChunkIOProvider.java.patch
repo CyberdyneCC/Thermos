@@ -10,14 +10,13 @@
  class ChunkIOProvider implements AsynchronousExecutor.CallBackProvider<QueuedChunk, net.minecraft.world.chunk.Chunk, Runnable, RuntimeException> {
      private final AtomicInteger threadNumber = new AtomicInteger(1);
  
-@@ -41,13 +44,21 @@
+@@ -41,13 +44,20 @@
          queuedChunk.loader.loadEntities(queuedChunk.world, queuedChunk.compound.getCompoundTag("Level"), chunk);
          MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(chunk, queuedChunk.compound)); // Don't call ChunkDataEvent.Load async
          chunk.lastSaveTime = queuedChunk.provider.worldObj.getTotalWorldTime();
 -        queuedChunk.provider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk);
-+        queuedChunk.provider.loadedChunkHashMap.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
++        queuedChunk.provider.loadedChunkHashMap_KC.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
          queuedChunk.provider.loadedChunks.add(chunk);
-+        queuedChunk.provider.loadedChunkHashMap_vanilla.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk); // Cauldron - vanilla/mystcraft compatibility
          chunk.onChunkLoad();
  
          if (queuedChunk.provider.currentChunkProvider != null) {

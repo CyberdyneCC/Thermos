@@ -110,7 +110,7 @@ public class CauldronCommand extends Command
         for (net.minecraft.world.WorldServer world : MinecraftServer.getServer().worlds)
         {
             sender.sendMessage(ChatColor.GOLD + "Dimension: " + ChatColor.GRAY + world.provider.dimensionId +
-                    ChatColor.GOLD + " Loaded Chunks: " + ChatColor.GRAY + world.theChunkProviderServer.loadedChunkHashMap.size() +
+                    ChatColor.GOLD + " Loaded Chunks: " + ChatColor.GRAY + world.theChunkProviderServer.loadedChunkHashMap_KC.size() +
                     ChatColor.GOLD + " Active Chunks: " + ChatColor.GRAY + world.activeChunkSet.size() +
                     ChatColor.GOLD + " Entities: " + ChatColor.GRAY + world.loadedEntityList.size() +
                     ChatColor.GOLD + " Tile Entities: " + ChatColor.GRAY + world.loadedTileEntityList.size()
