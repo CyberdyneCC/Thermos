@@ -1,0 +1,82 @@
+Compile:
+  script:
+    - git submodule update --init --recursive
+    - ./gradlew clean setupCauldron jar
+  tags:
+    - test
+  only: 
+    - master
+    - backport-1388
+    - backport-1370
+    - backport-1291
+    - backport-1240
+
+Deploy:
+  script:
+    - git submodule update --init --recursive
+    - ./gradlew -PofficialBuild clean setupCauldron publish
+  type: deploy
+  tags:
+    - deploy
+  only: 
+    - master
+    - backport-1388
+    - backport-1370
+    - backport-1291
+    - backport-1240
+
+Merge master to backport-1388:
+  script:
+    - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
+    - git fetch origin
+    - git checkout backport-1388
+    - git reset --hard origin/backport-1388
+    - git merge origin/master
+    - git push origin backport-1388
+  type: deploy
+  tags:
+    - merge-backport
+  only:
+    - master
+
+Merge backport-1388 to backport-1370:
+  script:
+    - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
+    - git fetch origin
+    - git checkout backport-1370
+    - git reset --hard origin/backport-1370
+    - git merge origin/backport-1388
+    - git push origin backport-1370
+  type: deploy
+  tags:
+    - merge-backport
+  only:
+    - backport-1388
+
+Merge backport-1370 to backport-1291:
+  script:
+    - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
+    - git fetch origin
+    - git checkout backport-1291
+    - git reset --hard origin/backport-1291
+    - git merge origin/backport-1370
+    - git push origin backport-1291
+  type: deploy
+  tags:
+    - merge-backport
+  only:
+    - backport-1370
+
+Merge backport-1291 to backport-1240:
+  script:
+    - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
+    - git fetch origin
+    - git checkout backport-1240
+    - git reset --hard origin/backport-1240
+    - git merge origin/backport-1291
+    - git push origin backport-1240
+  type: deploy
+  tags:
+    - merge-backport
+  only:
+    - backport-1291
