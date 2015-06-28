@@ -15,12 +15,8 @@ Deploy:
   type: deploy
   tags:
     - deploy
-  only:
-    - master
-    - backport-1388
-    - backport-1370
-    - backport-1291
-    - backport-1240
+  except:
+    - tags
 
 Merge master into backport-1388:
   script:
