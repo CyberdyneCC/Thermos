@@ -29,16 +29,14 @@ import org.bukkit.plugin.Plugin;
 
 public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     private CraftInventoryPlayer inventory;
-    private final CraftInventory enderChest;
+    private CraftInventory enderChest;
     protected final PermissibleBase perm = new PermissibleBase(this);
     private boolean op;
     private GameMode mode;
 
     public CraftHumanEntity(final CraftServer server, final net.minecraft.entity.player.EntityPlayer entity) {
         super(server, entity);
-        mode = server.getDefaultGameMode();
-        this.inventory = new CraftInventoryPlayer(entity.inventory);
-        enderChest = new CraftInventory(entity.getInventoryEnderChest());
+        mode = server.getDefaultGameMode();        
     }
 
     public String getName() {
@@ -46,6 +44,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public PlayerInventory getInventory() {
+    	if (inventory == null) inventory = new CraftInventoryPlayer(((net.minecraft.entity.player.EntityPlayer) entity).inventory);
         return inventory;
     }
 
@@ -54,6 +53,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public Inventory getEnderChest() {
+    	if (enderChest == null) enderChest = new CraftInventory(((net.minecraft.entity.player.EntityPlayer) entity).getInventoryEnderChest());
         return enderChest;
     }
 
