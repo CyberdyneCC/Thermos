@@ -467,7 +467,7 @@
 +                    if (human)
 +                    {
 +                        return -(f - ArmorProperties.ApplyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory,
-+                                damagesource, f.floatValue()));
++                                damagesource, f.floatValue(), false));
 +                    }
 +                    // Cauldron end
 +                    return -(f - EntityLivingBase.this.applyArmorCalculations(damagesource, f.floatValue()));
@@ -531,7 +531,7 @@
 +            if (!damagesource.isUnblockable())
 +            {
 +                float armorDamage = (float) (event.getDamage() + event.getDamage(DamageModifier.BLOCKING) + event.getDamage(DamageModifier.HARD_HAT));
-+                if (this instanceof EntityPlayer) {
++                if (human) {
 +                    EntityPlayer player = (EntityPlayer) this;
 +                    armorDamage = ArmorProperties.ApplyArmor(player, player.inventory.armorInventory, damagesource, armorDamage, true);
 +                } else {
