@@ -86,6 +86,15 @@
          if (this.channel.isOpen())
          {
              this.channel.close();
+@@ -254,7 +288,7 @@
+                 {
+                     ;
+                 }
+-
++                try { p_initChannel_1_.config().setOption(ChannelOption.SO_KEEPALIVE, true); } catch (ChannelException ignored) {}
+                 try
+                 {
+                     p_initChannel_1_.config().setOption(ChannelOption.TCP_NODELAY, Boolean.valueOf(false));
 @@ -322,6 +356,13 @@
          return channel;
      }
