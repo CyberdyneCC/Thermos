@@ -115,7 +115,7 @@ public class KCauldron {
             Properties p = new Properties();
             p.load(KCauldron.class
                     .getResourceAsStream("/fmlversion.properties"));
-            revision = Integer.parseInt(String.valueOf(p.getOrDefault(
+            revision = Integer.parseInt(String.valueOf(p.getProperty(
                     "fmlbuild.build.number", "0")));
         } catch (Exception e) {
         }
