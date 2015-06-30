@@ -47,6 +47,8 @@ If you want use easier & safer method please read about KBootstrap at https://pr
   java -jar '''
             it << jarPath
             it << '''
+    ... or
+  java -jar KCauldron.jar
 3. That's end, enjoy
 
 # Why I should use KBootstrap?

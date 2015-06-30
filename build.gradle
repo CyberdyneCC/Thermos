@@ -113,7 +113,7 @@ configurations {
 }
 
 dependencies {
-    bootstrap 'pw.prok:KBootstrap:0.0.10+'
+    bootstrap 'pw.prok:KBootstrap:0.1.+'
 
     libraries 'net.minecraft:launchwrapper:1.12@jar'
     libraries 'org.ow2.asm:asm-all:5.0.3'
@@ -211,6 +211,14 @@ task packageChangelog(type: CreateChangelog) {
     version = project.version
 }
 
+task bundleStub(type: Jar) {
+    classifier = 'stub'
+    manifest.attributes([
+            'Main-Class': 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
+            'Class-Path': "bin/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
+    ])
+}
+
 task installBundle(type: InstallBundle, dependsOn: jar) {
     serverJar tasks.jar.archivePath
     bootstrapClasspath configurations.bootstrap
@@ -220,6 +228,8 @@ task installBundle(type: InstallBundle, dependsOn: jar) {
 task packageBundle(type: Zip, dependsOn: installBundle) {
     classifier = 'bundle'
     from fileTree(installBundle.installLocation)
+    from bundleStub
+    rename bundleStub.archiveName, 'KCauldron.jar'
 }
 
 task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, packageBundle, jar, 'generatePomFileForMavenPublication']) {
@@ -230,7 +240,7 @@ task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, packag
 }
 
 task signPom(type: Sign, dependsOn: 'generatePomFileForMavenPublication') {
-	outputs.upToDateWhen { false }
+    outputs.upToDateWhen { false }
     sign file("${buildDir}/publications/maven/pom-default.xml")
 }
 
@@ -308,10 +318,16 @@ repositories {
 dependencies {
 ''')
     configurations.libraries.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { module ->
-        if (['net.minecraft:server:', 'org.ow2.asm:asm-all'].findAll {(module as String).startsWith it}.size() > 0) {
+        if (['net.minecraft:server:', 'org.ow2.asm:asm-all'].findAll { (module as String).startsWith it }.size() > 0) {
             return
         }
         file.append("    compile '${module}'\n")
     }
     file.append('}')
+}
+
+task resolveAllDependencies {
+    doLast {
+        configurations.each { it.resolve() }
+    }
 }
