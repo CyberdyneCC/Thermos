@@ -15,13 +15,18 @@ Deploy:
   type: deploy
   tags:
     - deploy
-  except:
-    - tags
+  only:
+    - master
+    - backport-1448
+    - backport-1388
+    - backport-1370
+    - backport-1291
+    - backport-1240
 
-Merge master into backport-1388:
+Merge master into backport-1448:
   script:
     - from=master
-    - to=backport-1388
+    - to=backport-1448
     - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
     - git fetch origin $to
     - git checkout $to
@@ -33,6 +38,22 @@ Merge master into backport-1388:
     - merge-backport
   only:
     - master
+
+Merge backport-1448 into backport-1388:
+  script:
+    - from=backport-1448
+    - to=backport-1388
+    - git remote set-url origin gitlab@prok.pw:Prototik/KCauldron.git
+    - git fetch origin $to
+    - git checkout $to
+    - git reset --hard origin/$to
+    - git merge origin/$from
+    - git push origin $to
+  type: deploy
+  tags:
+    - merge-backport
+  only:
+    - backport-1448
 
 Merge backport-1388 into backport-1370:
   script:
