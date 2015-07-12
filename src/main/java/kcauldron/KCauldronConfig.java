@@ -24,7 +24,9 @@ public class KCauldronConfig extends ConfigBase {
 
     public BoolSetting loggingMaterialInjection = new BoolSetting(this,
             "logging.materialInjection", false, "Log material injection event");
-    
+    public BoolSetting loggingClientModList = new BoolSetting(this,
+            "logging.clientModList", true, "Print client's mod list during attempt to join");
+        
     public BoolSetting commonAllowNetherPortal = new BoolSetting(this,
             "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
     
@@ -37,6 +39,7 @@ public class KCauldronConfig extends ConfigBase {
         register(updatecheckerAutorestart);
         register(updatecheckerQuite);
         register(loggingMaterialInjection);
+        register(loggingClientModList);
         register(commonAllowNetherPortal);
         load();
     }

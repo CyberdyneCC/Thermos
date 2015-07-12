@@ -1,0 +1,15 @@
+--- ../src-base/minecraft/cpw/mods/fml/common/network/handshake/FMLHandshakeServerState.java
++++ ../src-work/minecraft/cpw/mods/fml/common/network/handshake/FMLHandshakeServerState.java
+@@ -37,7 +37,11 @@
+             }
+ 
+             FMLHandshakeMessage.ModList client = (FMLHandshakeMessage.ModList)msg;
+-            FMLLog.info("Client attempting to join with %d mods : %s", client.modListSize(), client.modListAsString());
++            if (net.minecraft.server.MinecraftServer.kcauldronConfig.loggingClientModList.getValue()) {
++            	FMLLog.info("Client attempting to join with %d mods : %s", client.modListSize(), client.modListAsString());
++            } else {
++            	FMLLog.info("Client attempting to join with %d mods", client.modListSize());
++            }
+             String result = FMLNetworkHandler.checkModList(client, Side.CLIENT);
+             if (result != null)
+             {
