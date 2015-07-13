@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.util;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 public final class CraftChatMessage {
     private static class StringMessage {
         private static final Map<Character, net.minecraft.util.EnumChatFormatting> formatMap;
-        private static final Pattern INCREMENTAL_PATTERN = Pattern.compile("(" + String.valueOf(org.bukkit.ChatColor.COLOR_CHAR) + "[0-9a-fk-or])|(\\n)|(?:(https?://[^ ][^ ]*?)(?=[\\.\\?!,;:]?(?:[ \\n]|$)))", Pattern.CASE_INSENSITIVE);
+        private static final Pattern INCREMENTAL_PATTERN = Pattern.compile("(" + String.valueOf(org.bukkit.ChatColor.COLOR_CHAR) + "[0-9a-fk-or])|(\\n)|((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_\\.]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))", Pattern.CASE_INSENSITIVE);
 
         static {
             Builder<Character, net.minecraft.util.EnumChatFormatting> builder = ImmutableMap.builder();
@@ -79,6 +80,9 @@ public final class CraftChatMessage {
                     currentChatComponent = null;
                     break;
                 case 3:
+                	if (URI.create(match).getScheme() == null) {
+                		match = "http://" + match;
+                	}
                     modifier.setChatClickEvent(new net.minecraft.event.ClickEvent(net.minecraft.event.ClickEvent.Action.OPEN_URL, match)); // Should be setChatClickable
                     appendNewComponent(matcher.end(groupId));
                     modifier.setChatClickEvent((net.minecraft.event.ClickEvent) null);
