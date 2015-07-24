@@ -17,13 +17,13 @@
              if (!this.canPlaceBlockAt(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_))
              {
 -                p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_);
-+            	if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - invalid place location
++                if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - invalid place location
              }
  
              if (!flag && p_149674_1_.isRaining() && (p_149674_1_.canLightningStrikeAt(p_149674_2_, p_149674_3_, p_149674_4_) || p_149674_1_.canLightningStrikeAt(p_149674_2_ - 1, p_149674_3_, p_149674_4_) || p_149674_1_.canLightningStrikeAt(p_149674_2_ + 1, p_149674_3_, p_149674_4_) || p_149674_1_.canLightningStrikeAt(p_149674_2_, p_149674_3_, p_149674_4_ - 1) || p_149674_1_.canLightningStrikeAt(p_149674_2_, p_149674_3_, p_149674_4_ + 1)))
              {
 -                p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_);
-+            	if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - extinguished by rain
++                if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - extinguished by rain
              }
              else
              {
@@ -32,13 +32,13 @@
                      if (!World.doesBlockHaveSolidTopSurface(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_) || l > 3)
                      {
 -                        p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_);
-+                    	if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - burn out of inflammable block
++                        if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - burn out of inflammable block
                      }
                  }
                  else if (!flag && !this.canCatchFire(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_, UP) && l == 15 && p_149674_5_.nextInt(4) == 0)
                  {
 -                    p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_);
-+                	if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - burn out
++                    if (!CraftEventFactory.callBlockFadeEvent(p_149674_1_.getWorld().getBlockAt(p_149674_2_, p_149674_3_, p_149674_4_), Blocks.air).isCancelled()) { p_149674_1_.setBlockToAir(p_149674_2_, p_149674_3_, p_149674_4_); } // CraftBukkit - burn out
                  }
                  else
                  {
@@ -65,7 +65,7 @@
 +
 +                                                if (!spreadEvent.isCancelled())
 +                                                {
-+                                                	p_149674_1_.setBlock(i1, k1, j1, ((org.bukkit.craftbukkit.block.CraftBlock)blockState.getBlock()).getNMSBlock(), blockState.getRawData(), 3); // KCauldron - DragonAPI uses this call
++                                                    p_149674_1_.setBlock(i1, k1, j1, ((org.bukkit.craftbukkit.block.CraftBlock)blockState.getBlock()).getNMSBlock(), blockState.getRawData(), 3); // KCauldron - DragonAPI uses this call
 +                                                    blockState.update(true);
 +                                                }
 +                                            }
@@ -98,7 +98,7 @@
          if (!World.doesBlockHaveSolidTopSurface(p_149695_1_, p_149695_2_, p_149695_3_ - 1, p_149695_4_) && !this.canNeighborBurn(p_149695_1_, p_149695_2_, p_149695_3_, p_149695_4_))
          {
 -            p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
-+        	if (!CraftEventFactory.callBlockFadeEvent(p_149695_1_.getWorld().getBlockAt(p_149695_2_, p_149695_3_, p_149695_4_), Blocks.air).isCancelled()) { p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_); } // CraftBukkit - fuel block gone
++            if (!CraftEventFactory.callBlockFadeEvent(p_149695_1_.getWorld().getBlockAt(p_149695_2_, p_149695_3_, p_149695_4_), Blocks.air).isCancelled()) { p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_); } // CraftBukkit - fuel block gone
          }
      }
  
@@ -110,7 +110,7 @@
              if (!World.doesBlockHaveSolidTopSurface(p_149726_1_, p_149726_2_, p_149726_3_ - 1, p_149726_4_) && !this.canNeighborBurn(p_149726_1_, p_149726_2_, p_149726_3_, p_149726_4_))
              {
 -                p_149726_1_.setBlockToAir(p_149726_2_, p_149726_3_, p_149726_4_);
-+            	if (!CraftEventFactory.callBlockFadeEvent(p_149726_1_.getWorld().getBlockAt(p_149726_2_, p_149726_3_, p_149726_4_), Blocks.air).isCancelled()) { p_149726_1_.setBlockToAir(p_149726_2_, p_149726_3_, p_149726_4_); } // CraftBukkit - fuel block broke
++                if (!CraftEventFactory.callBlockFadeEvent(p_149726_1_.getWorld().getBlockAt(p_149726_2_, p_149726_3_, p_149726_4_), Blocks.air).isCancelled()) { p_149726_1_.setBlockToAir(p_149726_2_, p_149726_3_, p_149726_4_); } // CraftBukkit - fuel block broke
              }
              else
              {
