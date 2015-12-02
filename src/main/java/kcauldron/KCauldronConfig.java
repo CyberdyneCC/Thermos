@@ -19,8 +19,8 @@ public class KCauldronConfig extends ConfigBase {
             "updatechecker.autoinstall", false, "Install updates without confirming");
     public BoolSetting updatecheckerAutorestart = new BoolSetting(this,
             "updatechecker.autorestart", false, "Restart server after updating without confirming (set restart script in spigot.yml)");
-    public BoolSetting updatecheckerQuite = new BoolSetting(this,
-            "updatechecker.quite", false, "Print less info during update");
+    public BoolSetting updatecheckerQuiet = new BoolSetting(this,
+            "updatechecker.quiet", false, "Print less info during update");
 
     public BoolSetting loggingMaterialInjection = new BoolSetting(this,
             "logging.materialInjection", false, "Log material injection event");
@@ -37,7 +37,7 @@ public class KCauldronConfig extends ConfigBase {
         register(updatecheckerSymlinks);
         register(updatecheckerAutoinstall);
         register(updatecheckerAutorestart);
-        register(updatecheckerQuite);
+        register(updatecheckerQuiet);
         register(loggingMaterialInjection);
         register(loggingClientModList);
         register(commonAllowNetherPortal);
