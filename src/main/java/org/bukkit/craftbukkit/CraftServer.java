@@ -1150,7 +1150,7 @@ public final class CraftServer implements Server {
 
     @Override
     public Map<String, String[]> getCommandAliases() {
-        ConfigurationSection section = configuration.getConfigurationSection("aliases");
+        ConfigurationSection section = commandsConfiguration.getConfigurationSection("aliases");
         Map<String, String[]> result = new LinkedHashMap<String, String[]>();
 
         if (section != null) {
