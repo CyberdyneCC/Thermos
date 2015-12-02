@@ -115,14 +115,14 @@ public class SpigotWorldConfig
     public double itemMerge;
     private void itemMerge()
     {
-        itemMerge = getDouble("merge-radius.item", 2.5 );
+        itemMerge = getDouble("merge-radius.item", 4 );
         log( "Item Merge Radius: " + itemMerge );
     }
 
     public double expMerge;
     private void expMerge()
     {
-        expMerge = getDouble("merge-radius.exp", 3.0 );
+        expMerge = getDouble("merge-radius.exp", 6 );
         log( "Experience Merge Radius: " + expMerge );
     }
 
@@ -140,9 +140,9 @@ public class SpigotWorldConfig
         log( "Mob Spawn Range: " + mobSpawnRange );
     }
 
-    public int animalActivationRange = 32;
-    public int monsterActivationRange = 32;
-    public int miscActivationRange = 16;
+    public int animalActivationRange = 8;
+    public int monsterActivationRange = 10;
+    public int miscActivationRange = 2;
     private void activationRange()
     {
         animalActivationRange = getInt( "entity-activation-range.animals", animalActivationRange );
@@ -182,7 +182,7 @@ public class SpigotWorldConfig
     public boolean randomLightUpdates;
     private void lightUpdates()
     {
-        randomLightUpdates = getBoolean( "random-light-updates", false );
+        randomLightUpdates = getBoolean( "random-light-updates", true );
         log( "Random Lighting Updates: " + randomLightUpdates );
     }
 
@@ -201,14 +201,14 @@ public class SpigotWorldConfig
     public int itemDespawnRate;
     private void itemDespawnRate()
     {
-        itemDespawnRate = getInt( "item-despawn-rate", 6000 );
+        itemDespawnRate = getInt( "item-despawn-rate", 3000 );
         log( "Item Despawn Rate: " + itemDespawnRate );
     }
 
     public int arrowDespawnRate;
     private void arrowDespawnRate()
     {
-        arrowDespawnRate = getInt( "arrow-despawn-rate", 1200  );
+        arrowDespawnRate = getInt( "arrow-despawn-rate", 120  );
         log( "Arrow Despawn Rate: " + arrowDespawnRate );
     }
     
@@ -219,7 +219,7 @@ public class SpigotWorldConfig
     public AntiXray antiXrayInstance;
     private void antiXray()
     {
-        antiXray = getBoolean( "anti-xray.enabled", true );
+        antiXray = getBoolean( "anti-xray.enabled", false );
         log( "Anti X-Ray: " + antiXray );
 
         engineMode = getInt( "anti-xray.engine-mode", 1 );
@@ -275,7 +275,7 @@ public class SpigotWorldConfig
     public int maxCollisionsPerEntity;
     private void maxEntityCollision()
     {
-        maxCollisionsPerEntity = getInt( "max-entity-collisions", 8 );
+        maxCollisionsPerEntity = getInt( "max-entity-collisions", 2 );
         log( "Max Entity Collisions: " + maxCollisionsPerEntity );
     }
     
