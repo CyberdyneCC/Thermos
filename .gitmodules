@@ -1,7 +1,7 @@
 [submodule "bukkit"]
 	path = bukkit
-	url = https://gitlab.prok.pw/Prototik/KCauldron-Bukkit.git
+	url = https://github.com/spannerman79/KCauldron-Bukkit.git
 [submodule "forge"]
 	path = forge
-	url = https://gitlab.prok.pw/Mirrors/minecraftforge.git
+	url = https://github.com/MinecraftForge/MinecraftForge.git
 	branch = 1.7.10
