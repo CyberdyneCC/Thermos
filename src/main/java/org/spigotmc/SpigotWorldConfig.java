@@ -151,11 +151,11 @@ public class SpigotWorldConfig
         log( "Entity Activation Range: An " + animalActivationRange + " / Mo " + monsterActivationRange + " / Mi " + miscActivationRange );
     }
 
-    public int playerTrackingRange = 48;
-    public int animalTrackingRange = 48;
-    public int monsterTrackingRange = 48;
-    public int miscTrackingRange = 32;
-    public int maxTrackingRange = 64;
+    public int playerTrackingRange = 32;
+    public int animalTrackingRange = 32;
+    public int monsterTrackingRange = 32;
+    public int miscTrackingRange = 24;
+    public int maxTrackingRange = 24;
     private void trackingRange()
     {
         playerTrackingRange = getInt( "entity-tracking-range.players", playerTrackingRange );
