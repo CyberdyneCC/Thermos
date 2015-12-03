@@ -1,7 +1,7 @@
 # Cauldron 
 ### Continuation of KCauldron minecraft server
 
-This github was created due to the previous developer for KCauldron being missing for weeks - sometimes months - at a time.  When the dev was missing his gitlab would go offline making it "feel" like the project was abandoned completley.
+This github was created due to the previous developer for KCauldron being missing for weeks - sometimes months - at a time.  When the dev was missing his gitlab would go offline making it "feel" like the project was abandoned completely.
 
 This repo was based on KCauldron 1492 Build 152.  Some extra patches were added and cherry picked in order to improve and fix up some of the small little flaws that were inherent in the 152 build.
 
@@ -25,5 +25,5 @@ This repo was based on KCauldron 1492 Build 152.  Some extra patches were added 
 If you're once checkout source - you not need to do it again
 * Update sources
   * `git pull origin master`
-* Reapply patches & build binaries
+* Re apply patches & build binaries
   * `./gradle clean setupCauldron jar`
