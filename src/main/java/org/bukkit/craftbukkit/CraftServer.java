@@ -645,12 +645,12 @@ public final class CraftServer implements Server {
 
     @Override
     public int getTicksPerAnimalSpawns() {
-        return this.configuration.getInt("ticks-per.animal-spawns", 400);
+        return this.configuration.getInt("ticks-per.animal-spawns");
     }
 
     @Override
     public int getTicksPerMonsterSpawns() {
-        return this.configuration.getInt("ticks-per.monster-spawns", 3);
+        return this.configuration.getInt("ticks-per.monster-spawns");
     }
 
     @Override
