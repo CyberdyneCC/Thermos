@@ -3,6 +3,7 @@
 ![Minecraft Forge v10.13.4.1566][forge]
 ![Minecraft v1.7.10][mc]
 ![Java JDK v1.8][java]
+![Spigot 1.7.10 Snapshot ][spigot]
 
 ### Continuation of KCauldron minecraft server
 
@@ -41,3 +42,4 @@ If you've once checkout source - you not need to do it again
 [forge]: https://img.shields.io/badge/Minecraft%20Forge-v10.13.4.1566-green.svg "Minecraft Forge v10.13.4.1566"
 [mc]: https://img.shields.io/badge/Minecraft-v1.7.10-green.svg "Minecraft 1.7.10"
 [java]: https://img.shields.io/badge/Java%20JDK-v1.8-blue.svg "Java JDK 8"
+[spigot]: https://img.shields.io/badge/Spigot-v1.7.10--R0.1--SNAPSHOT-lightgrey.svg "Spigot R0.1 Snapshot"
