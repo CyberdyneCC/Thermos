@@ -12,7 +12,10 @@ This repo was based on KCauldron 1492 Build 152.  Some extra patches were added 
 
 ## Downloads
 You can download the pre-built packages from https://github.com/spannerman79/KCauldron/releases
+<<<<<<< HEAD
 I'd suggest that you look at the release notes before downloading.
+=======
+>>>>>>> origin/master
 
 ## Build Requirements
 * Java 8 JDK
