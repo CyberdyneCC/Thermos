@@ -36,8 +36,9 @@ I'd suggest that you look at the release notes before downloading.
   * If you have gradle integration in IDE - you can still use gui
   `./gradlew setupCauldron jar`
 
+All builds will be in `build/distributions`
+  
 ## Updating sources
-If you've once checkout source - you not need to do it again
 * Update sources
   * `git pull origin master`
 * Re apply patches & build binaries
