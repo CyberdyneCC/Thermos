@@ -11,6 +11,10 @@ This github was created due to the previous developer for KCauldron being missin
 
 This repo was based on KCauldron 1492 Build 152.  Some extra patches were added and cherry picked in order to improve and fix up some of the small little flaws that were inherent in the 152 build.
 
+## Docs
+
+Wiki and Documentation is hosted via readme.io [here](https://kcauldron.readme.io/)
+
 ## Contributing
 
 Please read the [guide](https://github.com/spannerman79/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 
