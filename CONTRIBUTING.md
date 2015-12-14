@@ -2,6 +2,10 @@
 
 We will always have a need for developers to help improve Cauldron. Just make sure you follow our guidelines.
 
+Issue Creation Guidelines
+-----------
+I WILL NOT GIVE SUPPORT OR PATCH UPDATES OR FIXES FOR REPO FOR MODS TO WORK. IF YOU WANT A FLAWLESS SERVER GO AND USE VANILLA FORGE.
+
 Coding and Pull Request Conventions
 -----------
 
