@@ -15,6 +15,14 @@ This repo was based on KCauldron 1492 Build 152.  Some extra patches were added 
 
 Wiki and Documentation is hosted via readme.io [here](https://kcauldron.readme.io/)
 
+## Issues
+
+There won't be any support given for making mods work with this particular repo of KCauldron.  Blame the stupid people that can't read.
+
+Basically;
+
+**I will not give support or patch updates or fixes on this repo for mods to work. If you want a flawless server go and use vanilla forge.**
+
 ## Contributing
 
 Please read the [guide](https://github.com/spannerman79/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 

@@ -2,12 +2,6 @@
 
 We will always have a need for developers to help improve Cauldron. Just make sure you follow our guidelines.
 
-Issue Creation Guidelines
------------
-I WILL NOT GIVE SUPPORT OR PATCH UPDATES OR FIXES ON THIS REPO FOR MODS TO WORK. IF YOU WANT A FLAWLESS SERVER GO AND USE VANILLA FORGE.
-
-Use [Gist](https://gist.github.com/) or a paste type service like pastebin or pastee, or attach the log to your issue - don't paste in a wall of text for your log.  Your issue will be closed on the spot.
-
 Coding and Pull Request Conventions
 -----------
 
