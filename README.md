@@ -13,7 +13,11 @@ This repo was based on KCauldron 1492 Build 152.  Some extra patches were added 
 
 ## Docs
 
-Wiki and Documentation is hosted via readme.io [here](https://kcauldron.readme.io/)
+Wiki and Documentation is hosted via readme.io [here](https://kcauldron.readme.io/docs)
+
+## Chat
+
+Feel free to drop in on the Discord chat [here](https://discord.gg/0VmBoNh2sE2t5yKh)
 
 ## Issues
 
