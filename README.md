@@ -29,10 +29,10 @@ Basically;
 
 ## Contributing
 
-Please read the [guide](https://github.com/spannerman79/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 
+Please read the [guide](https://github.com/TCPR/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 
 
 ## Downloads
-You can download the pre-built packages from https://github.com/spannerman79/KCauldron/releases
+You can download the pre-built packages from [here](https://tcpr.ca/downloads/kcauldron)
 I'd suggest that you look at the release notes before downloading.
 
 
@@ -43,7 +43,7 @@ I'd suggest that you look at the release notes before downloading.
 ## Building Cauldron
 * Checkout project
   * You can use IDE or clone from console:
-  `git clone https://github.com/spannerman79/KCauldron.git`
+  `git clone https://github.com/TCPR/KCauldron.git`
 * Init submodules
   * Since this project uses two other projects we need to download them as well
   `git submodule update --init --recursive`
