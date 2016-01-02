@@ -11,10 +11,6 @@ This github was created due to the previous developer for KCauldron being missin
 
 This repo was based on KCauldron 1492 Build 152.  Some extra patches were added and cherry picked in order to improve and fix up some of the small little flaws that were inherent in the 152 build.
 
-## Docs
-
-Wiki and Documentation is hosted via readme.io [here](https://kcauldron.readme.io/docs)
-
 ## Chat
 
 Feel free to drop in on the Discord chat [here](https://discord.gg/0VmBoNh2sE2t5yKh)
@@ -25,7 +21,7 @@ There won't be any support given for making mods work with this particular repo 
 
 Basically;
 
-**I will not give support or patch updates or fixes on this repo for mods to work. If you want a flawless server go and use vanilla forge.**
+**I will not give support or patch updates or fixes on this repo for mods to work. This fork is put together by the community by submitting their own pull requests, Yive does not know Java nor does he want to learn it to work on this fork.**
 
 ## Contributing
 
