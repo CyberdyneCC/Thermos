@@ -41,10 +41,15 @@ public class RestartCommand extends Command
                 System.out.println( "Attempting to restart with " + SpigotConfig.restartScript );
 
                 // Kick all players
-                for ( net.minecraft.entity.player.EntityPlayerMP p : (List< net.minecraft.entity.player.EntityPlayerMP>) net.minecraft.server.MinecraftServer.getServer().getConfigurationManager().playerEntityList )
+                for ( Object p :  net.minecraft.server.MinecraftServer.getServer().getConfigurationManager().playerEntityList.toArray() )
                 {
-                    p.playerNetServerHandler.kickPlayerFromServer(SpigotConfig.restartMessage);
-                    p.playerNetServerHandler.netManager.isChannelOpen();
+                        if(p instanceof net.minecraft.entity.player.EntityPlayerMP)
+                        {
+                                 net.minecraft.entity.player.EntityPlayerMP mp = ( net.minecraft.entity.player.EntityPlayerMP)p;
+                         mp.playerNetServerHandler.kickPlayerFromServer(SpigotConfig.restartMessage);
+                         mp.playerNetServerHandler.netManager.isChannelOpen();
+                    }
+
                 }
                 // Give the socket a chance to send the packets
                 try
