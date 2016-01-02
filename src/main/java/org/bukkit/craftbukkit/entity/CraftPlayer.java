@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MapMaker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
