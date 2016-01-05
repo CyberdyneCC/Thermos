@@ -15,6 +15,7 @@
 -    protected World worldObj;
 +    public static Map classToNameMap = new HashMap(); // Cauldron - private -> public
 +    public World worldObj; // CraftBukkit - protected -> public
++    private boolean GC = false;
      public int xCoord;
      public int yCoord;
      public int zCoord;
@@ -55,6 +56,17 @@
 +        return null;
 +    }
 +    // CraftBukkit end
++    //KCauldron start
++    public boolean isGC() //Returns true if the chunk it is inside of has marked it for unloading
++    {
++        return this.GC;
++    }
++
++    public boolean setGC(boolean state) //Should never be touched by a mod. Would make it package-private but not sure if that would still work
++    {
++        this.GC = state;
++    }
++    // KCauldron end
 +
      // -- BEGIN FORGE PATCHES --
      /**
