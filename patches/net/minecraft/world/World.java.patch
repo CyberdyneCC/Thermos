@@ -923,9 +923,20 @@
 -            TileEntity tileentity = (TileEntity)iterator.next();
 +            for (Object tile : field_147483_b)
 +            {
-+                ((TileEntity) tile).onChunkUnload();
++                TileEntity te = (TileEntity)tile;
++                te.setGC(true);
++                te.onChunkUnload();
 +            }
-+            this.loadedTileEntityList.removeAll(this.field_147483_b);
++            List temporary_tile_entity_list = new ArrayList(this.loadedTileEntityList.size());
++            for(Object tile : loadedTileEntityList)
++                if(!((TileEntity)tile).isGC())
++                    temporary_tile_entity_list.add(tile);
++            this.loadedTileEntityList = temporary_tile_entity_list;
++            for (Object tile : field_147483_b)
++            {
++                TileEntity te = (TileEntity)tile;
++                te.setGC(false);
++            }
 +            this.field_147483_b.clear();
 +        }
 +        // CraftBukkit end
