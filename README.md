@@ -17,7 +17,7 @@ Feel free to drop in on the Discord chat [here](https://discord.gg/0VmBoNh2sE2t5
 
 ## Issues
 
-There won't be any support given for making mods work with this particular repo of KCauldron.  Blame the stupid people that can't read.
+If a mod does not work with KCauldron, please check [here](https://github.com/TCPR/Fixes) before posting an issue.
 
 Basically;
 
@@ -28,8 +28,9 @@ Basically;
 Please read the [guide](https://github.com/TCPR/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 
 
 ## Downloads
-You can download the pre-built packages from [here](https://tcpr.ca/downloads/kcauldron)
-I'd suggest that you look at the release notes before downloading.
+You can download the pre-built packages from [here](https://tcpr.ca/downloads/kcauldron). 
+These unofficial builds are in beta, they may cause issues with your server. You have been warned.
+Also, please look at the release notes before downloading. :)
 
 
 ## Build Requirements
