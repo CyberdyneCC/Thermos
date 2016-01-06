@@ -57,14 +57,14 @@
 +    }
 +    // CraftBukkit end
 +    //KCauldron start
-+    public boolean isGC() //Returns true if the chunk it is inside of has marked it for unloading
-+    {
-+        return this.GC;
++    public boolean isGC() 
++    { 
++        return this.GC; //Returns true if the chunk it is inside of has marked it for unloading
 +    }
 +
-+    public boolean setGC(boolean state) //Should never be touched by a mod. Would make it package-private but not sure if that would still work
++    public boolean setGC(boolean state) 
 +    {
-+        this.GC = state;
++        this.GC = state; //Should never be touched by a mod. Would make it package-private but not sure if that would still work
 +    }
 +    // KCauldron end
 +
