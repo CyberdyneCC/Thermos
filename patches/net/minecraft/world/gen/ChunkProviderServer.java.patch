@@ -456,11 +456,11 @@
 -                            DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);
 -                            return currentChunkProvider.unloadQueuedChunks();
 +                // Cauldron static - check if the chunk was accessed recently and keep it loaded if there are players in world
-+                /*if (!shouldUnloadChunk(chunk) && this.worldObj.playerEntities.size() > 0)
++                if (!shouldUnloadChunk(chunk) && this.worldObj.playerEntities.size() > 0)
 +                {
 +                    CauldronHooks.logChunkUnload(this, chunk.xPosition, chunk.zPosition, "** Chunk kept from unloading due to recent activity");
 +                    continue;
-+                }*/
++                }
 +                // Cauldron end
 +
 +
@@ -541,10 +541,10 @@
 +        return loadedChunkHashMap_KC.get(chunkHash).lastAccessedTick;
 +    }
 +
-+    /*private boolean shouldUnloadChunk(Chunk chunk)
++    private boolean shouldUnloadChunk(Chunk chunk)
 +    {
 +        if (chunk == null) return false;
-+        return MinecraftServer.getServer().getTickCounter() - chunk.lastAccessedTick > CauldronConfig.chunkGCGracePeriod.getValue();
-+    }*/
++        return MinecraftServer.getServer().getTickCounter() - chunk.lastAccessedTick > MinecraftServer.getServer().cauldronConfig.chunkGCGracePeriod.getValue();
++    }
 +    // Cauldron end
  }
