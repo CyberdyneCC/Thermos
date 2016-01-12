@@ -125,7 +125,7 @@
          this.playerEntity = p_i1530_3_;
          p_i1530_3_.playerNetServerHandler = this;
 +        // CraftBukkit start
-+        this.server = p_i1530_1_.server;
++        this.server = p_i1530_1_ == null ? null : p_i1530_1_.server;
      }
  
 +    private final org.bukkit.craftbukkit.CraftServer server;
@@ -1795,7 +1795,7 @@
          {
              packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
 @@ -1093,16 +2398,18 @@
- 
+                 {
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
 -                        itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));
@@ -1818,7 +1818,7 @@
              finally
              {
 @@ -1135,19 +2442,18 @@
-                 {
+ 
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
 -                        itemstack1.setTagInfo("author", new NBTTagString(this.playerEntity.getCommandSenderName()));

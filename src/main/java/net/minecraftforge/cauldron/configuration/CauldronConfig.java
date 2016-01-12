@@ -45,8 +45,7 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting checkEntityMaxSpeeds = new BoolSetting(this, "settings.check-entity-max-speeds", false, "Removes any entity that exceeds max speed.");
     public final IntSetting largeBoundingBoxLogSize = new IntSetting(this, "settings.entity-bounding-box-max-size", 1000, "Max size of an entity's bounding box before removing it (either being too large or bugged and 'moving' too fast)");
     public final IntSetting entityMaxSpeed = new IntSetting(this, "settings.entity-max-speed", 100, "Square of the max speed of an entity before removing it");
-    public final IntSetting chunkGCGracePeriod = new IntSetting(this, "settings.chunk-gc-grace-period",0,"Grace period of no-ticks before unload");
-    
+
     // Debug settings
     public final BoolSetting enableThreadContentionMonitoring = new BoolSetting(this, "debug.thread-contention-monitoring", false, "Set true to enable Java's thread contention monitoring for thread dumps");
 
@@ -101,7 +100,6 @@ public class CauldronConfig extends ConfigBase
         settings.put(userLogin.path, userLogin);
         settings.put(allowTntPunishment.path, allowTntPunishment);
         settings.put(maxPlayersVisible.path, maxPlayersVisible);
-        settings.put(chunkGCGracePeriod.path,chunkGCGracePeriod);
         load();
     }
 

@@ -166,7 +166,7 @@ public class CraftSkull extends CraftBlockState implements Skull {
     }
 
     public BlockFace getRotation() {
-    	return getBlockFace(rotation);
+        return getBlockFace(rotation);
     }
 
     public void setRotation(BlockFace rotation) {

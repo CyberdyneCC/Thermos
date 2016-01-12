@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.map;
 
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,9 +33,9 @@ public class CraftMapRenderer extends MapRenderer {
             cursors.removeCursor(cursors.getCursor(0));
         }
 
-        for (Object key : worldMap.playersVisibleOnMap.keySet()) {
+        for (UUID key : worldMap.playersVisibleOnMap.keySet()) { // Spigot string -> uuid
             // If this cursor is for a player check visibility with vanish system
-            Player other = Bukkit.getPlayerExact((String) key);
+            Player other = Bukkit.getPlayer(key); // Spigot
             if (other != null && !player.canSee(other)) {
                 continue;
             }

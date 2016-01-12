@@ -416,7 +416,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         // Spigot start
         net.minecraft.world.WorldServer newWorld = ((CraftWorld) location.getWorld()).getHandle();
         if (newWorld != entity.worldObj) {
-        	entity.teleportTo(location, cause.isPortal());
+            entity.teleportTo(location, cause.isPortal());
             return true;
         }
         // Spigot

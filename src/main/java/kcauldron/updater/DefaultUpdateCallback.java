@@ -6,6 +6,7 @@ import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
 import net.minecraft.server.MinecraftServer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,13 +20,21 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
 
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (mHasUpdate && hasPermission(player)) {
-            sendUpdate(player);
+        if (hasPermission(player)) {
+            if (KCauldron.isLegacy()) {
+                player.sendMessage(ChatColor.YELLOW + "We're running on legacy version on KCauldron, please update your version");
+            }            
+            if (!KCauldron.isOfficial()) {
+                player.sendMessage(ChatColor.YELLOW + "We're running on non-official version on KCauldron, please update your version");
+            }            
+            if (mHasUpdate) {
+                sendUpdate(player);
+            }
         }
     }
 
     private boolean hasPermission(CommandSender player) {
-        return player.hasPermission(KCauldronCommand.UPDATE);
+        return player.hasPermission(KCauldronCommand.UPDATE) || player.isOp();
     }
 
     private void sendUpdate(CommandSender player) {

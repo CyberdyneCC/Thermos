@@ -50,8 +50,8 @@ public class SpigotConfig
 
         commands = new HashMap<String, Command>();
 
-        version = getInt( "config-version", 5 );
-        set( "config-version", 5 );
+        version = getInt( "config-version", 7 );
+        set( "config-version", 7 );
         readConfig( SpigotConfig.class, null );
     }
 
@@ -152,7 +152,7 @@ public class SpigotConfig
     public static String unknownCommandMessage;
     public static String serverFullMessage;
     public static String outdatedClientMessage = "Outdated client! Please use {}";
-    public static String outdatedServerMessage = "Outdated server! I\'m still on {0}";
+    public static String outdatedServerMessage = "Outdated server! I\'m still on {}";
     private static String transform(String s)
     {
         return ChatColor.translateAlternateColorCodes( '&', s ).replaceAll( "\\n", "\n" );
@@ -199,7 +199,10 @@ public class SpigotConfig
 
     private static void nettyThreads()
     {
-        int count = getInt( "settings.netty-threads", 4 );
+        if (version < 7)
+            set("settings.netty-threads", -1);
+        int count = getInt( "settings.netty-threads", -1 );
+        count = count == -1 ? Runtime.getRuntime().availableProcessors() : count;
         System.setProperty( "io.netty.eventLoopThreads", Integer.toString( count ) );
         Bukkit.getLogger().log( Level.INFO, "Using {0} threads for Netty based IO", count );
     }
@@ -271,6 +274,6 @@ public class SpigotConfig
     public static int fullMatchRate;
     private static void fullMatchRate()
     {
-    	fullMatchRate = getInt( "settings.fullMatchRate", 10);
+        fullMatchRate = getInt( "settings.fullMatchRate", 10);
     }
 }

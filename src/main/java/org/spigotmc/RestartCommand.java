@@ -2,9 +2,12 @@ package org.spigotmc;
 
 import java.io.File;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.bukkit.entity.Player;
 
 public class RestartCommand extends Command
 {
@@ -28,7 +31,7 @@ public class RestartCommand extends Command
     }
     
     public static void restart() {
-    	restart(false);
+        restart(false);
     }
 
     public static void restart(boolean forbidShutdown)
@@ -40,17 +43,14 @@ public class RestartCommand extends Command
             {
                 System.out.println( "Attempting to restart with " + SpigotConfig.restartScript );
 
-                // Kick all players
-                for ( Object p :  net.minecraft.server.MinecraftServer.getServer().getConfigurationManager().playerEntityList.toArray() )
-                {
-                        if(p instanceof net.minecraft.entity.player.EntityPlayerMP)
-                        {
-                                 net.minecraft.entity.player.EntityPlayerMP mp = ( net.minecraft.entity.player.EntityPlayerMP)p;
-                         mp.playerNetServerHandler.kickPlayerFromServer(SpigotConfig.restartMessage);
-                         mp.playerNetServerHandler.netManager.isChannelOpen();
-                    }
+                // Forbid new logons
+                net.minecraft.server.dedicated.DedicatedServer.allowPlayerLogins = false;
 
+                // Kick all players
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.kickPlayer(SpigotConfig.restartMessage);
                 }
+
                 // Give the socket a chance to send the packets
                 try
                 {
@@ -72,7 +72,7 @@ public class RestartCommand extends Command
                 // Actually shutdown
                 try
                 {
-                    net.minecraft.server.MinecraftServer.getServer().stopServer();
+                    Bukkit.shutdown();
                 } catch ( Throwable t )
                 {
                 }
@@ -93,7 +93,7 @@ public class RestartCommand extends Command
                             {
                                 Runtime.getRuntime().exec( new String[]
                                 {
-                                    "sh", file.getPath()
+                                    "/bin/sh", file.getPath()
                                 } );
                             }
                         } catch ( Exception e )
@@ -107,10 +107,10 @@ public class RestartCommand extends Command
                 Runtime.getRuntime().addShutdownHook( shutdownHook );
             } else
             {
-            	if (forbidShutdown) {
-            		System.out.println("Attempt to restart server without restart script, decline request");
-            		return;
-            	}
+                if (forbidShutdown) {
+                    System.out.println("Attempt to restart server without restart script, decline request");
+                    return;
+                }
                 System.out.println( "Startup script '" + SpigotConfig.restartScript + "' does not exist! Stopping server." );
             }
             cpw.mods.fml.common.FMLCommonHandler.instance().exitJava(0, false);

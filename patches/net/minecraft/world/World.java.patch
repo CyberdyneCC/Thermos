@@ -923,20 +923,9 @@
 -            TileEntity tileentity = (TileEntity)iterator.next();
 +            for (Object tile : field_147483_b)
 +            {
-+                TileEntity te = (TileEntity)tile;
-+                te.setGC(true);
-+                te.onChunkUnload();
++                ((TileEntity) tile).onChunkUnload();
 +            }
-+            List temporary_tile_entity_list = new ArrayList(this.loadedTileEntityList.size());
-+            for(Object tile : loadedTileEntityList)
-+                if(!((TileEntity)tile).isGC())
-+                    temporary_tile_entity_list.add(tile);
-+            this.loadedTileEntityList = temporary_tile_entity_list;
-+            for (Object tile : field_147483_b)
-+            {
-+                TileEntity te = (TileEntity)tile;
-+                te.setGC(false);
-+            }
++            this.loadedTileEntityList.removeAll(this.field_147483_b);
 +            this.field_147483_b.clear();
 +        }
 +        // CraftBukkit end
@@ -1047,7 +1036,7 @@
      }
  
      public void updateEntity(Entity p_72870_1_)
-@@ -2036,21 +2609,33 @@
+@@ -2036,21 +2609,36 @@
  
      public void updateEntityWithOptionalForce(Entity p_72866_1_, boolean p_72866_2_)
      {
@@ -1056,7 +1045,11 @@
          int j = MathHelper.floor_double(p_72866_1_.posZ);
          boolean isForced = getPersistentChunks().containsKey(new ChunkCoordIntPair(i >> 4, j >> 4));
          byte b0 = isForced ? (byte)0 : 32;
-         boolean canUpdate = !p_72866_2_ || this.checkChunksExist(i - b0, 0, j - b0, i + b0, 0, j + b0);
+-        boolean canUpdate = !p_72866_2_ || this.checkChunksExist(i - b0, 0, j - b0, i + b0, 0, j + b0);
++        // CraftBukkit start - Use neighbor cache instead of looking up
++        Chunk startingChunk = this.getChunkIfLoaded(i >> 4, j >> 4);
++        boolean canUpdate = !p_72866_2_ || (startingChunk != null && startingChunk.areNeighborsLoaded(2));
++        // CraftBukkit end
 +        boolean forceUpdate = false; // Cauldron
  
          if (!canUpdate)
@@ -1082,7 +1075,7 @@
              p_72866_1_.lastTickPosX = p_72866_1_.posX;
              p_72866_1_.lastTickPosY = p_72866_1_.posY;
              p_72866_1_.lastTickPosZ = p_72866_1_.posZ;
-@@ -2134,6 +2719,7 @@
+@@ -2134,6 +2722,7 @@
                      p_72866_1_.riddenByEntity = null;
                  }
              }
@@ -1090,7 +1083,7 @@
          }
      }
  
-@@ -2570,7 +3156,7 @@
+@@ -2570,7 +3159,7 @@
              return;
          }
  
@@ -1099,7 +1092,7 @@
          {
              if (this.field_147481_N)
              {
-@@ -2718,7 +3304,15 @@
+@@ -2718,7 +3307,15 @@
  
                      if (i <= 0)
                      {
@@ -1116,7 +1109,7 @@
                      }
                  }
  
-@@ -2754,7 +3348,15 @@
+@@ -2754,7 +3351,15 @@
  
                      if (j <= 0)
                      {
@@ -1133,7 +1126,7 @@
                      }
                  }
  
-@@ -2777,8 +3379,41 @@
+@@ -2777,8 +3382,41 @@
      protected void setActivePlayerChunksAndCheckLight()
      {
          this.activeChunkSet.clear();
@@ -1176,7 +1169,7 @@
          int i;
          EntityPlayer entityplayer;
          int j;
-@@ -2788,17 +3423,28 @@
+@@ -2788,17 +3426,28 @@
          for (i = 0; i < this.playerEntities.size(); ++i)
          {
              entityplayer = (EntityPlayer)this.playerEntities.get(i);
@@ -1211,7 +1204,7 @@
          }
  
          this.theProfiler.endSection();
-@@ -2810,7 +3456,7 @@
+@@ -2810,7 +3459,7 @@
  
          this.theProfiler.startSection("playerCheckLight");
  
@@ -1220,7 +1213,36 @@
          {
              i = this.rand.nextInt(this.playerEntities.size());
              entityplayer = (EntityPlayer)this.playerEntities.get(i);
-@@ -3284,8 +3930,21 @@
+@@ -3034,9 +3683,9 @@
+         }
+     }
+ 
+-    public boolean updateLightByType(EnumSkyBlock p_147463_1_, int p_147463_2_, int p_147463_3_, int p_147463_4_)
++    public boolean updateLightByType(EnumSkyBlock p_147463_1_, int p_147463_2_, int p_147463_3_, int p_147463_4_, Chunk chunk, List<Chunk> neighbors)
+     {
+-        if (!this.doChunksNearChunkExist(p_147463_2_, p_147463_3_, p_147463_4_, 17))
++        if (chunk == null) // CraftBukkit / PaperSpigot
+         {
+             return false;
+         }
+@@ -3166,6 +3815,16 @@
+                 }
+             }
+ 
++            // PaperSpigot start - Asynchronous light updates
++            if (chunk.worldObj.spigotConfig.useAsyncLighting) {
++                chunk.pendingLightUpdates.decrementAndGet();
++                if (neighbors != null) {
++                    for (Chunk neighbor : neighbors) {
++                        neighbor.pendingLightUpdates.decrementAndGet();
++                    }
++                }
++            }
++            // PaperSpigot end
+             this.theProfiler.endSection();
+             return true;
+         }
+@@ -3284,8 +3943,21 @@
          {
              Entity entity = (Entity)this.loadedEntityList.get(j);
  
@@ -1243,7 +1265,7 @@
                  ++i;
              }
          }
-@@ -3298,6 +3957,7 @@
+@@ -3298,6 +3970,7 @@
          for (int i = 0; i < p_72868_1_.size(); ++i)
          {
              Entity entity = (Entity)p_72868_1_.get(i);
@@ -1251,7 +1273,7 @@
              if (!MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entity, this)))
              {
                  loadedEntityList.add(entity);
-@@ -3314,8 +3974,17 @@
+@@ -3314,8 +3987,17 @@
      public boolean canPlaceEntityOnSide(Block p_147472_1_, int p_147472_2_, int p_147472_3_, int p_147472_4_, boolean p_147472_5_, int p_147472_6_, Entity p_147472_7_, ItemStack p_147472_8_)
      {
          Block block1 = this.getBlock(p_147472_2_, p_147472_3_, p_147472_4_);
@@ -1270,7 +1292,7 @@
      }
  
      public PathEntity getPathEntityToEntity(Entity p_72865_1_, Entity p_72865_2_, float p_72865_3_, boolean p_72865_4_, boolean p_72865_5_, boolean p_72865_6_, boolean p_72865_7_)
-@@ -3464,6 +4133,12 @@
+@@ -3464,6 +4146,12 @@
          for (int i = 0; i < this.playerEntities.size(); ++i)
          {
              EntityPlayer entityplayer1 = (EntityPlayer)this.playerEntities.get(i);
@@ -1283,7 +1305,7 @@
              double d5 = entityplayer1.getDistanceSq(p_72977_1_, p_72977_3_, p_72977_5_);
  
              if ((p_72977_7_ < 0.0D || d5 < p_72977_7_ * p_72977_7_) && (d4 == -1.0D || d5 < d4))
-@@ -3489,7 +4164,12 @@
+@@ -3489,7 +4177,12 @@
          for (int i = 0; i < this.playerEntities.size(); ++i)
          {
              EntityPlayer entityplayer1 = (EntityPlayer)this.playerEntities.get(i);
@@ -1297,7 +1319,7 @@
              if (!entityplayer1.capabilities.disableDamage && entityplayer1.isEntityAlive())
              {
                  double d5 = entityplayer1.getDistanceSq(p_72846_1_, p_72846_3_, p_72846_5_);
-@@ -3660,6 +4340,18 @@
+@@ -3660,6 +4353,18 @@
  
      public void updateAllPlayersSleepingFlag() {}
  
@@ -1316,7 +1338,7 @@
      public float getWeightedThunderStrength(float p_72819_1_)
      {
          return (this.prevThunderingStrength + (this.thunderingStrength - this.prevThunderingStrength) * p_72819_1_) * this.getRainStrength(p_72819_1_);
-@@ -3932,8 +4624,8 @@
+@@ -3932,8 +4637,8 @@
       */
      public void addTileEntity(TileEntity entity)
      {
@@ -1327,7 +1349,7 @@
          {
              dest.add(entity);
          }
-@@ -4029,4 +4721,73 @@
+@@ -4029,4 +4734,122 @@
          }
          return count;
      }
@@ -1400,4 +1422,53 @@
 +        return provider.dimensionId == Integer.MIN_VALUE; // Mystcraft
 +    }
 +    // Cauldron end
++    
++    public Chunk getChunkIfLoaded(int x, int z) {
++        return ((ChunkProviderServer) this.chunkProvider).getChunkIfLoaded(x, z);
++    }
++
++    public java.util.concurrent.ExecutorService lightingExecutor = java.util.concurrent.Executors.newSingleThreadExecutor(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("PaperSpigot - Lighting Thread").build()); // PaperSpigot - Asynchronous lighting updates
++
++    /**
++     * PaperSpigot - Asynchronous lighting updates
++     */
++    public boolean updateLightByType(final EnumSkyBlock enumskyblock, final int x, final int y, final int z) {
++        final Chunk chunk = this.getChunkIfLoaded(x >> 4, z >> 4);
++        if (chunk == null || !chunk.areNeighborsLoaded(1)) {
++            return false;
++        }
++
++        if (!chunk.worldObj.spigotConfig.useAsyncLighting) {
++            return this.updateLightByType(enumskyblock, x, y, z, chunk, null);
++        }
++
++        chunk.pendingLightUpdates.incrementAndGet();
++        chunk.lightUpdateTime = chunk.worldObj.getTotalWorldTime();
++
++        final List<Chunk> neighbors = new ArrayList<Chunk>();
++        for (int cx = (x >> 4) - 1; cx <= (x >> 4) + 1; ++cx) {
++            for (int cz = (z >> 4) - 1; cz <= (z >> 4) + 1; ++cz) {
++                if (cx != x >> 4 && cz != z >> 4) {
++                    Chunk neighbor = this.getChunkIfLoaded(cx, cz);
++                    if (neighbor != null) {
++                        neighbor.pendingLightUpdates.incrementAndGet();
++                        neighbor.lightUpdateTime = chunk.worldObj.getTotalWorldTime();
++                        neighbors.add(neighbor);
++                    }
++                }
++            }
++        }
++
++        if (!Bukkit.isPrimaryThread()) {
++            return this.updateLightByType(enumskyblock, x, y, z, chunk, neighbors);
++        }
++
++        lightingExecutor.submit(new Runnable() {
++            @Override
++            public void run() {
++                World.this.updateLightByType(enumskyblock, x, y, z, chunk, neighbors);
++            }
++        });
++        return true;
++    }
  }

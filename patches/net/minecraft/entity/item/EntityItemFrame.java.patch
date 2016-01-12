@@ -14,6 +14,15 @@
                  this.func_146065_b(p_70097_1_.getEntity(), false);
                  this.setDisplayedItem((ItemStack)null);
              }
+@@ -115,7 +122,7 @@
+             if (p_110131_1_.getItem() == Items.filled_map)
+             {
+                 MapData mapdata = ((ItemMap)p_110131_1_.getItem()).getMapData(p_110131_1_, this.worldObj);
+-                mapdata.playersVisibleOnMap.remove("frame-" + this.getEntityId());
++                mapdata.playersVisibleOnMap.remove(java.util.UUID.nameUUIDFromBytes(("frame-" + this.getEntityId()).getBytes(org.apache.commons.codec.Charsets.US_ASCII))); // Spigot
+             }
+ 
+             p_110131_1_.setItemFrame((EntityItemFrame)null);
 @@ -203,4 +210,11 @@
  
          return true;

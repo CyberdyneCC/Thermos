@@ -188,7 +188,7 @@ public class LongHashSet implements Set<Long> {
         }
     }
 
-	@Override
+    @Override
     public void clear() {
         elements = 0;
         for (int ix = 0; ix < values.length; ix++) {
@@ -214,9 +214,9 @@ public class LongHashSet implements Set<Long> {
         return result;
     }
 
-	@Override
+    @Override
     public Long[] toArray() {
-    	Long[] result = new Long[elements];
+        Long[] result = new Long[elements];
         long[] values = Java15Compat.Arrays_copyOf(this.values, this.values.length);
         int pos = 0;
 
@@ -229,10 +229,10 @@ public class LongHashSet implements Set<Long> {
         return result;
     }
     
-	@Override
-	public <T> T[] toArray(T[] arg0) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public <T> T[] toArray(T[] arg0) {
+        throw new UnsupportedOperationException();
+    }
 
     public long popFirst() {
         for (long value : values) {
@@ -359,52 +359,52 @@ public class LongHashSet implements Set<Long> {
         }
     }
 
-	@Override
-	public boolean add(Long value) {
-		return add(value.longValue());
-	}
+    @Override
+    public boolean add(Long value) {
+        return add(value.longValue());
+    }
 
-	@Override
-	public boolean addAll(Collection<? extends Long> collection) {
-		boolean result = false;
-		for (Long value : collection) result |= add(value.longValue());
-		return result;
-	}
+    @Override
+    public boolean addAll(Collection<? extends Long> collection) {
+        boolean result = false;
+        for (Long value : collection) result |= add(value.longValue());
+        return result;
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		return o instanceof Long ? contains(((Long) o).longValue()) : false;
-	}
+    @Override
+    public boolean contains(Object o) {
+        return o instanceof Long ? contains(((Long) o).longValue()) : false;
+    }
 
-	@Override
-	public boolean containsAll(Collection<?> collection) {
-		for (Object value : collection) if (!contains(value)) return false;
-		return true;
-	}
+    @Override
+    public boolean containsAll(Collection<?> collection) {
+        for (Object value : collection) if (!contains(value)) return false;
+        return true;
+    }
 
-	@Override
-	public boolean remove(Object o) {
-		return o instanceof Long ? remove(((Long) o).longValue()) : false;
-	}
+    @Override
+    public boolean remove(Object o) {
+        return o instanceof Long ? remove(((Long) o).longValue()) : false;
+    }
 
-	@Override
-	public boolean removeAll(Collection<?> collection) {
-		boolean result = false;
-		for (Object value : collection) result |= remove(value);
-		return result;
-	}
+    @Override
+    public boolean removeAll(Collection<?> collection) {
+        boolean result = false;
+        for (Object value : collection) result |= remove(value);
+        return result;
+    }
 
-	@Override
-	public boolean retainAll(Collection<?> collection) {
-		boolean result = false;
-		Iterator<Long> iterator = iterator();
-		while(iterator.hasNext()) {
-			Long l = iterator.next();
-			if (!collection.contains(l)) {
-				iterator.remove();
-				result = true;
-			}
-		}
-		return result;
-	}
+    @Override
+    public boolean retainAll(Collection<?> collection) {
+        boolean result = false;
+        Iterator<Long> iterator = iterator();
+        while(iterator.hasNext()) {
+            Long l = iterator.next();
+            if (!collection.contains(l)) {
+                iterator.remove();
+                result = true;
+            }
+        }
+        return result;
+    }
 }

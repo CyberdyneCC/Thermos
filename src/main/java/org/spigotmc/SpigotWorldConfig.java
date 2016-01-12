@@ -115,14 +115,14 @@ public class SpigotWorldConfig
     public double itemMerge;
     private void itemMerge()
     {
-        itemMerge = getDouble("merge-radius.item", 4 );
+        itemMerge = getDouble("merge-radius.item", 2.5 );
         log( "Item Merge Radius: " + itemMerge );
     }
 
     public double expMerge;
     private void expMerge()
     {
-        expMerge = getDouble("merge-radius.exp", 6 );
+        expMerge = getDouble("merge-radius.exp", 3.0 );
         log( "Experience Merge Radius: " + expMerge );
     }
 
@@ -140,9 +140,9 @@ public class SpigotWorldConfig
         log( "Mob Spawn Range: " + mobSpawnRange );
     }
 
-    public int animalActivationRange = 8;
-    public int monsterActivationRange = 10;
-    public int miscActivationRange = 2;
+    public int animalActivationRange = 32;
+    public int monsterActivationRange = 32;
+    public int miscActivationRange = 16;
     private void activationRange()
     {
         animalActivationRange = getInt( "entity-activation-range.animals", animalActivationRange );
@@ -151,11 +151,11 @@ public class SpigotWorldConfig
         log( "Entity Activation Range: An " + animalActivationRange + " / Mo " + monsterActivationRange + " / Mi " + miscActivationRange );
     }
 
-    public int playerTrackingRange = 32;
-    public int animalTrackingRange = 32;
-    public int monsterTrackingRange = 32;
-    public int miscTrackingRange = 24;
-    public int maxTrackingRange = 24;
+    public int playerTrackingRange = 48;
+    public int animalTrackingRange = 48;
+    public int monsterTrackingRange = 48;
+    public int miscTrackingRange = 32;
+    public int maxTrackingRange = 64;
     private void trackingRange()
     {
         playerTrackingRange = getInt( "entity-tracking-range.players", playerTrackingRange );
@@ -182,7 +182,7 @@ public class SpigotWorldConfig
     public boolean randomLightUpdates;
     private void lightUpdates()
     {
-        randomLightUpdates = getBoolean( "random-light-updates", true );
+        randomLightUpdates = getBoolean( "random-light-updates", false );
         log( "Random Lighting Updates: " + randomLightUpdates );
     }
 
@@ -201,14 +201,14 @@ public class SpigotWorldConfig
     public int itemDespawnRate;
     private void itemDespawnRate()
     {
-        itemDespawnRate = getInt( "item-despawn-rate", 3000 );
+        itemDespawnRate = getInt( "item-despawn-rate", 6000 );
         log( "Item Despawn Rate: " + itemDespawnRate );
     }
 
     public int arrowDespawnRate;
     private void arrowDespawnRate()
     {
-        arrowDespawnRate = getInt( "arrow-despawn-rate", 120  );
+        arrowDespawnRate = getInt( "arrow-despawn-rate", 1200  );
         log( "Arrow Despawn Rate: " + arrowDespawnRate );
     }
     
@@ -219,7 +219,7 @@ public class SpigotWorldConfig
     public AntiXray antiXrayInstance;
     private void antiXray()
     {
-        antiXray = getBoolean( "anti-xray.enabled", false );
+        antiXray = getBoolean( "anti-xray.enabled", true );
         log( "Anti X-Ray: " + antiXray );
 
         engineMode = getInt( "anti-xray.engine-mode", 1 );
@@ -275,7 +275,7 @@ public class SpigotWorldConfig
     public int maxCollisionsPerEntity;
     private void maxEntityCollision()
     {
-        maxCollisionsPerEntity = getInt( "max-entity-collisions", 2 );
+        maxCollisionsPerEntity = getInt( "max-entity-collisions", 8 );
         log( "Max Entity Collisions: " + maxCollisionsPerEntity );
     }
     
@@ -283,8 +283,26 @@ public class SpigotWorldConfig
     public int entityMaxTickTime;
     private void maxTickTimes()
     {
-    	tileMaxTickTime = getInt("max-tick-time.tile", 50);
-    	entityMaxTickTime = getInt("max-tick-time.entity", 50);
-    	log("Tile Max Tick Time: " + tileMaxTickTime + "ms Entity max Tick Time: " + entityMaxTickTime + "ms");
+        tileMaxTickTime = getInt("max-tick-time.tile", 50);
+        entityMaxTickTime = getInt("max-tick-time.entity", 50);
+        log("Tile Max Tick Time: " + tileMaxTickTime + "ms Entity max Tick Time: " + entityMaxTickTime + "ms");
+    }
+
+    public int currentPrimedTnt = 0;
+    public int maxTntTicksPerTick;
+    private void maxTntPerTick() {
+        if ( SpigotConfig.version < 7 )
+        {
+            set( "max-tnt-per-tick", 100 );
+        }
+        maxTntTicksPerTick = getInt( "max-tnt-per-tick", 100 );
+        log( "Max TNT Explosions: " + maxTntTicksPerTick );
+    }
+
+    public boolean useAsyncLighting;
+    private void useAsyncLighting()
+    {
+        useAsyncLighting = getBoolean( "use-async-lighting", true );
+        log( "World async lighting: " + useAsyncLighting );
     }
 }

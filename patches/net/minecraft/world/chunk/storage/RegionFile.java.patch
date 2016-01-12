@@ -1,0 +1,40 @@
+--- ../src-base/minecraft/net/minecraft/world/chunk/storage/RegionFile.java
++++ ../src-work/minecraft/net/minecraft/world/chunk/storage/RegionFile.java
+@@ -16,7 +16,7 @@
+ 
+ public class RegionFile
+ {
+-    private static final byte[] emptySector = new byte[4096];
++    private static final byte[] emptySector = new byte[4096]; // Spigot - note: if this ever changes to not be 4096 bytes, update constructor!
+     private final File fileName;
+     private RandomAccessFile dataFile;
+     private final int[] offsets = new int[1024];
+@@ -43,16 +43,10 @@
+ 
+             if (this.dataFile.length() < 4096L)
+             {
+-                for (i = 0; i < 1024; ++i)
+-                {
+-                    this.dataFile.writeInt(0);
+-                }
++                // Spigot - more effecient chunk zero'ing
++                this.dataFile.write(RegionFile.emptySector); // Spigot
++                this.dataFile.write(RegionFile.emptySector); // Spigot
+ 
+-                for (i = 0; i < 1024; ++i)
+-                {
+-                    this.dataFile.writeInt(0);
+-                }
+-
+                 this.sizeDelta += 8192;
+             }
+ 
+@@ -209,7 +203,7 @@
+ 
+     public DataOutputStream getChunkDataOutputStream(int p_76710_1_, int p_76710_2_)
+     {
+-        return this.outOfBounds(p_76710_1_, p_76710_2_) ? null : new DataOutputStream(new DeflaterOutputStream(new RegionFile.ChunkBuffer(p_76710_1_, p_76710_2_)));
++        return this.outOfBounds(p_76710_1_, p_76710_2_) ? null : new DataOutputStream(new java.io.BufferedOutputStream(new DeflaterOutputStream(new RegionFile.ChunkBuffer(p_76710_1_, p_76710_2_)))); // Spigot - use a BufferedOutputStream to greatly improve file write performance
+     }
+ 
+     protected synchronized void write(int p_76706_1_, int p_76706_2_, byte[] p_76706_3_, int p_76706_4_)

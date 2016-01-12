@@ -13,6 +13,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 
 public class KCauldron {
+    public static final ThreadGroup sKCauldronThreadGroup = new ThreadGroup("KCauldron");
+
     private static boolean sManifestParsed = false;
 
     private static void parseManifest() {
@@ -39,6 +41,8 @@ public class KCauldron {
                     sGroup = manifest.getProperty("KCauldron-Group");
                     sBranch = manifest.getProperty("KCauldron-Branch");
                     sChannel = manifest.getProperty("KCauldron-Channel");
+                    sLegacy = Boolean.parseBoolean(manifest.getProperty("KCauldron-Legacy"));
+                    sOfficial = Boolean.parseBoolean(manifest.getProperty("KCauldron-Official"));
                     break;
                 }
                 manifest.clear();
@@ -97,6 +101,18 @@ public class KCauldron {
         parseManifest();
         return sChannel;
     }
+    
+    private static boolean sLegacy, sOfficial;
+    
+    public static boolean isLegacy() {
+        parseManifest();
+        return sLegacy;
+    }
+    
+    public static boolean isOfficial() {
+        parseManifest();
+        return sOfficial;
+    }
 
     public static File sNewServerLocation;
     public static String sNewServerVersion;
@@ -111,6 +127,7 @@ public class KCauldron {
     public static int lookupForgeRevision() {
         if (sForgeRevision != 0) return sForgeRevision;
         int revision = Integer.parseInt(System.getProperty("kcauldron.forgeRevision", "0"));
+        if (revision != 0) return sForgeRevision = revision;
         try {
             Properties p = new Properties();
             p.load(KCauldron.class

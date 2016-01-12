@@ -207,7 +207,7 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
      * @return Set of Entry objects
      */
     public Set<Map.Entry<Long, V>> entrySet() {
-    	return new EntrySet();
+        return new EntrySet();
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -425,40 +425,40 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
         }
         
         private void bind(long key, V value) {
-        	this.key = key;
-        	this.value = value;	
+            this.key = key;
+            this.value = value;    
         }
     }
     
     private class EntrySet extends AbstractSet<Map.Entry<Long, V>> {
-		@Override
-		public Iterator<Map.Entry<Long, V>> iterator() {
-			return new Iterator<Map.Entry<Long, V>>() {
-				final Entry entry = new Entry();
-				final ValueIterator valueIterator = new ValueIterator();
-				
-				@Override
-				public boolean hasNext() {
-					return valueIterator.hasNext();
-				}
+        @Override
+        public Iterator<Map.Entry<Long, V>> iterator() {
+            return new Iterator<Map.Entry<Long, V>>() {
+                final Entry entry = new Entry();
+                final ValueIterator valueIterator = new ValueIterator();
+                
+                @Override
+                public boolean hasNext() {
+                    return valueIterator.hasNext();
+                }
 
-				@Override
-				public LongObjectHashMap<V>.Entry next() {
-					V value = valueIterator.next();
-					entry.bind(valueIterator.prevKey, value);
-					return entry;
-				}
+                @Override
+                public LongObjectHashMap<V>.Entry next() {
+                    V value = valueIterator.next();
+                    entry.bind(valueIterator.prevKey, value);
+                    return entry;
+                }
 
-				@Override
-				public void remove() {
-					valueIterator.remove();
-				}
-			};
-		}
+                @Override
+                public void remove() {
+                    valueIterator.remove();
+                }
+            };
+        }
 
-		@Override
-		public int size() {
-			return LongObjectHashMap.this.size;
-		}    	
+        @Override
+        public int size() {
+            return LongObjectHashMap.this.size;
+        }        
     }
 }

@@ -44,7 +44,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public PlayerInventory getInventory() {
-    	if (inventory == null) inventory = new CraftInventoryPlayer(((net.minecraft.entity.player.EntityPlayer) entity).inventory);
+        if (inventory == null) inventory = new CraftInventoryPlayer(((net.minecraft.entity.player.EntityPlayer) entity).inventory);
         return inventory;
     }
 
@@ -53,7 +53,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public Inventory getEnderChest() {
-    	if (enderChest == null) enderChest = new CraftInventory(((net.minecraft.entity.player.EntityPlayer) entity).getInventoryEnderChest());
+        if (enderChest == null) enderChest = new CraftInventory(((net.minecraft.entity.player.EntityPlayer) entity).getInventoryEnderChest());
         return enderChest;
     }
 

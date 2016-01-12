@@ -49,7 +49,23 @@
          float f = this.explosionSize;
          HashSet hashset = new HashSet();
          int i;
-@@ -135,7 +151,15 @@
+@@ -112,7 +128,14 @@
+         int i2 = MathHelper.floor_double(this.explosionY + (double)this.explosionSize + 1.0D);
+         int l = MathHelper.floor_double(this.explosionZ - (double)this.explosionSize - 1.0D);
+         int j2 = MathHelper.floor_double(this.explosionZ + (double)this.explosionSize + 1.0D);
+-        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this.exploder, AxisAlignedBB.getBoundingBox((double)i, (double)k, (double)l, (double)j, (double)i2, (double)j2));
++        // PaperSpigot start - Fix lag from explosions processing dead entities
++        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this.exploder, AxisAlignedBB.getBoundingBox((double)i, (double)k, (double)l, (double)j, (double)i2, (double)j2), new net.minecraft.command.IEntitySelector() {
++            @Override
++            public boolean isEntityApplicable(Entity entity) {
++                return !entity.isDead;
++            }
++        });
++        // PaperSpigot end
+         net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, list, this.explosionSize);
+         Vec3 vec3 = Vec3.createVectorHelper(this.explosionX, this.explosionY, this.explosionZ);
+ 
+@@ -135,7 +158,15 @@
                      d7 /= d9;
                      double d10 = (double)this.worldObj.getBlockDensity(vec3, entity.boundingBox);
                      double d11 = (1.0D - d4) * d10;
@@ -66,7 +82,7 @@
                      double d8 = EnchantmentProtection.func_92092_a(entity, d11);
                      entity.motionX += d5 * d8;
                      entity.motionY += d6 * d8;
-@@ -174,6 +198,39 @@
+@@ -174,6 +205,39 @@
  
          if (this.isSmoking)
          {
@@ -106,7 +122,7 @@
              iterator = this.affectedBlockPositions.iterator();
  
              while (iterator.hasNext())
-@@ -209,7 +266,8 @@
+@@ -209,7 +273,8 @@
                  {
                      if (block.canDropFromExplosion(this))
                      {
@@ -116,7 +132,7 @@
                      }
  
                      block.onBlockExploded(this.worldObj, i, j, k, this);
-@@ -232,7 +290,12 @@
+@@ -232,7 +297,12 @@
  
                  if (block.getMaterial() == Material.air && block1.func_149730_j() && this.explosionRNG.nextInt(3) == 0)
                  {

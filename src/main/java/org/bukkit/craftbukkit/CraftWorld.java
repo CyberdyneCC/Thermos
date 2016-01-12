@@ -88,7 +88,7 @@ public class CraftWorld implements World {
     }
 
     public Block getBlockAt(int x, int y, int z) {
-    	Chunk chunk = getChunkAt(x >> 4, z >> 4);
+        Chunk chunk = getChunkAt(x >> 4, z >> 4);
         return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xFF, z & 0xF);
     }
 
@@ -125,7 +125,7 @@ public class CraftWorld implements World {
     }
 
     public Chunk getChunkAt(int x, int z) {
-    	net.minecraft.world.chunk.Chunk chunk = this.world.theChunkProviderServer.loadChunk(x, z);
+        net.minecraft.world.chunk.Chunk chunk = this.world.theChunkProviderServer.loadChunk(x, z);
         return chunk == null ? null : chunk.bukkitChunk;
     }
 
@@ -1395,23 +1395,23 @@ public class CraftWorld implements World {
 
         final net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
         cps.loadedChunkHashMap_KC.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
-			@Override
-			public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
-	            // If in use, skip it
-	            if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
-					return true;
-	            }
+            @Override
+            public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
+                // If in use, skip it
+                if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
+                    return true;
+                }
 
-	            // Already unloading?
-	            if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
-					return true;
-	            }
+                // Already unloading?
+                if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
+                    return true;
+                }
 
-	            // Add unload request
-	            cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
-				return true;
-			}
-		});
+                // Add unload request
+                cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
+                return true;
+            }
+        });
     }
 
     // Spigot start

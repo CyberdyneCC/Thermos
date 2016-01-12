@@ -60,7 +60,15 @@
          this.setConnectionState(EnumConnectionState.HANDSHAKING);
      }
  
-@@ -208,7 +232,15 @@
+@@ -128,6 +152,7 @@
+ 
+     public void scheduleOutboundPacket(Packet p_150725_1_, GenericFutureListener ... p_150725_2_)
+     {
++        if (p_150725_1_ == null) return;
+         if (this.channel != null && this.channel.isOpen())
+         {
+             this.flushOutboundQueue();
+@@ -208,7 +233,15 @@
          {
              for (int i = 1000; !this.receivedPacketsQueue.isEmpty() && i >= 0; --i)
              {
@@ -77,7 +85,7 @@
                  packet.processPacket(this.netHandler);
              }
  
-@@ -225,6 +257,8 @@
+@@ -225,11 +258,14 @@
  
      public void closeChannel(IChatComponent p_150718_1_)
      {
@@ -86,7 +94,13 @@
          if (this.channel.isOpen())
          {
              this.channel.close();
-@@ -254,7 +288,7 @@
+             this.terminationReason = p_150718_1_;
+         }
++        outboundPacketsQueue.clear();
+     }
+ 
+     public boolean isLocalChannel()
+@@ -254,7 +290,7 @@
                  {
                      ;
                  }
@@ -95,7 +109,7 @@
                  try
                  {
                      p_initChannel_1_.config().setOption(ChannelOption.TCP_NODELAY, Boolean.valueOf(false));
-@@ -322,6 +356,13 @@
+@@ -322,6 +358,13 @@
          return channel;
      }
  

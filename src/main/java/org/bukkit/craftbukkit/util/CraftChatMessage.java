@@ -80,9 +80,9 @@ public final class CraftChatMessage {
                     currentChatComponent = null;
                     break;
                 case 3:
-                	if (match.indexOf("://") < 0) {
-                		match = "http://" + match;
-                	}
+                    if (match.indexOf("://") < 0) {
+                        match = "http://" + match;
+                    }
                     modifier.setChatClickEvent(new net.minecraft.event.ClickEvent(net.minecraft.event.ClickEvent.Action.OPEN_URL, match)); // Should be setChatClickable
                     appendNewComponent(matcher.end(groupId));
                     modifier.setChatClickEvent((net.minecraft.event.ClickEvent) null);

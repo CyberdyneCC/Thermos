@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/oredict/OreDictionary.java
 +++ ../src-work/minecraft/net/minecraftforge/oredict/OreDictionary.java
-@@ -216,7 +216,7 @@
+@@ -221,7 +221,7 @@
              {
                  ShapedRecipes recipe = (ShapedRecipes)obj;
                  ItemStack output = recipe.getRecipeOutput();
@@ -9,7 +9,7 @@
                  {
                      continue;
                  }
-@@ -231,7 +231,7 @@
+@@ -236,7 +236,7 @@
              {
                  ShapelessRecipes recipe = (ShapelessRecipes)obj;
                  ItemStack output = recipe.getRecipeOutput();

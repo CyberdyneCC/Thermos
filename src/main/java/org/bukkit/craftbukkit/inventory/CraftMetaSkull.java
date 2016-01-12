@@ -97,7 +97,8 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
         if (name == null) {
             profile = null;
         } else {
-            profile = new GameProfile(null, name);
+            profile = net.minecraft.server.MinecraftServer.getServer().func_152358_ax().func_152655_a(name);
+            if (profile == null) profile = new GameProfile(null, name);
         }
 
         return true;

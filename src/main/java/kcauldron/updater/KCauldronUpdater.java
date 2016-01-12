@@ -86,8 +86,7 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
     public KCauldronUpdater(CommandSender sender, String version) {
         mSender = sender;
         mVersion = version;
-        mThread = new Thread(this);
-        mThread.setName("KCauldron updater");
+        mThread = new Thread(KCauldron.sKCauldronThreadGroup, this, "KCauldron updated");
         mThread.setPriority(Thread.MIN_PRIORITY);
         mThread.start();
     }

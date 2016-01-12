@@ -18,16 +18,50 @@
  public class Chunk
  {
      private static final Logger logger = LogManager.getLogger();
-@@ -62,6 +73,8 @@
+@@ -62,8 +73,42 @@
      public int heightMapMinimum;
      public long inhabitedTime;
      private int queuedLightChecks;
 +    public gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot (Cauldron protected -> public)
++    // PaperSpigot start - Asynchronous light updates
++    public java.util.concurrent.atomic.AtomicInteger pendingLightUpdates = new java.util.concurrent.atomic.AtomicInteger();
++    public long lightUpdateTime;
++    // PaperSpigot end
 +    public int lastAccessedTick; // Cauldron track last time the chunk was accessed
      private static final String __OBFID = "CL_00000373";
  
++    // CraftBukkit start - Neighbor loaded cache for chunk lighting and entity ticking
++    private int neighbors = 0x1 << 12;
++
++    public boolean areNeighborsLoaded(final int radius) {
++        switch(radius) {
++            case 2:
++                return this.neighbors == Integer.MAX_VALUE >> 6;
++            case 1:
++                final int mask =
++                    //        x        z   offset            x        z   offset            x         z   offset
++                    ( 0x1 << (1 * 5 +  1 + 12) ) | ( 0x1 << (0 * 5 +  1 + 12) ) | ( 0x1 << (-1 * 5 +  1 + 12) ) |
++                    ( 0x1 << (1 * 5 +  0 + 12) ) | ( 0x1 << (0 * 5 +  0 + 12) ) | ( 0x1 << (-1 * 5 +  0 + 12) ) |
++                    ( 0x1 << (1 * 5 + -1 + 12) ) | ( 0x1 << (0 * 5 + -1 + 12) ) | ( 0x1 << (-1 * 5 + -1 + 12) );
++                return (this.neighbors & mask) == mask;
++            default:
++                throw new UnsupportedOperationException(String.valueOf(radius));
++        }
++    }
++
++    public void setNeighborLoaded(final int x, final int z) {
++        this.neighbors |= 0x1 << (x * 5 + 12 + z);
++    }
++
++    public void setNeighborUnloaded(final int x, final int z) {
++        this.neighbors &= ~(0x1 << (x * 5 + 12 + z));
++    }
++    // CraftBukkit end
++
      public Chunk(World p_i1995_1_, int p_i1995_2_, int p_i1995_3_)
-@@ -80,13 +93,22 @@
+     {
+         this.storageArrays = new ExtendedBlockStorage[16];
+@@ -80,13 +125,22 @@
  
          for (int k = 0; k < this.entityLists.length; ++k)
          {
@@ -51,7 +85,7 @@
      public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
      {
          this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
-@@ -512,10 +534,10 @@
+@@ -512,10 +566,10 @@
  
              if (extendedblockstorage != null)
              {
@@ -65,7 +99,7 @@
                  catch (Throwable throwable)
                  {
                      CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Getting block");
-@@ -529,7 +551,7 @@
+@@ -529,7 +583,7 @@
                          }
                      });
                      throw new ReportedException(crashreport);
@@ -74,7 +108,7 @@
              }
          }
  
-@@ -589,9 +611,10 @@
+@@ -589,9 +643,10 @@
  
              if (!this.worldObj.isRemote)
              {
@@ -86,7 +120,7 @@
              extendedblockstorage.func_150818_a(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_4_);
              extendedblockstorage.setExtBlockMetadata(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_5_); // This line duplicates the one below, so breakBlock fires with valid worldstate
  
-@@ -777,8 +800,20 @@
+@@ -777,8 +832,20 @@
  
          if (i != this.xPosition || j != this.zPosition)
          {
@@ -109,7 +143,7 @@
          }
  
          int k = MathHelper.floor_double(p_76612_1_.posY / 16.0D);
-@@ -799,6 +834,26 @@
+@@ -799,6 +866,26 @@
          p_76612_1_.chunkCoordY = k;
          p_76612_1_.chunkCoordZ = this.zPosition;
          this.entityLists[k].add(p_76612_1_);
@@ -136,7 +170,7 @@
      }
  
      public void removeEntity(Entity p_76622_1_)
-@@ -819,6 +874,26 @@
+@@ -819,6 +906,26 @@
          }
  
          this.entityLists[p_76608_2_].remove(p_76608_1_);
@@ -163,7 +197,7 @@
      }
  
      public boolean canBlockSeeTheSky(int p_76619_1_, int p_76619_2_, int p_76619_3_)
-@@ -874,9 +949,23 @@
+@@ -874,9 +981,23 @@
          p_150812_4_.xCoord = this.xPosition * 16 + p_150812_1_;
          p_150812_4_.yCoord = p_150812_2_;
          p_150812_4_.zCoord = this.zPosition * 16 + p_150812_3_;
@@ -188,7 +222,7 @@
          {
              if (this.chunkTileEntityMap.containsKey(chunkposition))
              {
-@@ -886,6 +975,16 @@
+@@ -886,6 +1007,16 @@
              p_150812_4_.validate();
              this.chunkTileEntityMap.put(chunkposition, p_150812_4_);
          }
@@ -205,7 +239,7 @@
      }
  
      public void removeTileEntity(int p_150805_1_, int p_150805_2_, int p_150805_3_)
-@@ -936,6 +1035,21 @@
+@@ -936,6 +1067,21 @@
  
          for (int i = 0; i < this.entityLists.length; ++i)
          {
@@ -227,7 +261,16 @@
              this.worldObj.unloadEntities(this.entityLists[i]);
          }
          MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
-@@ -1025,7 +1139,7 @@
+@@ -1015,7 +1161,7 @@
+                 return true;
+             }
+         }
+-        else if (this.hasEntities && this.worldObj.getTotalWorldTime() >= this.lastSaveTime + 600L)
++        else if (this.hasEntities && this.worldObj.getTotalWorldTime() >= this.lastSaveTime + net.minecraft.server.MinecraftServer.getServer().autosavePeriod * 4) // PaperSpigot - Only save if we've passed 4 auto save intervals without modification
+         {
+             return true;
+         }
+@@ -1025,7 +1171,7 @@
  
      public Random getRandomWithSeed(long p_76617_1_)
      {
@@ -236,7 +279,7 @@
      }
  
      public boolean isEmpty()
-@@ -1035,6 +1149,7 @@
+@@ -1035,6 +1181,7 @@
  
      public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)
      {
@@ -244,7 +287,7 @@
          if (!this.isTerrainPopulated && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_))
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_, p_76624_4_);
-@@ -1054,6 +1169,7 @@
+@@ -1054,6 +1201,7 @@
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_ - 1, p_76624_4_ - 1);
          }
@@ -252,7 +295,16 @@
      }
  
      public int getPrecipitationHeight(int p_76626_1_, int p_76626_2_)
-@@ -1184,8 +1300,10 @@
+@@ -1091,7 +1239,7 @@
+     {
+         if (this.isGapLightingUpdated && !this.worldObj.provider.hasNoSky && !p_150804_1_)
+         {
+-            this.recheckGaps(this.worldObj.isRemote);
++            this.recheckGapsAsync(this.worldObj.isRemote);
+         }
+ 
+         this.field_150815_m = true;
+@@ -1184,8 +1332,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -265,7 +317,7 @@
              }
          }
  
-@@ -1194,8 +1312,10 @@
+@@ -1194,8 +1344,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -278,7 +330,7 @@
              }
          }
  
-@@ -1206,8 +1326,10 @@
+@@ -1206,8 +1358,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -291,7 +343,7 @@
                  }
              }
          }
-@@ -1229,8 +1351,8 @@
+@@ -1229,8 +1383,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -302,3 +354,25 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
+@@ -1523,4 +1677,21 @@
+             }
+         }
+     }
++
++    /**
++     * PaperSpigot - Recheck gaps asynchronously.
++     */
++    public void recheckGapsAsync(final boolean isStatic) {
++        if (!worldObj.spigotConfig.useAsyncLighting) {
++            this.recheckGaps(isStatic);
++            return;
++        }
++
++        worldObj.lightingExecutor.submit(new Runnable() {
++            @Override
++            public void run() {
++                Chunk.this.recheckGaps(isStatic);
++            }
++        });
++    }
+ }
