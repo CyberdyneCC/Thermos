@@ -5,11 +5,7 @@
 ![Java JDK v1.8][java]
 ![Spigot 1.7.10 Snapshot ][spigot]
 
-### Continuation of KCauldron minecraft server
-
-This github was created due to the previous developer for KCauldron being missing for weeks - sometimes months - at a time.  When the dev was missing his gitlab would go offline making it "feel" like the project was abandoned completely.
-
-This repo was based on KCauldron 1492 Build 152.  Some extra patches were added and cherry picked in order to improve and fix up some of the small little flaws that were inherent in the 152 build.
+### This is an unofficial fork of KCauldron.
 
 ## Chat
 
