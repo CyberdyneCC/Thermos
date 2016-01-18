@@ -43,7 +43,7 @@ Also, please look at the release notes before downloading. :)
 * Start build process
   * This process downloads minecraft and apply patches
   * If you have gradle integration in IDE - you can still use gui
-  `./gradlew setupCauldron jar`
+  `./gradlew setupCauldron jar installBundle`
 
 All builds will be in `build/distributions`
   
@@ -51,7 +51,7 @@ All builds will be in `build/distributions`
 * Update sources
   * `git pull origin master`
 * Re apply patches & build binaries
-  * `./gradlew clean setupCauldron jar`
+  * `./gradlew clean setupCauldron jar installBundle`
 
 [forge]: https://img.shields.io/badge/Minecraft%20Forge-v10.13.4.1614-green.svg "Minecraft Forge v10.13.4.1614"
 [mc]: https://img.shields.io/badge/Minecraft-v1.7.10-green.svg "Minecraft 1.7.10"
