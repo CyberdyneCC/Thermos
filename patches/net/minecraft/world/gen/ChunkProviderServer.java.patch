@@ -508,7 +508,7 @@
 -                    this.loadedChunkHashMap.remove(olong.longValue());
 +                    this.loadedChunkHashMap_KC.remove(chunkcoordinates); // CraftBukkit
 +                    this.loadedChunks.remove(chunk); // Cauldron - vanilla compatibility
-+                    this.chunkt_KC.remove(chunk_hash(chunk.xCoord,chunk.zCoord)); //KCauldron - IntHashMap
++                    this.chunkt_KC.remove(chunk_hash(chunk.xPosition,chunk.zPosition)); //KCauldron - IntHashMap
 +                    ForgeChunkManager.putDormantChunk(chunkcoordinates, chunk);
 +                    if(this.loadedChunkHashMap_KC.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
 +                        DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);
