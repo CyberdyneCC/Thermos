@@ -16,6 +16,7 @@
          chunk.lastSaveTime = queuedChunk.provider.worldObj.getTotalWorldTime();
 -        queuedChunk.provider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk);
 +        queuedChunk.provider.loadedChunkHashMap_KC.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
++        queuedChunk.provider.chunkt_KC.put(queuedChunk.provider.chunk_hash(queuedChunk.x,queuedChunk.z), chunk); //KCauldron int hashmap
          queuedChunk.provider.loadedChunks.add(chunk);
          chunk.onChunkLoad();
  
