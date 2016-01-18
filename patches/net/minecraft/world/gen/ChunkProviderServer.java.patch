@@ -93,8 +93,7 @@
      {
          return this.loadedChunks;
      }
-
-
+ 
      public void unloadChunksIfNotNearSpawn(int p_73241_1_, int p_73241_2_)
      {
 +        // PaperSpigot start - Asynchronous lighting updates
@@ -194,7 +193,7 @@
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
 +        this.chunksToUnload.remove(p_73158_1_, p_73158_2_);
-+        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement
++        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73158_1_, p_73158_2_)); //KCauldron replacement
 +        boolean newChunk = false; // CraftBukkit
  
          if (chunk == null)
@@ -229,10 +228,9 @@
 -            this.loadedChunks.add(chunk);
 -            loadingChunks.remove(k);
 -            chunk.onChunkLoad();
-+            this.loadedChunkHashMap_KC.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk); // CraftBukkit
++            this.loadedChunkHashMap_KC.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk); this.chunkt_KC.put(chunk_hash(p_73158_1_, p_73158_2_), chunk); //KCauldron - IntHash
 +            this.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
 +            loadingChunks.remove(LongHash.toLong(p_73158_1_, p_73158_2_)); // Cauldron - LongHash
-+            this.chunkt_KC.put(chunk_hash(p_73158_1_, p_73158_2_), chunk); //KCauldron - IntHash
 +
 +            if (chunk != null)
 +            {
