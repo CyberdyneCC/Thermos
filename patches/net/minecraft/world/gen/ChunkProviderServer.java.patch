@@ -67,8 +67,7 @@
 -    public List loadedChunks = new ArrayList();
 +    public boolean loadChunkOnProvideRequest = MinecraftServer.getServer().cauldronConfig.loadChunkOnRequest.getValue(); // Cauldron - if true, allows mods to force load chunks. to disable, set load-chunk-on-request in cauldron.yml to false
 +    public int initialTick; // Cauldron counter to keep track of when this loader was created
-+    public TLongObjectMap<Chunk> loadedChunkHashMap_KC = new TSynchronizedLongObjectMap<Chunk>(new TLongObjectHashMap<Chunk>());
-+    public ConcurrentHashMap<Integer,Chunk> chunkt_KC = new ConcurrentHashMap<Integer,Chunk>();
++    public TLongObjectMap<Chunk> loadedChunkHashMap_KC = new TSynchronizedLongObjectMap<Chunk>(new TLongObjectHashMap<Chunk>()); public ConcurrentHashMap<Integer,Chunk> chunkt_KC = new ConcurrentHashMap<Integer,Chunk>();
 +    public List loadedChunks = new ArrayList(); // Cauldron - vanilla compatibility
      public WorldServer worldObj;
      private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
@@ -86,8 +85,7 @@
      public boolean chunkExists(int p_73149_1_, int p_73149_2_)
      {
 -        return this.loadedChunkHashMap.containsItem(ChunkCoordIntPair.chunkXZ2Int(p_73149_1_, p_73149_2_));
-+        //return this.loadedChunkHashMap_KC.containsKey(LongHash.toLong(p_73149_1_, p_73149_2_)); // CraftBukkit
-+        return this.chunkt_KC.containsKey(chunk_hash(p_73149_1_, p_73149_2_)); //KCauldron Replacement for line above
++        return this.chunkt_KC.containsKey(chunk_hash(p_73149_1_, p_73149_2_)); //KCauldron Replacement
      }
  
 -    public List func_152380_a()
@@ -95,17 +93,12 @@
      {
          return this.loadedChunks;
      }
-+
-+     public static int chunk_hash(int x, int y)
-+     {
-+         return ((x & 0xFFFF) << 16) | (y & 0xFFFF);
-+     }
+
 
      public void unloadChunksIfNotNearSpawn(int p_73241_1_, int p_73241_2_)
      {
 +        // PaperSpigot start - Asynchronous lighting updates
-+        //Chunk chunk = this.loadedChunkHashMap_KC.get(LongHash.toLong(p_73241_1_, p_73241_2_));
-+        Chunk chunk = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement for line above
++        Chunk chunk = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement
 +        if (chunk != null && chunk.worldObj.spigotConfig.useAsyncLighting && (chunk.pendingLightUpdates.get() > 0 || chunk.worldObj.getTotalWorldTime() - chunk.lightUpdateTime < 20)) {
 +            return;
 +        }
@@ -122,8 +115,7 @@
              {
 -                this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_)));
 +                this.chunksToUnload.add(p_73241_1_, p_73241_2_);
-+                //Chunk c = this.loadedChunkHashMap_KC.get(LongHash.toLong(p_73241_1_, p_73241_2_));
-+                Chunk c = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement for line above
++                Chunk c = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement
 +
 +                if (c != null)
 +                {
@@ -139,8 +131,7 @@
 -            this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_)));
 +            // CraftBukkit start
 +            this.chunksToUnload.add(p_73241_1_, p_73241_2_);
-+            //Chunk c = this.loadedChunkHashMap_KC.get(LongHash.toLong(p_73241_1_, p_73241_2_));
-+            Chunk c = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement for line above
++            Chunk c = this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement
 +
 +            if (c != null)
 +            {
@@ -169,8 +160,7 @@
 -            this.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
 -        }
 +    public Chunk getChunkIfLoaded(int x, int z) {
-+        //return this.loadedChunkHashMap_KC.get(LongHash.toLong(x, z));
-+        return this.chunkt_KC.get(chunk_hash(x,z)); //KCauldron replacement for line above
++        return this.chunkt_KC.get(chunk_hash(x,z)); //KCauldron replacement
      }
  
      public Chunk loadChunk(int p_73158_1_, int p_73158_2_)
@@ -182,8 +172,7 @@
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
 +        this.chunksToUnload.remove(par1, par2);
-+        //Chunk chunk = (Chunk) this.loadedChunkHashMap_KC.get(LongHash.toLong(par1, par2));
-+        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(par1,par2)); //KCauldron replacement for line above
++        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(par1,par2)); //KCauldron replacement
 +        boolean newChunk = false;
          AnvilChunkLoader loader = null;
  
@@ -205,8 +194,7 @@
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
 +        this.chunksToUnload.remove(p_73158_1_, p_73158_2_);
-+        //Chunk chunk = (Chunk) this.loadedChunkHashMap_KC.get(LongHash.toLong(p_73241_1_, p_73241_2_));
-+        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement for line above
++        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73241_1_, p_73241_2_)); //KCauldron replacement
 +        boolean newChunk = false; // CraftBukkit
  
          if (chunk == null)
@@ -290,8 +278,7 @@
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(p_73154_1_, p_73154_2_));
 -        return chunk == null ? (!this.worldObj.findingSpawnPoint && !this.loadChunkOnProvideRequest ? this.defaultEmptyChunk : this.loadChunk(p_73154_1_, p_73154_2_)) : chunk;
 +        // CraftBukkit start
-+        //Chunk chunk = (Chunk) this.loadedChunkHashMap_KC.get(LongHash.toLong(p_73154_1_, p_73154_2_));
-+        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73154_1_, p_73154_2_)); //KCauldron replacement for line above
++        Chunk chunk = (Chunk) this.chunkt_KC.get(chunk_hash(p_73154_1_, p_73154_2_)); //KCauldron replacement
 +        chunk = chunk == null ? (shouldLoadChunk() ? this.loadChunk(p_73154_1_, p_73154_2_) : this.defaultEmptyChunk) : chunk; // Cauldron handle forge server tick events and load the chunk within 5 seconds of the world being loaded (for chunk loaders)
 +
 +        if (chunk == this.defaultEmptyChunk)
@@ -507,8 +494,7 @@
 -                    this.chunksToUnload.remove(olong);
 -                    this.loadedChunkHashMap.remove(olong.longValue());
 +                    this.loadedChunkHashMap_KC.remove(chunkcoordinates); // CraftBukkit
-+                    this.loadedChunks.remove(chunk); // Cauldron - vanilla compatibility
-+                    this.chunkt_KC.remove(chunk_hash(chunk.xPosition,chunk.zPosition)); //KCauldron - IntHashMap
++                    this.loadedChunks.remove(chunk); this.chunkt_KC.remove(chunk_hash(chunk.xPosition,chunk.zPosition)); //KCauldron - IntHashMap
 +                    ForgeChunkManager.putDormantChunk(chunkcoordinates, chunk);
 +                    if(this.loadedChunkHashMap_KC.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
 +                        DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);
@@ -552,11 +538,9 @@
 +
 +    public long lastAccessed(int x, int z)
 +    {
-+        //long chunkHash = LongHash.toLong(x, z); 
-+        //if (!loadedChunkHashMap_KC.containsKey(chunkHash)) return 0;
-+        //return loadedChunkHashMap_KC.get(chunkHash).lastAccessedTick;
-+        if (!chunkt_KC.containsKey(chunk_hash(x,z))) return 0;
-+        return chunkt_KC.get(chunk_hash(x,z)).lastAccessedTick;
++        int chunkHash = chunk_hash(x,z); 
++        if (!chunkt_KC.containsKey(chunkHash)) return 0;
++        return chunkt_KC.get(chunkHash).lastAccessedTick;
 +    }
 +
 +    private boolean shouldUnloadChunk(Chunk chunk)
@@ -564,5 +548,10 @@
 +        if (chunk == null) return false;
 +        return MinecraftServer.getServer().getTickCounter() - chunk.lastAccessedTick > MinecraftServer.getServer().cauldronConfig.chunkGCGracePeriod.getValue();
 +    }
++
++     public static int chunk_hash(int x, int y)
++     {
++         return ((x & 0xFFFF) << 16) | (y & 0xFFFF);
++     }
 +    // Cauldron end
  }
