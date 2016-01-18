@@ -12,7 +12,7 @@ public class KCauldronConfig extends ConfigBase {
     public BoolSetting commandEnable = new BoolSetting(this, "command.enable",
             true, "Enable KCauldron command");
     public BoolSetting updatecheckerEnable = new BoolSetting(this,
-            "updatechecker.enable", true, "Enable KCauldron update checker");
+            "updatechecker.enable", false, "Enable KCauldron update checker");
     public StringSetting updatecheckerSymlinks = new StringSetting(this,
             "updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
     public BoolSetting updatecheckerAutoinstall = new BoolSetting(this,
