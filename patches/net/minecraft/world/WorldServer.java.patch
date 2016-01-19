@@ -278,10 +278,10 @@
 +                if (entityplayer.isPlayerFullyAsleep())
 +                {
 +                    foundActualSleepers = true;
-+                }
-             }
+                 }
 -            while (entityplayer.isPlayerFullyAsleep());
 -
++            }
 +            while (entityplayer.isPlayerFullyAsleep() || entityplayer.fauxSleeping);
 +            // CraftBukkit end
              return false;
@@ -297,17 +297,17 @@
 -        while (iterator.hasNext())
 +        // Spigot start
 +        for (gnu.trove.iterator.TLongShortIterator iter = activeChunkSet_CB.iterator(); iter.hasNext();)
-         {
--            ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair)iterator.next();
--            int k = chunkcoordintpair.chunkXPos * 16;
--            int l = chunkcoordintpair.chunkZPos * 16;
++        {
 +            iter.advance();
 +            long chunkCoord = iter.key();
 +            int chunkX = World.keyToX(chunkCoord);
 +            int chunkZ = World.keyToZ(chunkCoord);
 +            // If unloaded, or in process of being unloaded, drop it
 +            if ((!this.chunkExists(chunkX, chunkZ)) || (this.theChunkProviderServer.chunksToUnload.contains(chunkX, chunkZ)))
-+            {
+             {
+-            ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair)iterator.next();
+-            int k = chunkcoordintpair.chunkXPos * 16;
+-            int l = chunkcoordintpair.chunkZPos * 16;
 +                activeChunkSet.remove(new ChunkCoordIntPair(chunkX, chunkZ)); // Cauldron - vanilla compatibility
 +                iter.remove();
 +                continue;
@@ -397,11 +397,19 @@
      }
  
      public void resetUpdateEntityTick()
-@@ -506,7 +687,16 @@
+@@ -498,7 +679,7 @@
+     {
+         int i = this.pendingTickListEntriesTreeSet.size();
+ 
+-        if (i != this.pendingTickListEntriesHashSet.size())
++        if (false)//i != this.pendingTickListEntriesHashSet.size())
+         {
+             throw new IllegalStateException("TickNextTick list out of synch");
+         }
+@@ -506,8 +687,17 @@
          {
              if (i > 1000)
              {
--                i = 1000;
 +                // CraftBukkit start - If the server has too much to process over time, try to alleviate that
 +                if (i > 20 * 1000)
 +                {
@@ -409,17 +417,17 @@
 +                }
 +                else
 +                {
-+                    i = 1000;
-+                }
+                     i = 1000;
+                 }
 +                // CraftBukkit end
-             }
++            }
  
              this.theProfiler.startSection("cleaning");
+             NextTickListEntry nextticklistentry;
 @@ -651,7 +841,37 @@
      protected IChunkProvider createChunkProvider()
      {
          IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
--        this.theChunkProviderServer = new ChunkProviderServer(this, ichunkloader, this.provider.createChunkGenerator());
 +        // Cauldron start - if provider is vanilla, proceed to create a bukkit compatible chunk generator
 +        if (this.provider.getClass().toString().length() <= 3 || this.provider.getClass().toString().contains("net.minecraft"))
 +        {
@@ -448,7 +456,7 @@
 +        else
 +        // custom provider, load normally for forge compatibility
 +        {
-+            this.theChunkProviderServer = new ChunkProviderServer(this, ichunkloader, this.provider.createChunkGenerator());
+             this.theChunkProviderServer = new ChunkProviderServer(this, ichunkloader, this.provider.createChunkGenerator());
 +        }
 +        // Cauldron end
          return this.theChunkProviderServer;
@@ -467,35 +475,34 @@
              {
 -                Chunk chunk = getChunkFromChunkCoords(x, z);
 -                if (chunk != null)
+-                {
+-                    for(Object obj : chunk.chunkTileEntityMap.values())
 +                Chunk chunk = getChunkFromChunkCoords(chunkX, chunkZ);
 +
 +                if (chunk == null)
                  {
--                    for(Object obj : chunk.chunkTileEntityMap.values())
+-                        TileEntity entity = (TileEntity)obj;
+-                        if (!entity.isInvalid())
 +                    continue;
 +                }
 +
 +                for (Object te : chunk.chunkTileEntityMap.values())
-+                {
+                 {
+-                            if (entity.xCoord >= p_147486_1_ && entity.yCoord >= p_147486_2_ && entity.zCoord >= p_147486_3_ &&
+-                                entity.xCoord <= p_147486_4_ && entity.yCoord <= p_147486_5_ && entity.zCoord <= p_147486_6_)
 +                    TileEntity tileentity = (TileEntity) te;
 +
 +                    if ((tileentity.xCoord >= p_147486_1_) && (tileentity.yCoord >= p_147486_2_) && (tileentity.zCoord >= p_147486_3_)
 +                            && (tileentity.xCoord < p_147486_4_) && (tileentity.yCoord < p_147486_5_) && (tileentity.zCoord < p_147486_6_))
                      {
--                        TileEntity entity = (TileEntity)obj;
--                        if (!entity.isInvalid())
--                        {
--                            if (entity.xCoord >= p_147486_1_ && entity.yCoord >= p_147486_2_ && entity.zCoord >= p_147486_3_ &&
--                                entity.xCoord <= p_147486_4_ && entity.yCoord <= p_147486_5_ && entity.zCoord <= p_147486_6_)
--                            {
 -                                arraylist.add(entity);
--                            }
--                        }
 +                        arraylist.add(tileentity);
                      }
                  }
              }
          }
+-            }
+-        }
 -
 +        // CraftBukkit end
          return arraylist;
