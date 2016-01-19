@@ -26,7 +26,7 @@ while(in.hasNextLine())
 		if(!(current.endsWith("@@") || current.endsWith("@ ")))
 		{
 			post += current.substring(0,current.lastIndexOf("@@")+2)+"\n";
-			post += current.substring(current.lastIndexOf("@@")+2)+"\n";
+			//post += current.substring(current.lastIndexOf("@@")+2)+"\n";
 		}
 		else
 		{
