@@ -1,0 +1,53 @@
+import java.util.*;
+import java.io.*;
+public class makepatch
+{
+
+public static void main(String[] args) throws Exception
+{
+
+if(args.length == 1)
+{
+
+String post = "";
+Scanner in = new Scanner(new File(args[0]));
+in.nextLine();in.nextLine();
+post += in.nextLine().replace("eclipse/Clean/src/main/java","../src-base/minecraft")+"\n";
+post += in.nextLine().replace("eclipse/cauldron/src/main/java","../src-work/minecraft")+"\n";
+while(in.hasNextLine())
+{
+
+	String current = in.nextLine();
+	if(current.contains("No newline at end of file")) continue;
+
+	if(current.startsWith("@@"))
+	{
+		if(!(current.endsWith("@@") || current.endsWith("@ ")))
+		{
+			post += current.substring(0,current.lastIndexOf("@@")+2)+"\n";
+			post += current.substring(current.lastIndexOf("@@")+2)+"\n";
+		}
+		else
+		{
+			post += current + "\n";
+		}
+
+	}
+	else
+	{
+		post += current + "\n";
+	}
+
+}
+in.close();
+PrintWriter out = new PrintWriter(new File(args[0]));
+out.print(post);
+out.close();
+
+}
+else
+System.out.println("1 patch to fix arg required");
+
+}
+
+}

@@ -14,7 +14,7 @@ then
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
-	git diff --no-index $CLEAN $CAULD
+	git diff --no-index --text -w $CLEAN $CAULD
 	echo "Diff patch of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} above."
 elif [ $1 == "make" ]
 then
@@ -23,7 +23,8 @@ then
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
-	git diff --no-index $CLEAN $CAULD > $PATCH
+	git diff --no-index --text -w $CLEAN $CAULD > $PATCH
+	java makepatch.class $PATCH
 	echo "Diff of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} written to ${yelf}$PATCH${reset}"
 else
 	echo "${bluf}CREATING PATCH${reset}"
@@ -31,6 +32,7 @@ else
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
-	git diff --no-index $CLEAN $CAULD > $PATCH
+	git diff --no-prefix --no-index --text -w $CLEAN $CAULD > $PATCH
+	java makepatch.class $PATCH
 	echo "Diff of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} written to ${yelf}$PATCH${reset}"
 fi
