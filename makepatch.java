@@ -9,6 +9,7 @@ public static void main(String[] args) throws Exception
 if(args.length == 1)
 {
 
+System.out.println("[JPATCH] Patching the patch!");
 String post = "";
 Scanner in = new Scanner(new File(args[0]));
 in.nextLine();in.nextLine();
@@ -43,10 +44,19 @@ in.close();
 PrintWriter out = new PrintWriter(new File(args[0]));
 out.print(post);
 out.close();
+System.out.println("[JPATCH] Patch is patched!");
 
 }
+else if(args.length == 2)
+{
+if(args[0].equalsIgnoreCase("chop"))
+{
+System.out.println(args[1].replace("eclipse/cauldron/src/main/java/",""));
+return;
+}
+}
 else
-System.out.println("1 patch to fix arg required");
+System.out.println("You gave : " + args.length+" args. Usage: java makepatch FILENAME / chop ECLIPSE_CAULDRON_NAME");
 
 }
 

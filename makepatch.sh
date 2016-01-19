@@ -10,7 +10,8 @@ then
 elif [ $1 == "echo" ]
 then
 	echo "${bluf}CREATING PATCH${reset}"
-	FILE=`basename $2`
+	FILE=`java makepatch chop $2`
+        echo "$FILE"
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
@@ -19,7 +20,7 @@ then
 elif [ $1 == "make" ]
 then
 	echo "${bluf}CREATING PATCH${reset}"
-	FILE=`basename $2`
+	FILE=`java makepatch chop $2`
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
@@ -28,7 +29,7 @@ then
 	echo "Diff of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} written to ${yelf}$PATCH${reset}"
 else
 	echo "${bluf}CREATING PATCH${reset}"
-	FILE=`basename $1`
+	FILE=`java makepatch chop $1`
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
