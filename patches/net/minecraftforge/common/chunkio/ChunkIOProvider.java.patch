@@ -47,3 +47,9 @@
          }
  
          chunk.populateChunk(queuedChunk.provider, queuedChunk.provider, queuedChunk.x, queuedChunk.z);
+@@ -61,4 +87,4 @@
+         thread.setDaemon(true);
+         return thread;
+     }
+-}
++}
