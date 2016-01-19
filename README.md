@@ -5,7 +5,7 @@
 ![Java JDK v1.8][java]
 ![Spigot 1.7.10 Snapshot ][spigot]
 
-### This is an unofficial fork of KCauldron.
+### This is an unofficial fork of KCauldron aimed at producing a ridiculously low-lag server.
 
 ## Chat
 
