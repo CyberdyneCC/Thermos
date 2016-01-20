@@ -33,7 +33,7 @@ else
 	CLEAN=`find eclipse/Clean/src/main/java | grep $FILE`
 	CAULD=`find eclipse/cauldron/src/main/java | grep $FILE`
 	PATCH=`find patches/ | grep -i $FILE`
-	git diff --no-index $CLEAN $CAULD > $PATCH
+	git diff --no-prefix --text --no-index $CLEAN $CAULD > $PATCH
 	java makepatch $PATCH
 	echo "Diff of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} written to ${yelf}$PATCH${reset}"
 fi
