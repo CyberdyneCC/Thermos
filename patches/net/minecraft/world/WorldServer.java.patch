@@ -1,5 +1,5 @@
---- a/../src-base/minecraft/net/minecraft/world/WorldServer.java
-+++ b/../src-work/minecraft/net/minecraft/world/WorldServer.java
+--- ../src-base/minecraft/net/minecraft/world/WorldServer.java
++++ ../src-work/minecraft/net/minecraft/world/WorldServer.java
 @@ -1,8 +1,10 @@
  package net.minecraft.world;
  
