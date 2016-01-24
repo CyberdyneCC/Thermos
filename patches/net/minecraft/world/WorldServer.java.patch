@@ -584,12 +584,12 @@
      {
 +        // CraftBukkit start
 +        Explosion explosion = super.newExplosion(p_72885_1_, p_72885_2_, p_72885_4_, p_72885_6_, p_72885_8_, p_72885_9_, p_72885_10_);
-+	if(explosion == null)return;
++	if(explosion == null)return null;
 +	try{
 +        if (explosion.wasCanceled)
 +        {
 +            return explosion;
-+        }}catch(Exception e){return;}
++        }}catch(Exception e){return null;}
 +
 +        /* Remove
          Explosion explosion = new Explosion(this, p_72885_1_, p_72885_2_, p_72885_4_, p_72885_6_, p_72885_8_);
