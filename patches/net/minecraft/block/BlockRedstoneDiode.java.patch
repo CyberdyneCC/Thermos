@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/block/BlockRedstoneDiode.java
 +++ ../src-work/minecraft/net/minecraft/block/BlockRedstoneDiode.java
-@@ -13,6 +13,8 @@
+@@ -13,16 +13,19 @@
  import net.minecraft.world.IBlockAccess;
  import net.minecraft.world.World;
  
@@ -9,7 +9,26 @@
  public abstract class BlockRedstoneDiode extends BlockDirectional
  {
      protected final boolean isRepeaterPowered;
-@@ -44,16 +46,30 @@
+     private static final String __OBFID = "CL_00000226";
+-
++private boolean limit;
+     protected BlockRedstoneDiode(boolean p_i45400_1_)
+     {
+         super(Material.circuits);
+         this.isRepeaterPowered = p_i45400_1_;
+         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
++if(this.getClass().getSimpleName().toLowerCase().contains("redstonerepeater"))limit = true;
+     }
+ 
+     public boolean renderAsNormalBlock()
+@@ -39,27 +42,45 @@
+     {
+         return !World.doesBlockHaveSolidTopSurface(p_149718_1_, p_149718_2_, p_149718_3_ - 1, p_149718_4_) ? false : super.canBlockStay(p_149718_1_, p_149718_2_, p_149718_3_, p_149718_4_);
+     }
+-
++boolean state = false;
++long last = 0L;
+     public void updateTick(World p_149674_1_, int p_149674_2_, int p_149674_3_, int p_149674_4_, Random p_149674_5_)
      {
          int l = p_149674_1_.getBlockMetadata(p_149674_2_, p_149674_3_, p_149674_4_);
  
@@ -25,9 +44,11 @@
 +                {
 +                    return;
 +                }
++if(limit && System.currentTimeMillis() - last <= 150)return;
 +
 +                // CraftBukkit end
                  p_149674_1_.setBlock(p_149674_2_, p_149674_3_, p_149674_4_, this.getBlockUnpowered(), l, 2);
++last = System.currentTimeMillis();
              }
              else if (!this.isRepeaterPowered)
              {
@@ -36,8 +57,21 @@
 +                {
 +                    return;
 +                }
-+
++if(limit && System.currentTimeMillis() - last <= 150)return;
 +                // CraftBukkit end
                  p_149674_1_.setBlock(p_149674_2_, p_149674_3_, p_149674_4_, this.getBlockPowered(), l, 2);
  
                  if (!flag)
+                 {
+                     p_149674_1_.scheduleBlockUpdateWithPriority(p_149674_2_, p_149674_3_, p_149674_4_, this.getBlockPowered(), this.func_149899_k(l), -1);
+                 }
++last = System.currentTimeMillis();
+             }
+         }
+     }
+@@ -315,4 +336,4 @@
+     {
+         return this.func_149907_e(p_149667_1_);
+     }
+-}
++}
