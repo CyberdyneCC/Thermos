@@ -4,14 +4,14 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.CauldronHooks;
 import net.minecraftforge.cauldron.configuration.BoolSetting;
 import net.minecraftforge.cauldron.configuration.IntSetting;
 import net.minecraftforge.cauldron.configuration.Setting;
-
+import net.minecraft.world.World;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.NumberUtils;
@@ -28,6 +28,7 @@ public class CauldronCommand extends Command
     private static final List<String> COMMANDS = ImmutableList.of("get", "set", "tick-interval", "save", "reload", "chunks", "heap");
     private static final List<String> CHUNK_COMMANDS = ImmutableList.of("print", "dump");
 
+    public static boolean debug = false;
     public CauldronCommand()
     {
         super("cauldron");
@@ -44,6 +45,13 @@ public class CauldronCommand extends Command
         {
             return true;
         }
+        if((args.length > 0) && "debug".equalsIgnoreCase(args[0]))
+        {
+                debug = !debug;
+                sender.sendMessage("Robotia says debug is " + debug);
+                return true;
+        }
+
         if ((args.length > 0) && "heap".equalsIgnoreCase(args[0]))
         {
             processHeap(sender, args);
