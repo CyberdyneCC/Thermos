@@ -1,0 +1,54 @@
+--- ../src-base/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
++++ ../src-work/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
+@@ -1,7 +1,7 @@
+ package net.minecraftforge.event.world;
+ 
+ import java.util.List;
+-
++import org.bukkit.event.entity.ExplosionPrimeEvent;
+ import cpw.mods.fml.common.eventhandler.Cancelable;
+ import cpw.mods.fml.common.eventhandler.Event;
+ import net.minecraft.entity.Entity;
+@@ -39,10 +39,36 @@
+     @Cancelable
+     public static class Start extends ExplosionEvent
+     {
++        private ExplosionPrimeEvent event;
+         public Start(World world, Explosion explosion)
+         {
+             super(world, explosion);
++            // CraftBukkit start
++            // float f = 4.0F;
++            org.bukkit.craftbukkit.CraftServer server = world.getServer();
++            event = new ExplosionPrimeEvent( org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, explosion.exploder),8.0F,true);
++            server.getPluginManager().callEvent(event);
++        }
++        @Override
++        public boolean isCanceled()
++        {
++	Entity p_72885_1_ = explosion.exploder;
++        System.out.println("Entity considers exploding @ " + p_72885_1_.posX +", "+p_72885_1_.posY+","+p_72885_1_.posZ);
++//            System.out.println("CHECK" + super.isCanceled() + "," + this.event.isCancelled());
++        if(!(super.isCanceled() || this.event.isCancelled())) System.out.println("W00t explode!");
++	else System.out.println("Aww nogo!");
++            return super.isCanceled() || this.event.isCancelled();
+         }
++        @Override
++        public void setCanceled(boolean cancel)
++        {
++            if (!isCancelable())
++            {
++                throw new IllegalArgumentException("Attempted to cancel a uncancelable event");
++            }
++            super.setCanceled(cancel); this.event.setCancelled(cancel);
++        }
++
+     }
+ 
+     /** ExplosionEvent.Detonate is fired once the explosion has a list of affected blocks and entities.  These lists can be modified to change the outcome.<br>
+@@ -73,4 +99,4 @@
+             return entityList;
+         }
+     }
+-}
++}
