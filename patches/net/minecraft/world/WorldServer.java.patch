@@ -578,17 +578,18 @@
          if (super.addWeatherEffect(p_72942_1_))
          {
              this.mcServer.getConfigurationManager().sendToAllNear(p_72942_1_.posX, p_72942_1_.posY, p_72942_1_.posZ, 512.0D, this.provider.dimensionId, new S2CPacketSpawnGlobalEntity(p_72942_1_));
-@@ -894,13 +1153,23 @@
+@@ -894,13 +1153,24 @@
  
      public Explosion newExplosion(Entity p_72885_1_, double p_72885_2_, double p_72885_4_, double p_72885_6_, float p_72885_8_, boolean p_72885_9_, boolean p_72885_10_)
      {
 +        // CraftBukkit start
 +        Explosion explosion = super.newExplosion(p_72885_1_, p_72885_2_, p_72885_4_, p_72885_6_, p_72885_8_, p_72885_9_, p_72885_10_);
-+
++	if(explosion == null)return;
++	try{
 +        if (explosion.wasCanceled)
 +        {
 +            return explosion;
-+        }
++        }}catch(Exception e){return;}
 +
 +        /* Remove
          Explosion explosion = new Explosion(this, p_72885_1_, p_72885_2_, p_72885_4_, p_72885_6_, p_72885_8_);
@@ -603,7 +604,7 @@
          if (!p_72885_10_)
          {
              explosion.affectedBlockPositions.clear();
-@@ -977,7 +1246,7 @@
+@@ -977,7 +1247,7 @@
      {
          boolean flag = this.isRaining();
          super.updateWeather();
@@ -612,7 +613,7 @@
          if (this.prevRainingStrength != this.rainingStrength)
          {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
-@@ -988,10 +1257,6 @@
+@@ -988,10 +1258,6 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
  
@@ -623,7 +624,7 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1271,33 @@
+@@ -1006,6 +1272,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
@@ -657,7 +658,7 @@
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1361,51 @@
+@@ -1069,4 +1362,51 @@
                  this();
              }
          }
