@@ -1377,7 +1377,6 @@
          }
          return count;
      }
--}
 +
 +    // Cauldron start
 +    public boolean isEmpty(int x, int y, int z) // Required until SS inheritance bug is fixed
@@ -1496,4 +1495,4 @@
 +        });
 +        return true;
 +    }
-+}
+ }
