@@ -55,7 +55,25 @@
      private static final String __OBFID = "CL_00000043";
  
      private cpw.mods.fml.common.registry.RegistryDelegate<Item> delegate;
-@@ -126,12 +150,14 @@
+@@ -82,12 +106,17 @@
+         {
+             this.itemDamage = 0;
+         }
++	if (this.stackSize < 0)
++	{
++		this.stackSize = 0;
++	}
+     }
+ 
+     public static ItemStack loadItemStackFromNBT(NBTTagCompound p_77949_0_)
+     {
+         ItemStack itemstack = new ItemStack();
+         itemstack.readFromNBT(p_77949_0_);
++	if(itemstack.stackSize < 0)itemstack.stackSize = 0;
+         return itemstack.getItem() != null ? itemstack : null;
+     }
+ 
+@@ -126,12 +155,14 @@
      public boolean tryPlaceItemIntoWorld(EntityPlayer p_77943_1_, World p_77943_2_, int p_77943_3_, int p_77943_4_, int p_77943_5_, int p_77943_6_, float p_77943_7_, float p_77943_8_, float p_77943_9_)
      {
          if (!p_77943_2_.isRemote) return net.minecraftforge.common.ForgeHooks.onPlaceItemIntoWorld(this, p_77943_1_, p_77943_2_, p_77943_3_, p_77943_4_, p_77943_5_, p_77943_6_, p_77943_7_, p_77943_8_, p_77943_9_);
@@ -71,7 +89,48 @@
  
          return flag;
      }
-@@ -227,8 +253,22 @@
+@@ -143,6 +174,7 @@
+ 
+     public ItemStack useItemRightClick(World p_77957_1_, EntityPlayer p_77957_2_)
+     {
++	if(this.stackSize < 0)stackSize = 0;
+         return this.getItem().onItemRightClick(this, p_77957_1_, p_77957_2_);
+     }
+ 
+@@ -154,6 +186,7 @@
+     public NBTTagCompound writeToNBT(NBTTagCompound p_77955_1_)
+     {
+         p_77955_1_.setShort("id", (short)Item.getIdFromItem(this.field_151002_e));
++	if(this.stackSize < 0) stackSize = 0;
+         p_77955_1_.setByte("Count", (byte)this.stackSize);
+         p_77955_1_.setShort("Damage", (short)this.itemDamage);
+ 
+@@ -175,6 +208,10 @@
+         {
+             this.itemDamage = 0;
+         }
++	if(this.stackSize < 0)
++	{
++	    this.stackSize = 0;
++	}
+ 
+         if (p_77963_1_.hasKey("tag", 10))
+         {
+@@ -184,11 +221,13 @@
+ 
+     public int getMaxStackSize()
+     {
++	if(stackSize < 0)stackSize = 0;
+         return this.getItem().getItemStackLimit(this);
+     }
+ 
+     public boolean isStackable()
+     {
++        if(stackSize < 0)stackSize = 0;
+         return this.getMaxStackSize() > 1 && (!this.isItemStackDamageable() || !this.isItemDamaged());
+     }
+ 
+@@ -227,8 +266,22 @@
          return getItem().getMaxDamage(this);
      }
  
@@ -94,7 +153,7 @@
          if (!this.isItemStackDamageable())
          {
              return false;
-@@ -250,6 +290,23 @@
+@@ -250,6 +303,23 @@
  
                  p_96631_1_ -= k;
  
@@ -118,7 +177,7 @@
                  if (p_96631_1_ <= 0)
                  {
                      return false;
-@@ -267,7 +324,7 @@
+@@ -267,7 +337,7 @@
          {
              if (this.isItemStackDamageable())
              {
@@ -127,7 +186,7 @@
                  {
                      p_77972_2_.renderBrokenItemStack(this);
                      --this.stackSize;
-@@ -288,6 +345,12 @@
+@@ -288,6 +358,12 @@
                          this.stackSize = 0;
                      }
  
@@ -140,7 +199,15 @@
                      this.itemDamage = 0;
                  }
              }
-@@ -419,6 +482,7 @@
+@@ -326,6 +402,7 @@
+ 
+     public ItemStack copy()
+     {
++	if(stackSize < 0)stackSize = 0;
+         ItemStack itemstack = new ItemStack(this.field_151002_e, this.stackSize, this.itemDamage);
+ 
+         if (this.stackTagCompound != null)
+@@ -419,6 +496,7 @@
  
      public void setTagCompound(NBTTagCompound p_77982_1_)
      {
@@ -148,10 +215,11 @@
          this.stackTagCompound = p_77982_1_;
      }
  
-@@ -768,4 +832,12 @@
+@@ -768,4 +846,12 @@
  
          return ichatcomponent;
      }
+-}
 +    
 +    // Spigot start
 +    public static boolean fastMatches(ItemStack is1, ItemStack is2) {
@@ -160,4 +228,4 @@
 +        return false;
 +    }
 +    // Spigot end
- }
++}
