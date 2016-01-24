@@ -30,7 +30,7 @@
  import net.minecraft.world.storage.ISaveHandler;
  import net.minecraftforge.common.ChestGenHooks;
  import static net.minecraftforge.common.ChestGenHooks.BONUS_CHEST;
-@@ -67,14 +73,29 @@
+@@ -67,11 +73,26 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
@@ -57,11 +57,7 @@
 +    public EntityTracker theEntityTracker; // CraftBukkit - private final -> public
      private final PlayerManager thePlayerManager;
      private Set pendingTickListEntriesHashSet;
--    private TreeSet pendingTickListEntriesTreeSet;
-+    private SortedSet pendingTickListEntriesTreeSet;
-     public ChunkProviderServer theChunkProviderServer;
-     public boolean levelSaving;
-     private boolean allPlayersSleeping;
+     private TreeSet pendingTickListEntriesTreeSet;
 @@ -92,9 +113,13 @@
      protected Set<ChunkCoordIntPair> doneChunks = new HashSet<ChunkCoordIntPair>();
      public List<Teleporter> customTeleporters = new ArrayList<Teleporter>();
@@ -87,7 +83,7 @@
          if (this.pendingTickListEntriesTreeSet == null)
          {
 -            this.pendingTickListEntriesTreeSet = new TreeSet();
-+            this.pendingTickListEntriesTreeSet = Collections.synchronizedSortedSet(new TreeSet());
++            this.pendingTickListEntriesTreeSet = (new TreeSet());
          }
  
          this.worldTeleporter = new Teleporter(this);
@@ -123,7 +119,7 @@
 +
 +        if (this.pendingTickListEntriesTreeSet == null)
 +        {
-+            this.pendingTickListEntriesTreeSet = Collections.synchronizedSortedSet(new TreeSet());
++            this.pendingTickListEntriesTreeSet = (new TreeSet());
 +        }
 +
 +        this.worldTeleporter = new org.bukkit.craftbukkit.CraftTravelAgent(this); // CraftBukkit
