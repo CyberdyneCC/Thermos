@@ -173,8 +173,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         else if (entity instanceof net.minecraft.entity.item.EntityFireworkRocket) { return new CraftFirework(server, (net.minecraft.entity.item.EntityFireworkRocket) entity); }
         // Cauldron - used for custom entities that extend Entity directly
         else if (entity instanceof net.minecraft.entity.Entity) { return new CraftCustomEntity(server, (net.minecraft.entity.Entity) entity); }
-        else{ return null; }
-//        throw new AssertionError("Unknown entity " + entity == null ? null : entity.getClass() + ": " + entity); // Cauldron - show the entity that caused exception
+        else{ throw new AssertionError("Unknown entity " + entity == null ? null : entity.getClass() + ": " + entity); }// Cauldron - show the entity that caused exception 
     }
 
     // Cauldron start - copy of getEntity() but operates on classes instead of instances, for EntityRegistry registerBukkitType
