@@ -279,7 +279,7 @@ public class CraftWorld implements World {
         if (chunk != null) {
             world.theChunkProviderServer.loadedChunkHashMap_KC.put(LongHash.toLong(x, z), chunk);
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
-
+            world.theChunkProviderServer.chunk_put(x,z,chunk);
             chunk.onChunkLoad();
 
             if (!chunk.isTerrainPopulated && world.theChunkProviderServer.chunkExists(x + 1, z + 1) && world.theChunkProviderServer.chunkExists(x, z + 1) && world.theChunkProviderServer.chunkExists(x + 1, z)) {
