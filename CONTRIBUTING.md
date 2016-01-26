@@ -1,14 +1,15 @@
 # Contribution Guidelines
 
-We will always have a need for developers to help improve Cauldron. Just make sure you follow our guidelines.
+We will always have a need for developers to help improve TCPR/KCauldron. Just make sure you follow our guidelines.
 
+**Note**: Use the handy ./makepatch.sh script to create patch files for changes between eclipse/Clean and eclipse/cauldron.
 Coding and Pull Request Conventions
 -----------
 
 * We generally follow the Sun/Oracle coding standards.
 * No tabs; use 4 spaces instead.
 * No trailing whitespaces.
-* No CRLF line endings, LF only; will be converted automatically by git
+* No CRLF line endings, LF only; *will be converted automatically by git*
 * No 80 column limit or 'weird' midstatement newlines.
 * The number of commits in a pull request should be kept to a minimum (squish them into one most of the time - use common sense!).
 * No merges should be included in pull requests unless the pull request's purpose is a merge.
@@ -22,10 +23,10 @@ If you make changes to or add upstream classes (net.minecraft, net.minecraftforg
 * Make a separate commit adding the new net.minecraft classes (commit message: "Added x for diff visibility" or so).
 * Then make further commits with your changes.
 * Mark your changes with:
-    * 1 line; add a trailing: `// Cauldron [- Optional reason]`
+    * 1 line; add a trailing: `// KCauldron [- Optional reason]`
     * 2+ lines; add
-        * Before: `// Cauldron start [- Optional comment]`
-        * After: `// Cauldron end`
+        * Before: `// KCauldron start [- Optional comment]`
+        * After: `// KCauldron end`
 * Keep the diffs to a minimum (*somewhat* important)
 
 Tips to get your pull request accepted
@@ -38,14 +39,14 @@ Making sure you follow the above conventions is important, but just the beginnin
 * Provide proper accompanying documentation where appropriate.
 * Test your code.
 * Make sure to follow coding best practices.
-* Provide a test plugin/mod binary and source for us to test your code with.
+* Provide a test plugin/mod binary and socurce for us to test your code with.
 * Your pull request should link to accompanying pull requests.
 * The description of your pull request should provide detailed information on the pull along with justification of the changes where applicable.
 
 Credits
 -------
 
-* [MCP](http://mcp.ocean-labs.de) - permission to use data to make Cauldron.
+* [MCP](http://mcp.ocean-labs.de) - permission to use data to make KCauldron.
 * [Forge](http://www.minecraftforge.net) - mod support.
 * [CraftBukkit](http://bukkit.org) - plugin support.
 * [Spigot](http://www.spigotmc.org) - performance optimizations.
