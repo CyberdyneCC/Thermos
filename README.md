@@ -22,48 +22,57 @@ If a mod does not work with KCauldron *specifically*, please check [here](https:
 **If your issue meets the criteria listed above, please post your issue in the following format:**
 
 **Mod Crash**
+
 title: `[Crash] <Mod Name> - <First line of the exception>`
+
 description:
 `I am having a problem with <Mod Name> and KCauldron. Crash log: <link>. What happens is <...>.`
 
 **KCauldron-specific Crash**
+
 title: `[Crash] KCauldron<build #> - <First line of the exception>`
+
 description:
 `I am having a problem with KCauldron Build <#>. Crash log: <link>. What happens is <...>.`
 
 **KCauldron-specific Feature Proposal**
+
 title: `[Proposal] KCauldron Feature - <Feature Name>`
+
 description:
 `<What this will do>. <Why I want/need it>. <Ideas on how it might be implemented>. <Any helpful links>.`
 
-*This fork is put together by the community.  Yive is **not** your personal server issue fixer. He does not know Java nor does he want to learn it.*
+*This fork is put together by the community.  Yive is NOT your personal server issue fixer. He does not know Java nor does he want to learn it.*
 
 ## Contributing
 
-Please read the [guide](https://github.com/TCPR/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - Cauldron always needs improvements :smile: 
+Please read the [guide](https://github.com/TCPR/KCauldron/blob/master/CONTRIBUTING.md) on how to contribute - TCPR/KCauldron always needs improvements :smile: 
 
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/TCPR/KCauldron/releases). 
 
 **These unofficial builds are in beta, they may cause issues with your server. You have been warned!**
 
-P.S. Please look at the release notes before downloading. :)
+P.S. **PLEASE** look at the release notes before downloading! :smile:
 
 
 ## Build Requirements
 * Java 8 JDK
 * `JAVA_HOME` defined on your OS
 
-## Building Cauldron
+## Building TCPR/KCauldron
 * Checkout project
   * You can use IDE or clone from console:
   `git clone https://github.com/TCPR/KCauldron.git`
-* Init submodules
-  * Since this project uses two other projects we need to download them as well
+* Setup
+  * Auto: `setup.sh`
+  * Manual:
   `git submodule update --init --recursive`
-* Start build process
+* Build
   * This process downloads minecraft and apply patches
   * If you have gradle integration in IDE - you can still use gui
+  * Auto: `build.sh`
+  * Manual:
   `./gradlew setupCauldron jar installBundle`
 
 All builds will be in `build/distributions`
