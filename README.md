@@ -13,7 +13,7 @@ Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2
 
 ##Patreon
 
-You can pledge to support Robotia and his work [here](https:/patreon.com/robotia).
+You can pledge to support Robotia and his work [here](https://www.patreon.com/robotia).
 ## Issues
 
 **FIRST: Test if the mod has the same error in Vanilla Forge**. If it does, then KCauldron is *not at fault* and we cannot help you here.
