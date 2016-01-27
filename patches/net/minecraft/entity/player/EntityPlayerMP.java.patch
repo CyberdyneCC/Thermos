@@ -59,7 +59,7 @@
      private EntityPlayer.EnumChatVisibility chatVisibility;
      private boolean chatColours = true;
      private long field_143005_bX = System.currentTimeMillis();
-@@ -131,6 +147,39 @@
+@@ -131,6 +147,42 @@
      public boolean isChangingQuantityOnly;
      public int ping;
      public boolean playerConqueredTheEnd;
@@ -73,6 +73,9 @@
 +    public boolean keepLevel = false;
 +    public double maxHealthCache;
 +    // CraftBukkit end
++    // KCauldron start
++    public int hash = 0;
++    // KCauldron end
 +    // Spigot start
 +    public boolean collidesWithEntities = true;
 +
@@ -99,7 +102,7 @@
      private static final String __OBFID = "CL_00001440";
  
      public EntityPlayerMP(MinecraftServer p_i45285_1_, WorldServer p_i45285_2_, GameProfile p_i45285_3_, ItemInWorldManager p_i45285_4_)
-@@ -153,6 +202,13 @@
+@@ -153,6 +205,16 @@
          {
              this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
          }
@@ -110,10 +113,13 @@
 +        // this.canPickUpLoot = true; TODO
 +        this.maxHealthCache = this.getMaxHealth();
 +        // CraftBukkit end
++        // KCauldron start
++        this.hash = this.listName.hashCode();
++        // KCauldron end
      }
  
      public void readEntityFromNBT(NBTTagCompound p_70037_1_)
-@@ -170,14 +226,57 @@
+@@ -170,13 +232,56 @@
                  this.theItemInWorldManager.setGameType(WorldSettings.GameType.getByID(p_70037_1_.getInteger("playerGameType")));
              }
          }
@@ -126,8 +132,8 @@
          super.writeEntityToNBT(p_70014_1_);
          p_70014_1_.setInteger("playerGameType", this.theItemInWorldManager.getGameType().getID());
 +        this.getBukkitEntity().setExtraData(p_70014_1_); // CraftBukkit
-     }
- 
++    }
++
 +    // CraftBukkit start - World fallback code, either respawn location or global spawn
 +
 +    /**
@@ -165,13 +171,12 @@
 +
 +        this.dimension = ((WorldServer) this.worldObj).provider.dimensionId;
 +        this.theItemInWorldManager.setWorld((WorldServer) world);
-+    }
+     }
 +    // CraftBukkit end
-+
+ 
      public void addExperienceLevel(int p_82242_1_)
      {
-         super.addExperienceLevel(p_82242_1_);
-@@ -240,7 +339,7 @@
+@@ -240,7 +345,7 @@
              ArrayList arraylist1 = new ArrayList();
              Chunk chunk;
  
@@ -180,7 +185,7 @@
              {
                  ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair)iterator1.next();
  
-@@ -253,8 +352,7 @@
+@@ -253,8 +358,7 @@
                          if (chunk.func_150802_k())
                          {
                              arraylist.add(chunk);
@@ -190,7 +195,7 @@
                              iterator1.remove();
                          }
                      }
-@@ -309,9 +407,10 @@
+@@ -309,9 +413,10 @@
                  }
              }
  
@@ -202,7 +207,7 @@
                  this.lastHealth = this.getHealth();
                  this.lastFoodLevel = this.foodStats.getFoodLevel();
                  this.wasHungry = this.foodStats.getSaturationLevel() == 0.0F;
-@@ -320,16 +419,18 @@
+@@ -320,16 +425,18 @@
              if (this.getHealth() + this.getAbsorptionAmount() != this.field_130068_bO)
              {
                  this.field_130068_bO = this.getHealth() + this.getAbsorptionAmount();
@@ -228,7 +233,7 @@
              if (this.experienceTotal != this.lastExperience)
              {
                  this.lastExperience = this.experienceTotal;
-@@ -340,6 +441,20 @@
+@@ -340,6 +447,20 @@
              {
                  this.func_147098_j();
              }
@@ -249,7 +254,7 @@
          }
          catch (Throwable throwable)
          {
-@@ -402,34 +517,74 @@
+@@ -402,34 +523,74 @@
  
      public void onDeath(DamageSource p_70645_1_)
      {
@@ -260,11 +265,11 @@
 +        {
 +            return;
 +        }
- 
--        if (!this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
++
 +        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<org.bukkit.inventory.ItemStack>();
 +        boolean keepInventory = this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
-+
+ 
+-        if (!this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
 +        if (!keepInventory)
          {
 +            // Cauldron start - rework CraftBukkit logic to support Forge better
@@ -333,7 +338,7 @@
              score.func_96648_a();
          }
  
-@@ -495,7 +650,8 @@
+@@ -495,7 +656,8 @@
  
      public boolean canAttackPlayer(EntityPlayer p_96122_1_)
      {
@@ -343,7 +348,7 @@
      }
  
      public void travelToDimension(int p_71027_1_)
-@@ -526,7 +682,10 @@
+@@ -526,7 +688,10 @@
                  this.triggerAchievement(AchievementList.portal);
              }
  
@@ -355,7 +360,7 @@
              this.lastExperience = -1;
              this.lastHealth = -1.0F;
              this.lastFoodLevel = -1;
-@@ -569,6 +728,11 @@
+@@ -569,6 +734,11 @@
  
      public void wakeUpPlayer(boolean p_70999_1_, boolean p_70999_2_, boolean p_70999_3_)
      {
@@ -367,7 +372,7 @@
          if (this.isPlayerSleeping())
          {
              this.getServerForPlayer().getEntityTracker().func_151248_b(this, new S0BPacketAnimation(this, 2));
-@@ -584,11 +748,27 @@
+@@ -584,9 +754,25 @@
  
      public void mountEntity(Entity p_70078_1_)
      {
@@ -376,8 +381,8 @@
 -        this.playerNetServerHandler.setPlayerLocation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
 +        // CraftBukkit start
 +        this.setPassengerOf(p_70078_1_);
-     }
- 
++    }
++
 +    public void setPassengerOf(Entity entity)
 +    {
 +        // mount(null) doesn't really fly for overloaded methods,
@@ -393,12 +398,10 @@
 +        }
 +
 +        // CraftBukkit end
-+    }
-+
-     protected void updateFallState(double p_70064_1_, boolean p_70064_3_) {}
+     }
  
-     public void handleFalling(double p_71122_1_, boolean p_71122_3_)
-@@ -610,29 +790,64 @@
+     protected void updateFallState(double p_70064_1_, boolean p_70064_3_) {}
+@@ -610,29 +796,64 @@
          this.currentWindowId = this.currentWindowId % 100 + 1;
      }
  
@@ -466,7 +469,7 @@
          this.openContainer.windowId = this.currentWindowId;
          this.openContainer.addCraftingToCrafters(this);
      }
-@@ -644,71 +859,150 @@
+@@ -644,71 +865,150 @@
              this.closeScreen();
          }
  
@@ -625,7 +628,7 @@
          this.openContainer.windowId = this.currentWindowId;
          this.openContainer.addCraftingToCrafters(this);
          InventoryMerchant inventorymerchant = ((ContainerMerchant)this.openContainer).getMerchantInventory();
-@@ -725,7 +1019,7 @@
+@@ -725,7 +1025,7 @@
                  merchantrecipelist.func_151391_a(packetbuffer);
                  this.playerNetServerHandler.sendPacket(new S3FPacketCustomPayload("MC|TrList", packetbuffer));
              }
@@ -634,7 +637,7 @@
              {
                  logger.error("Couldn\'t send trade list", ioexception);
              }
-@@ -738,6 +1032,17 @@
+@@ -738,6 +1038,17 @@
  
      public void displayGUIHorse(EntityHorse p_110298_1_, IInventory p_110298_2_)
      {
@@ -652,7 +655,7 @@
          if (this.openContainer != this.inventoryContainer)
          {
              this.closeScreen();
-@@ -745,7 +1050,7 @@
+@@ -745,7 +1056,7 @@
  
          this.getNextWindowId();
          this.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(this.currentWindowId, 11, p_110298_2_.getInventoryName(), p_110298_2_.getSizeInventory(), p_110298_2_.hasCustomInventoryName(), p_110298_1_.getEntityId()));
@@ -661,7 +664,7 @@
          this.openContainer.windowId = this.currentWindowId;
          this.openContainer.addCraftingToCrafters(this);
      }
-@@ -770,6 +1075,15 @@
+@@ -770,6 +1081,15 @@
      {
          this.playerNetServerHandler.sendPacket(new S30PacketWindowItems(p_71110_1_.windowId, p_71110_2_));
          this.playerNetServerHandler.sendPacket(new S2FPacketSetSlot(-1, -1, this.inventory.getItemStack()));
@@ -677,7 +680,7 @@
      }
  
      public void sendProgressBarUpdate(Container p_71112_1_, int p_71112_2_, int p_71112_3_)
-@@ -779,6 +1093,7 @@
+@@ -779,6 +1099,7 @@
  
      public void closeScreen()
      {
@@ -685,13 +688,13 @@
          this.playerNetServerHandler.sendPacket(new S2EPacketCloseWindow(this.openContainer.windowId));
          this.closeContainer();
      }
-@@ -853,8 +1168,19 @@
+@@ -853,7 +1174,18 @@
      public void setPlayerHealthUpdated()
      {
          this.lastHealth = -1.0E8F;
 +        this.lastExperience = -1; // CraftBukkit - Added to reset
-     }
- 
++    }
++
 +    // CraftBukkit start - Support multi-line messages
 +    public void sendMessage(IChatComponent[] ichatcomponent) 
 +    {
@@ -699,13 +702,12 @@
 +        {
 +            this.addChatComponentMessage(component);
 +        }
-+    }
+     }
 +    // CraftBukkit end
-+
+ 
      public void addChatComponentMessage(IChatComponent p_146105_1_)
      {
-         this.playerNetServerHandler.sendPacket(new S02PacketChat(p_146105_1_));
-@@ -1037,6 +1363,114 @@
+@@ -1037,6 +1369,114 @@
          return this.field_143005_bX;
      }
  
@@ -820,3 +822,9 @@
      /* ===================================== FORGE START =====================================*/
      /**
       * Returns the default eye height of the player
+@@ -1048,4 +1488,4 @@
+         return 1.62F;
+     }
+     /* ===================================== FORGE END =====================================*/
+-}
++}
