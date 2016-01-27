@@ -21,7 +21,7 @@
  
  /** ExplosionEvent triggers when an explosion happens in the world.<br>
   * <br>
-@@ -23,6 +28,8 @@
+@@ -23,9 +28,12 @@
  {
      public final World world;
      public final Explosion explosion;
@@ -30,7 +30,11 @@
  
      public ExplosionEvent(World world, Explosion explosion)
      {
-@@ -39,10 +46,42 @@
++        if(exploder_fake == null || !exploder_fake.worldObj.equals(world)) { exploder_fake = FakePlayerFactory.get( (WorldServer) world, exploder_profile); }
+         this.world = world;
+         this.explosion = explosion;
+     }
+@@ -39,10 +47,41 @@
      @Cancelable
      public static class Start extends ExplosionEvent
      {
@@ -40,7 +44,6 @@
              super(world, explosion);
 +            // CraftBukkit start
 +            // float f = 4.0F;
-+	    if(exploder_fake == null) { exploder_fake = FakePlayerFactory.get( (WorldServer) world, exploder_profile); }
 +            org.bukkit.craftbukkit.CraftServer server = world.getServer();
 +            org.bukkit.craftbukkit.entity.CraftEntity ce = null;
 +            if(explosion.exploder != null)
