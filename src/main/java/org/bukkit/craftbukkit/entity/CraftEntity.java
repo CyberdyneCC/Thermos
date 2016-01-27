@@ -419,8 +419,9 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
             entity.teleportTo(location, cause.isPortal());
             return true;
         }
-        // Spigot
+        // Spigot end
         entity.setPositionAndRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+	entity.world.entityJoinedWorld(entity, false);
         // entity.setLocation() throws no event, and so cannot be cancelled
         return true;
     }
