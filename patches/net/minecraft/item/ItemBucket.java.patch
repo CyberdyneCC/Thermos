@@ -20,7 +20,7 @@
      {
 -        this.maxStackSize = 1;
 +        // PaperSpigot start - Stackable Buckets
-+        if ((block == Blocks.LAVA) || (block == Blocks.WATER)) {
++        if ((p_i45331_1_ == Blocks.lava) || (p_i45331_1_ == Blocks.water)) {
 +            this.maxStackSize = org.bukkit.Material.BUCKET.getMaxStackSize();
 +        } else {
 +            this.maxStackSize = 1;
