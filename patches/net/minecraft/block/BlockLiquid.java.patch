@@ -1,0 +1,17 @@
+--- ../src-base/minecraft/net/minecraft/block/BlockLiquid.java
++++ ../src-work/minecraft/net/minecraft/block/BlockLiquid.java
+@@ -509,7 +509,7 @@
+                     {
+                         p_149805_1_.setBlock(p_149805_2_, p_149805_3_, p_149805_4_, Blocks.obsidian);
+                     }
+-                    else if (l <= 4)
++                    else if (l > 0) //Paper Spigot
+                     {
+                         p_149805_1_.setBlock(p_149805_2_, p_149805_3_, p_149805_4_, Blocks.cobblestone);
+                     }
+@@ -548,4 +548,4 @@
+     {
+         return p_149803_0_ == "water_still" ? Blocks.flowing_water.field_149806_a[0] : (p_149803_0_ == "water_flow" ? Blocks.flowing_water.field_149806_a[1] : (p_149803_0_ == "lava_still" ? Blocks.flowing_lava.field_149806_a[0] : (p_149803_0_ == "lava_flow" ? Blocks.flowing_lava.field_149806_a[1] : null)));
+     }
+-}
++}
