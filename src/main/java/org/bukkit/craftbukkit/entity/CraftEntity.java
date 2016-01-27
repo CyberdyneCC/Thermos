@@ -421,7 +421,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         }
         // Spigot end
         entity.setPositionAndRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-	entity.world.entityJoinedWorld(entity, false);
+	//entity.worldObj.entityJoinedWorld(entity, false); // PaperSpigot - Prevent Server from thinking a player teleporting within the world has joined the world
         // entity.setLocation() throws no event, and so cannot be cancelled
         return true;
     }
