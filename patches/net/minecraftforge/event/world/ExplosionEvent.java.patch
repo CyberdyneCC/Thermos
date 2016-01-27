@@ -30,7 +30,7 @@
  
      public ExplosionEvent(World world, Explosion explosion)
      {
-@@ -39,10 +46,35 @@
+@@ -39,10 +46,38 @@
      @Cancelable
      public static class Start extends ExplosionEvent
      {
@@ -43,7 +43,10 @@
 +	    if(exploder_fake == null) { exploder_fake = FakePlayerFactory.get( (WorldServer) world, exploder_profile); }
 +            org.bukkit.craftbukkit.CraftServer server = world.getServer();
 +            org.bukkit.craftbukkit.entity.CraftEntity ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, explosion.exploder);
-+	    if(ce == null) { ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, new EntityTNTPrimed(world, explosion.exploder.posX, explosion.exploder.posY, explosion.exploder.posZ, exploder_fake )); }
++	    if(ce == null)
++            {
++                ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, new EntityTNTPrimed(world, explosion.explosionX, explosion.explosionY, explosion.explosionZ, exploder_fake ));
++            }
 +            event = new ExplosionPrimeEvent(ce, 8.0F, true);
 +            server.getPluginManager().callEvent(event);
 +        }
@@ -66,7 +69,7 @@
      }
  
      /** ExplosionEvent.Detonate is fired once the explosion has a list of affected blocks and entities.  These lists can be modified to change the outcome.<br>
-@@ -73,4 +105,4 @@
+@@ -73,4 +108,4 @@
              return entityList;
          }
      }
