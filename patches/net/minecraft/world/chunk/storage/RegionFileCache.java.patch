@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/world/chunk/storage/RegionFileCache.java
 +++ ../src-work/minecraft/net/minecraft/world/chunk/storage/RegionFileCache.java
-@@ -10,7 +10,7 @@
+@@ -10,11 +10,15 @@
  
  public class RegionFileCache
  {
@@ -9,3 +9,25 @@
      private static final String __OBFID = "CL_00000383";
  
      public static synchronized RegionFile createOrLoadRegionFile(File p_76550_0_, int p_76550_1_, int p_76550_2_)
+     {
++        return createOrLoadRegionFile(p_76550_0_,  p_76550_1_,  p_76550_2_, true);
++    }
++    public static synchronized RegionFile createOrLoadRegionFile(File p_76550_0_, int p_76550_1_, int p_76550_2_, boolean create)
++    {
+         File file2 = new File(p_76550_0_, "region");
+         File file3 = new File(file2, "r." + (p_76550_1_ >> 5) + "." + (p_76550_2_ >> 5) + ".mca");
+         RegionFile regionfile = (RegionFile)regionsByFilename.get(file3);
+@@ -25,6 +29,7 @@
+         }
+         else
+         {
++	    if (!create && !file2.exists()) { return null; } // PaperSpigot
+             if (!file2.exists())
+             {
+                 file2.mkdirs();
+@@ -76,4 +81,4 @@
+         RegionFile regionfile = createOrLoadRegionFile(p_76552_0_, p_76552_1_, p_76552_2_);
+         return regionfile.getChunkDataOutputStream(p_76552_1_ & 31, p_76552_2_ & 31);
+     }
+-}
++}

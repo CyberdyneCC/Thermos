@@ -22,7 +22,14 @@
      private static final String __OBFID = "CL_00000384";
  
      public AnvilChunkLoader(File p_i2003_1_)
-@@ -73,13 +81,16 @@
+@@ -68,18 +76,22 @@
+             }
+         }
+ 
+-        return RegionFileCache.createOrLoadRegionFile(this.chunkSaveLocation, i, j).chunkExists(i & 31, j & 31);
++        final RegionFile region = RegionFileCache.createOrLoadRegionFile(this.chunkSaveLocation, i, j, false);
++        return region != null && region.chunkExists(i & 31, j & 31);
+     }
  
      public Chunk loadChunk(World p_75815_1_, int p_75815_2_, int p_75815_3_) throws IOException
      {
@@ -39,7 +46,7 @@
              return chunk;
          }
  
-@@ -156,8 +167,8 @@
+@@ -156,8 +168,8 @@
              if (!chunk.isAtLocation(p_75822_2_, p_75822_3_))
              {
                  logger.error("Chunk file at " + p_75822_2_ + "," + p_75822_3_ + " is in the wrong location; relocating. (Expected " + p_75822_2_ + ", " + p_75822_3_ + ", got " + chunk.xPosition + ", " + chunk.zPosition + ")");
@@ -50,7 +57,7 @@
                  // Have to move tile entities since we don't load them at this stage
                  NBTTagList tileEntities = p_75822_4_.getCompoundTag("Level").getTagList("TileEntities", 10);
  
-@@ -187,8 +198,18 @@
+@@ -187,7 +199,17 @@
  
      public void saveChunk(World p_75816_1_, Chunk p_75816_2_) throws MinecraftException, IOException
      {
@@ -64,13 +71,12 @@
 +        {
 +            ex.printStackTrace();
 +        }
- 
-+        // CraftBukkit end
 +
++        // CraftBukkit end
+ 
          try
          {
-             NBTTagCompound nbttagcompound = new NBTTagCompound();
-@@ -230,7 +251,7 @@
+@@ -230,7 +252,7 @@
  
      public boolean writeNextIO()
      {
@@ -79,7 +85,7 @@
          Object object = this.syncLockObject;
  
          synchronized (this.syncLockObject)
-@@ -240,15 +261,15 @@
+@@ -240,15 +262,15 @@
                  return false;
              }
  
@@ -99,7 +105,7 @@
              }
              catch (Exception exception)
              {
-@@ -259,7 +280,7 @@
+@@ -259,7 +281,7 @@
          return true;
      }
  
@@ -108,7 +114,7 @@
      {
          DataOutputStream dataoutputstream = RegionFileCache.getChunkOutputStream(this.chunkSaveLocation, p_75821_1_.chunkCoordinate.chunkXPos, p_75821_1_.chunkCoordinate.chunkZPos);
          CompressedStreamTools.write(p_75821_1_.nbtTags, dataoutputstream);
-@@ -307,19 +328,19 @@
+@@ -307,19 +329,19 @@
  
                  if (extendedblockstorage.getBlockMSBArray() != null)
                  {
@@ -133,7 +139,7 @@
                  }
  
                  nbttaglist.appendTag(nbttagcompound1);
-@@ -455,6 +476,7 @@
+@@ -455,6 +477,7 @@
  
      public void loadEntities(World p_75823_1_, NBTTagCompound p_75823_2_, Chunk chunk)
      {
@@ -141,7 +147,7 @@
          NBTTagList nbttaglist1 = p_75823_2_.getTagList("Entities", 10);
  
          if (nbttaglist1 != null)
-@@ -468,24 +490,31 @@
+@@ -468,24 +491,31 @@
                  if (entity2 != null)
                  {
                      chunk.addEntity(entity2);
@@ -161,14 +167,14 @@
 -                            entity.mountEntity(entity1);
 -                        }
 +                            Entity entity1 = EntityList.createEntityFromNBT(nbttagcompound2.getCompoundTag("Riding"), p_75823_1_);
- 
--                        entity = entity1;
++
 +                            if (entity1 != null)
 +                            {
 +                                chunk.addEntity(entity1);
 +                                entity.mountEntity(entity1);
 +                            }
-+
+ 
+-                        entity = entity1;
 +                            entity = entity1;
 +                        }
                      }
@@ -182,7 +188,7 @@
          NBTTagList nbttaglist2 = p_75823_2_.getTagList("TileEntities", 10);
  
          if (nbttaglist2 != null)
-@@ -497,11 +526,35 @@
+@@ -497,11 +527,35 @@
  
                  if (tileentity != null)
                  {
@@ -218,7 +224,7 @@
          if (p_75823_2_.hasKey("TileTicks", 9))
          {
              NBTTagList nbttaglist3 = p_75823_2_.getTagList("TileTicks", 10);
-@@ -515,6 +568,7 @@
+@@ -515,6 +569,7 @@
                  }
              }
          }
@@ -226,3 +232,9 @@
  
          // return chunk;
      }
+@@ -531,4 +586,4 @@
+                 this.nbtTags = p_i2002_2_;
+             }
+         }
+-}
++}
