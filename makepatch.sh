@@ -17,8 +17,8 @@ then
 	PATCH=`find patches/ | grep -i $FILE`
 	if [[ -z "$PATCH" ]]
 	then
-		PATCH = "patches/$FILE"
-		mkdir -p $PATCH
+		PATCH="patches/$FILE.patch"
+		mkdir -p `java makepatch dir $FILE`
 		touch $PATCH
 	fi
 	echo "Diff patch of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} below."
@@ -32,8 +32,8 @@ then
 	PATCH=`find patches/ | grep -i $FILE`
 	if [[ -z "$PATCH" ]]
 	then
-		PATCH = "patches/$FILE"
-		mkdir -p $PATCH
+		PATCH="patches/$FILE.patch"
+		mkdir -p `java makepatch dir $FILE`
 		touch $PATCH
 	fi
 	git diff --no-prefix --no-index --text $CLEAN $CAULD > $PATCH
@@ -47,8 +47,8 @@ else
 	PATCH=`find patches/ | grep -i $FILE`
 	if [[ -z "$PATCH" ]]
 	then
-		PATCH = "patches/$FILE"
-		mkdir -p $PATCH
+		PATCH="patches/$FILE.patch"
+		mkdir -p `java makepatch dir $FILE`
 		touch $PATCH
 	fi
 	git diff --no-prefix --text --no-index $CLEAN $CAULD > $PATCH

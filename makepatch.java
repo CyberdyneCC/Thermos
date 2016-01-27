@@ -54,6 +54,10 @@ if(args[0].equalsIgnoreCase("chop"))
 System.out.println(args[1].replace("eclipse/cauldron/src/main/java/",""));
 return;
 }
+else if(args[0].equalsIgnoreCase("dir"))
+{
+System.out.println(args[1].substring(0,args[1].lastIndexOf("/")));
+}
 }
 else
 System.out.println("You gave : " + args.length+" args. Usage: java makepatch FILENAME / chop ECLIPSE_CAULDRON_NAME");
