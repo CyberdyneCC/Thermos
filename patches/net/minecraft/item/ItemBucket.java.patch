@@ -20,8 +20,8 @@
      {
 -        this.maxStackSize = 1;
 +        // PaperSpigot start - Stackable Buckets
-+        if ((block == Blocks.LAVA && PaperSpigotConfig.stackableLavaBuckets) ||
-+                (block == Blocks.WATER && PaperSpigotConfig.stackableWaterBuckets)) {
++        if ((block == Blocks.LAVA) ||
++                (block == Blocks.WATER) {
 +            this.maxStackSize = org.bukkit.Material.BUCKET.getMaxStackSize();
 +        } else {
 +            this.maxStackSize = 1;
