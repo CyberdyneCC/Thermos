@@ -35,11 +35,9 @@ class InstallBundle extends DefaultTask {
         new File(installLocation, "README.txt").withWriter {
             def String jarPath = 'bin/' << (project.group as String).replace('.', File.separator) << File.separator << project.name << File.separator << project.version << File.separator << project.name << '-' << project.version << '.jar'
 
-            it << '''KCauldron installation guide
+            it << '''Unofficial KCauldron installation guide
 
-# Understanding this bundle
-You're reading this guide because you're using deprecated installation method
-If you want use easier & safer method please read about KBootstrap at https://prok.pw/KBootstrap
+# This is an unofficial version of KCauldron from https://github.com/TCPR/KCauldron
 
 # Installation and usage
 1. Unpack this zip into server directory
@@ -47,17 +45,7 @@ If you want use easier & safer method please read about KBootstrap at https://pr
   java -jar '''
             it << jarPath
             it << '''
-    ... or
-  java -jar KCauldron.jar
-3. That's end, enjoy
-
-# Why I should use KBootstrap?
-1. Easiest server installation
-2. Built-in libraries management
-3. Update & run server in one line
-4. Ability to not read this boring guide
-5. What else?
-If you are not yet convinced and want to use bundles instead KBootstrap... Meh, this is your choice.
+3. Enjoy
 '''
         }
         def cp = bootstrapClasspath
