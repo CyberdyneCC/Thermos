@@ -69,12 +69,6 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
             }
         }
         mHasUpdate = true;
-        if (MinecraftServer.kcauldronConfig.updatecheckerAutoinstall.getValue()
-                && !mNewVersion.equals(KCauldron.sNewServerVersion)
-                && !KCauldron.sUpdateInProgress) {
-            Bukkit.getConsoleSender().sendMessage("Triggering auto update");
-            KCauldronUpdater.initUpdate(Bukkit.getConsoleSender(), newVersion);
-        }
     }
 
     @Override

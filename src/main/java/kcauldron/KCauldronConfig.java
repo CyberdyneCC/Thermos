@@ -15,10 +15,6 @@ public class KCauldronConfig extends ConfigBase {
             "updatechecker.enable", false, "Enable KCauldron update checker");
     public StringSetting updatecheckerSymlinks = new StringSetting(this,
             "updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
-    public BoolSetting updatecheckerAutoinstall = new BoolSetting(this,
-            "updatechecker.autoinstall", false, "Install updates without confirming");
-    public BoolSetting updatecheckerAutorestart = new BoolSetting(this,
-            "updatechecker.autorestart", false, "Restart server after updating without confirming (set restart script in spigot.yml)");
     public BoolSetting updatecheckerQuiet = new BoolSetting(this,
             "updatechecker.quiet", false, "Print less info during update");
 
@@ -35,8 +31,6 @@ public class KCauldronConfig extends ConfigBase {
         register(commandEnable);
         register(updatecheckerEnable);
         register(updatecheckerSymlinks);
-        register(updatecheckerAutoinstall);
-        register(updatecheckerAutorestart);
         register(updatecheckerQuiet);
         register(loggingMaterialInjection);
         register(loggingClientModList);
