@@ -33,7 +33,7 @@ class InstallBundle extends DefaultTask {
         installLocation.deleteDir()
         installLocation.mkdirs()
         new File(installLocation, "README.txt").withWriter {
-            def String jarPath = 'libraries/' << (project.group as String).replace('.', File.separator) << File.separator << project.name << File.separator << project.version << File.separator << project.name << '-' << project.version << '.jar'
+            def String jarPath = 'bin/' << (project.group as String).replace('.', File.separator) << File.separator << project.name << File.separator << project.version << File.separator << project.name << '-' << project.version << '.jar'
 
             it << '''Unofficial KCauldron installation guide
 
