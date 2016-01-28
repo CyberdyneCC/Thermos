@@ -421,7 +421,7 @@
 +        for (int j = 0; j < chunks.length; ++j)
          {
 -            Chunk chunk = (Chunk)arraylist.get(j);
-+            if (chunk[j] == null) { continue; }
++            if (chunks[j] == null) { continue; }
 +            Chunk chunk = (Chunk)chunks[j];
 +            //Cauldron end
  
