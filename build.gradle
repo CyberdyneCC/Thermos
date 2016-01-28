@@ -215,7 +215,7 @@ task bundleStub(type: Jar) {
     classifier = 'stub'
     manifest.attributes([
             'Main-Class': 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
-            'Class-Path': "bin/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
+            'Class-Path': "libraries/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
     ])
 }
 

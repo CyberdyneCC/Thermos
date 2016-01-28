@@ -22,10 +22,9 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
         Player player = event.getPlayer();
         if (hasPermission(player)) {
             if (KCauldron.isLegacy()) {
-                player.sendMessage(ChatColor.YELLOW + "We're running on legacy version on KCauldron, please update your version");
             }            
             if (!KCauldron.isOfficial()) {
-                player.sendMessage(ChatColor.YELLOW + "We're running on non-official version on KCauldron, please update your version");
+                player.sendMessage(ChatColor.YELLOW + "[KC-Unofficial] " + ChatColor.GOLD + "You're running KC-Unofficial, make sure to check https://github.com/TCPR/KCauldron for updates or to report bugs.");
             }            
             if (mHasUpdate) {
                 sendUpdate(player);
