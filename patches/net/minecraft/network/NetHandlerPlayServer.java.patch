@@ -24,7 +24,7 @@
  import net.minecraft.network.play.server.S23PacketBlockChange;
  import net.minecraft.network.play.server.S2FPacketSetSlot;
  import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-@@ -81,19 +84,75 @@
+@@ -81,18 +84,74 @@
  import net.minecraft.util.IChatComponent;
  import net.minecraft.util.IntHashMap;
  import net.minecraft.util.ReportedException;
@@ -42,7 +42,7 @@
  import net.minecraftforge.event.ServerChatEvent;
  import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 -import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
- 
++
 +// CraftBukkit start
 +import java.io.UnsupportedEncodingException;
 +import java.util.concurrent.ExecutionException;
@@ -98,10 +98,9 @@
 +import org.bukkit.craftbukkit.CraftServer;
 +import org.bukkit.event.inventory.InventoryType;
 +// Cauldron end
-+
+ 
  public class NetHandlerPlayServer implements INetHandlerPlayServer
  {
-     private static final Logger logger = LogManager.getLogger();
 @@ -107,13 +166,12 @@
      private long field_147379_i;
      private static Random field_147376_j = new Random();
@@ -126,8 +125,8 @@
          p_i1530_3_.playerNetServerHandler = this;
 +        // CraftBukkit start
 +        this.server = p_i1530_1_ == null ? null : p_i1530_1_.server;
-     }
- 
++    }
++
 +    private final org.bukkit.craftbukkit.CraftServer server;
 +    private int lastTick = MinecraftServer.currentTick;
 +    private int lastDropTick = MinecraftServer.currentTick;
@@ -153,8 +152,8 @@
 +    public CraftPlayer getPlayerB()
 +    {
 +        return (this.playerEntity == null) ? null : (CraftPlayer) this.playerEntity.getBukkitEntity();
-+    }
-+
+     }
+ 
 +    private final static HashSet<Integer> invalidItems = new HashSet<Integer>(java.util.Arrays.asList(8, 9, 10, 11, 26, 34, 36, 43, 51, 52, 55, 59, 60, 62, 63,
 +            64, 68, 71, 74, 75, 83, 90, 92, 93, 94, 104, 105, 115, 117, 118, 119, 125, 127, 132, 140, 141, 142, 144)); // TODO: Check after every update.
 +    // CraftBukkit end
@@ -231,7 +230,7 @@
          WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
          this.field_147366_g = true;
  
-@@ -199,8 +323,70 @@
+@@ -199,8 +323,71 @@
                  }
              }
  
@@ -243,7 +242,7 @@
 +
 +            // If the packet contains movement information then we update the To location with the correct XYZ.
 +            if (p_147347_1_.field_149480_h && !(p_147347_1_.field_149480_h && p_147347_1_.field_149477_b == -999.0D && p_147347_1_.field_149475_d == -999.0D))
-             {
++            {
 +                to.setX(p_147347_1_.field_149479_a);
 +                to.setY(p_147347_1_.field_149477_b);
 +                to.setZ(p_147347_1_.field_149478_c);
@@ -268,6 +267,7 @@
 +                this.lastYaw = to.getYaw();
 +                this.lastPitch = to.getPitch();
 +
++                Location oldTo = to.clone();
 +                PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
 +                this.server.getPluginManager().callEvent(event);
 +
@@ -282,7 +282,7 @@
 +                /* If a Plugin has changed the To destination then we teleport the Player
 +                there to avoid any 'Moved wrongly' or 'Moved too quickly' errors.
 +                We only do this if the Event was not cancelled. */
-+                if (!to.equals(event.getTo()) && !event.isCancelled())
++                if (!oldTo.equals(event.getTo()) && !event.isCancelled())
 +                {
 +                    this.playerEntity.getBukkitEntity().teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.UNKNOWN);
 +                    return;
@@ -298,12 +298,12 @@
 +            }
 +
 +            if (this.hasMoved && !this.playerEntity.isDead)
-+            {
+             {
 +                // CraftBukkit end
                  double d1;
                  double d2;
                  double d3;
-@@ -280,13 +466,6 @@
+@@ -280,13 +467,6 @@
                      d3 = p_147347_1_.func_149472_e();
                      d4 = p_147347_1_.func_149471_f() - p_147347_1_.func_149467_d();
  
@@ -317,7 +317,7 @@
                      if (Math.abs(p_147347_1_.func_149464_c()) > 3.2E7D || Math.abs(p_147347_1_.func_149472_e()) > 3.2E7D)
                      {
                          this.kickPlayerFromServer("Illegal position");
-@@ -318,7 +497,7 @@
+@@ -318,7 +498,7 @@
                  double d9 = Math.max(Math.abs(d6), Math.abs(this.playerEntity.motionZ));
                  double d10 = d7 * d7 + d8 * d8 + d9 * d9;
  
@@ -326,7 +326,7 @@
                  {
                      logger.warn(this.playerEntity.getCommandSenderName() + " moved too quickly! " + d4 + "," + d5 + "," + d6 + " (" + d7 + ", " + d8 + ", " + d9 + ")");
                      this.setPlayerLocation(this.lastPosX, this.lastPosY, this.lastPosZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
-@@ -413,21 +592,85 @@
+@@ -413,21 +593,85 @@
  
      public void setPlayerLocation(double p_147364_1_, double p_147364_3_, double p_147364_5_, float p_147364_7_, float p_147364_8_)
      {
@@ -417,7 +417,7 @@
              this.playerEntity.dropOneItem(false);
          }
          else if (p_147345_1_.func_149506_g() == 3)
-@@ -490,7 +733,17 @@
+@@ -490,7 +734,17 @@
                  }
                  else
                  {
@@ -435,7 +435,7 @@
                  }
              }
              else if (p_147345_1_.func_149506_g() == 2)
-@@ -517,6 +770,34 @@
+@@ -517,6 +771,34 @@
      public void processPlayerBlockPlacement(C08PacketPlayerBlockPlacement p_147346_1_)
      {
          WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
@@ -470,7 +470,7 @@
          ItemStack itemstack = this.playerEntity.inventory.getCurrentItem();
          boolean flag = false;
          boolean placeResult = true;
-@@ -533,11 +814,21 @@
+@@ -533,11 +815,21 @@
                  return;
              }
  
@@ -494,7 +494,7 @@
          }
          else if (p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit() - 1 && (p_147346_1_.func_149568_f() == 1 || p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit()))
          {
-@@ -548,17 +839,24 @@
+@@ -548,17 +840,24 @@
          }
          else
          {
@@ -527,7 +527,7 @@
              flag = true;
          }
  
-@@ -615,7 +913,7 @@
+@@ -615,7 +914,7 @@
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.isChangingQuantityOnly = false;
  
@@ -536,7 +536,7 @@
              {
                  this.sendPacket(new S2FPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
              }
-@@ -624,14 +922,34 @@
+@@ -624,13 +923,33 @@
  
      public void onDisconnect(IChatComponent p_147231_1_)
      {
@@ -566,17 +566,16 @@
          this.playerEntity.mountEntityAndWakeUp();
 -        this.serverController.getConfigurationManager().playerLoggedOut(this.playerEntity);
 +        String quitMessage = this.serverController.getConfigurationManager().disconnect(this.playerEntity);
- 
++
 +        if ((quitMessage != null) && (quitMessage.length() > 0))
 +        {
 +            this.serverController.getConfigurationManager().sendMessage(CraftChatMessage.fromString(quitMessage));
 +        }
 +        // CraftBukkit end
-+
+ 
          if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
          {
-             logger.info("Stopping singleplayer server as player logged out");
-@@ -657,6 +975,18 @@
+@@ -657,6 +976,18 @@
              }
          }
  
@@ -595,7 +594,7 @@
          try
          {
              this.netManager.scheduleOutboundPacket(p_147359_1_, new GenericFutureListener[0]);
-@@ -679,20 +1009,37 @@
+@@ -679,20 +1010,37 @@
  
      public void processHeldItemChange(C09PacketHeldItemChange p_147355_1_)
      {
@@ -634,7 +633,7 @@
          {
              ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
              chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.RED);
-@@ -708,51 +1055,385 @@
+@@ -708,123 +1056,520 @@
              {
                  if (!ChatAllowedCharacters.isAllowedCharacter(s.charAt(i)))
                  {
@@ -677,8 +676,7 @@
 -            if (s.startsWith("/"))
 +            // CraftBukkit start
 +            if (!p_147354_1_.hasPriority())
-             {
--                this.handleSlashCommand(s);
++            {
 +                try
 +                {
 +                    this.serverController.server.playerCommandState = true;
@@ -688,22 +686,28 @@
 +                {
 +                    this.serverController.server.playerCommandState = false;
 +                }
++            }
++            else if (s.isEmpty())
+             {
+-                this.handleSlashCommand(s);
++                logger.warn(this.playerEntity.getCommandSenderName() + " tried to send an empty message");
              }
 -            else
-+            else if (s.isEmpty())
++            else if (getPlayerB().isConversing())
              {
 -                ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("chat.type.text", new Object[] {this.playerEntity.func_145748_c_(), ForgeHooks.newChatWithLinks(s)}); // Fixes chat links
 -                chatcomponenttranslation1 = ForgeHooks.onServerChatEvent(this, s, chatcomponenttranslation1);
 -                if (chatcomponenttranslation1 == null) return;
 -                this.serverController.getConfigurationManager().sendChatMsgImpl(chatcomponenttranslation1, false);
-+                logger.warn(this.playerEntity.getCommandSenderName() + " tried to send an empty message");
-             }
-+            else if (getPlayerB().isConversing())
-+            {
 +                getPlayerB().acceptConversationInput(s);
-+            }
+             }
+-
+-            this.chatSpamThresholdCount += 20;
+-
+-            if (this.chatSpamThresholdCount > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
 +            else if (this.playerEntity.func_147096_v() == EntityPlayer.EnumChatVisibility.SYSTEM) // Re-add "Command Only" flag check
-+            {
+             {
+-                this.kickPlayerFromServer("disconnect.spam");
 +                ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
 +                chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.RED);
 +                this.sendPacket(new S02PacketChat(chatcomponenttranslation));
@@ -712,9 +716,14 @@
 +            {
 +                this.chat(s, true);
 +                // CraftBukkit end - the below is for reference. :)
-+            }
+             }
+-        }
+-    }
  
--            this.chatSpamThresholdCount += 20;
+-    private void handleSlashCommand(String p_147361_1_)
+-    {
+-        this.serverController.getCommandManager().executeCommand(this.playerEntity, p_147361_1_);
+-    }
 +            // CraftBukkit start - replaced with thread safe throttle
 +            // this.chatSpamThresholdCount += 20;
 +            if (chatSpamField.addAndGet(this, 20) > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
@@ -731,7 +740,9 @@
 +                    };
 +                    this.serverController.processQueue.add(waitable);
  
--            if (this.chatSpamThresholdCount > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
+-    public void processAnimation(C0APacketAnimation p_147350_1_)
+-    {
+-        this.playerEntity.func_143004_u();
 +                    try
 +                    {
 +                        waitable.get();
@@ -749,30 +760,53 @@
 +                {
 +                    this.kickPlayerFromServer("disconnect.spam");
 +                }
-+
+ 
+-        if (p_147350_1_.func_149421_d() == 1)
+-        {
+-            this.playerEntity.swingItem();
 +                // CraftBukkit end
 +            }
-+        }
-+    }
-+
+         }
+     }
+ 
+-    public void processEntityAction(C0BPacketEntityAction p_147357_1_)
 +    // CraftBukkit start
 +    public void chat(String s, boolean async)
-+    {
+     {
+-        this.playerEntity.func_143004_u();
+-
+-        if (p_147357_1_.func_149513_d() == 1)
+-        {
+-            this.playerEntity.setSneaking(true);
+-        }
+-        else if (p_147357_1_.func_149513_d() == 2)
+-        {
+-            this.playerEntity.setSneaking(false);
+-        }
+-        else if (p_147357_1_.func_149513_d() == 4)
 +        if (s.isEmpty() || this.playerEntity.func_147096_v() == EntityPlayer.EnumChatVisibility.HIDDEN)
-+        {
+         {
+-            this.playerEntity.setSprinting(true);
 +            return;
-+        }
+         }
+-        else if (p_147357_1_.func_149513_d() == 5)
 +
 +        if (!async && s.startsWith("/"))
-+        {
+         {
+-            this.playerEntity.setSprinting(false);
 +            this.handleSlashCommand(s);
-+        }
+         }
+-        else if (p_147357_1_.func_149513_d() == 3)
 +        else if (this.playerEntity.func_147096_v() == EntityPlayer.EnumChatVisibility.SYSTEM)
-+        {
+         {
+-            this.playerEntity.wakeUpPlayer(false, true, true);
+-            this.hasMoved = false;
 +            // Do nothing, this is coming from a plugin
-+        }
+         }
+-        else if (p_147357_1_.func_149513_d() == 6)
 +        else
-+        {
+         {
+-            if (this.playerEntity.ridingEntity != null && this.playerEntity.ridingEntity instanceof EntityHorse)
 +            // Cauldron start - handle Forge event
 +            ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("chat.type.text", new Object[] {
 +                    this.playerEntity.func_145748_c_(), s });
@@ -781,10 +815,16 @@
 +            if (chatcomponenttranslation1 != null
 +                    && chatcomponenttranslation1.getFormatArgs()[chatcomponenttranslation1.getFormatArgs().length - 1] instanceof String)
              {
--                this.kickPlayerFromServer("disconnect.spam");
+-                ((EntityHorse)this.playerEntity.ridingEntity).setJumpPower(p_147357_1_.func_149512_e());
 +                // use event message from Forge
 +                s = (String) chatcomponenttranslation1.getFormatArgs()[chatcomponenttranslation1.getFormatArgs().length - 1];
              }
+-        }
+-        else if (p_147357_1_.func_149513_d() == 7 && this.playerEntity.ridingEntity != null && this.playerEntity.ridingEntity instanceof EntityHorse)
+-        {
+-            ((EntityHorse)this.playerEntity.ridingEntity).openGUI(this.playerEntity);
+-        }
+-    }
 +            // Cauldron end
 +            Player player = this.getPlayerB();
 +            AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, s, new LazyPlayerSet()); // Cauldron - pass changed message if any from Forge
@@ -800,12 +840,21 @@
 +                    protected Object evaluate()
 +                    {
 +                        org.bukkit.Bukkit.getPluginManager().callEvent(queueEvent);
-+
+ 
+-    public void processUseEntity(C02PacketUseEntity p_147340_1_)
+-    {
+-        WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
+-        Entity entity = p_147340_1_.func_149564_a(worldserver);
+-        this.playerEntity.func_143004_u();
 +                        if (queueEvent.isCancelled())
 +                        {
 +                            return null;
 +                        }
-+
+ 
+-        if (entity != null)
+-        {
+-            boolean flag = this.playerEntity.canEntityBeSeen(entity);
+-            double d0 = 36.0D;
 +                        String message = String.format(queueEvent.getFormat(), queueEvent.getPlayer().getDisplayName(), queueEvent.getMessage());
 +                        NetHandlerPlayServer.this.serverController.console.sendMessage(message);
 +                        if (((LazyPlayerSet) queueEvent.getRecipients()).isLazy())
@@ -822,11 +871,16 @@
 +                                player.sendMessage(message);
 +                            }
 +                        }
-+
+ 
+-            if (!flag)
+-            {
+-                d0 = 9.0D;
+-            }
 +                        return null;
 +                    }
 +                };
-+
+ 
+-            if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
 +                if (async)
 +                {
 +                    serverController.processQueue.add(waitable);
@@ -850,18 +904,25 @@
 +                }
 +            }
 +            else
-+            {
+             {
+-                if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.INTERACT)
 +                if (event.isCancelled())
-+                {
+                 {
+-                    this.playerEntity.interactWith(entity);
 +                    return;
-+                }
+                 }
+-                else if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.ATTACK)
 +
 +                s = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
 +                serverController.console.sendMessage(s);
 +                if (((LazyPlayerSet) event.getRecipients()).isLazy())
-+                {
+                 {
+-                    if (entity instanceof EntityItem || entity instanceof EntityXPOrb || entity instanceof EntityArrow || entity == this.playerEntity)
 +                    for (Object recipient : serverController.getConfigurationManager().playerEntityList)
-+                    {
+                     {
+-                        this.kickPlayerFromServer("Attempting to attack an invalid entity");
+-                        this.serverController.logWarning("Player " + this.playerEntity.getCommandSenderName() + " tried to attack an invalid entity");
+-                        return;
 +                        for (IChatComponent component : CraftChatMessage.fromString(s))
 +                        {
 +                            ((EntityPlayerMP) recipient).sendMessage(CraftChatMessage.fromString(s));
@@ -873,16 +934,18 @@
 +                    for (Player recipient : event.getRecipients())
 +                    {
 +                        recipient.sendMessage(s);
-+                    }
-+                }
-+            }
+                     }
+-
+-                    this.playerEntity.attackTargetEntityWithCurrentItem(entity);
+                 }
+             }
          }
      }
 +    // CraftBukkit end
  
-     private void handleSlashCommand(String p_147361_1_)
-     {
--        this.serverController.getCommandManager().executeCommand(this.playerEntity, p_147361_1_);
+-    public void processClientStatus(C16PacketClientStatus p_147342_1_)
++    private void handleSlashCommand(String p_147361_1_)
++    {
 +        org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.startTiming(); // Spigot
 +        // CraftBukkit start
 +        CraftPlayer player = this.getPlayerB();
@@ -931,19 +994,19 @@
 +
 +        // this.serverController.getCommandManager().executeCommand(this.playerEntity, p_147361_1_);
 +        // CraftBukkit end
-     }
- 
-     public void processAnimation(C0APacketAnimation p_147350_1_)
-     {
++    }
++
++    public void processAnimation(C0APacketAnimation p_147350_1_)
++    {
 +        if (this.playerEntity.isDead)
 +        {
 +            return; // CraftBukkit
 +        }
 +
-         this.playerEntity.func_143004_u();
- 
-         if (p_147350_1_.func_149421_d() == 1)
-         {
++        this.playerEntity.func_143004_u();
++
++        if (p_147350_1_.func_149421_d() == 1)
++        {
 +            // CraftBukkit start - Raytrace to look for 'rogue armswings'
 +            float f = 1.0F;
 +            float f1 = this.playerEntity.prevRotationPitch + (this.playerEntity.rotationPitch - this.playerEntity.prevRotationPitch) * f;
@@ -992,20 +1055,20 @@
 +                return;
 +            }
 +            // CraftBukkit end
-             this.playerEntity.swingItem();
-         }
-     }
- 
-     public void processEntityAction(C0BPacketEntityAction p_147357_1_)
-     {
++            this.playerEntity.swingItem();
++        }
++    }
++
++    public void processEntityAction(C0BPacketEntityAction p_147357_1_)
++    {
 +        // CraftBukkit start
 +        if (this.playerEntity.isDead)
 +        {
 +            return;
 +        }
 +
-         this.playerEntity.func_143004_u();
- 
++        this.playerEntity.func_143004_u();
++
 +        if (p_147357_1_.func_149513_d() == 1 || p_147357_1_.func_149513_d() == 2)
 +        {
 +            PlayerToggleSneakEvent event = new PlayerToggleSneakEvent(this.getPlayerB(), p_147357_1_.func_149513_d() == 1);
@@ -1029,29 +1092,48 @@
 +        }
 +        // CraftBukkit end
 +
-         if (p_147357_1_.func_149513_d() == 1)
-         {
-             this.playerEntity.setSneaking(true);
-@@ -772,7 +1453,7 @@
-         else if (p_147357_1_.func_149513_d() == 3)
-         {
-             this.playerEntity.wakeUpPlayer(false, true, true);
--            this.hasMoved = false;
++        if (p_147357_1_.func_149513_d() == 1)
++        {
++            this.playerEntity.setSneaking(true);
++        }
++        else if (p_147357_1_.func_149513_d() == 2)
++        {
++            this.playerEntity.setSneaking(false);
++        }
++        else if (p_147357_1_.func_149513_d() == 4)
++        {
++            this.playerEntity.setSprinting(true);
++        }
++        else if (p_147357_1_.func_149513_d() == 5)
++        {
++            this.playerEntity.setSprinting(false);
++        }
++        else if (p_147357_1_.func_149513_d() == 3)
++        {
++            this.playerEntity.wakeUpPlayer(false, true, true);
 +            // this.hasMoved = false; // CraftBukkit - this is handled in teleport
-         }
-         else if (p_147357_1_.func_149513_d() == 6)
-         {
-@@ -789,8 +1470,20 @@
- 
-     public void processUseEntity(C02PacketUseEntity p_147340_1_)
-     {
++        }
++        else if (p_147357_1_.func_149513_d() == 6)
++        {
++            if (this.playerEntity.ridingEntity != null && this.playerEntity.ridingEntity instanceof EntityHorse)
++            {
++                ((EntityHorse)this.playerEntity.ridingEntity).setJumpPower(p_147357_1_.func_149512_e());
++            }
++        }
++        else if (p_147357_1_.func_149513_d() == 7 && this.playerEntity.ridingEntity != null && this.playerEntity.ridingEntity instanceof EntityHorse)
++        {
++            ((EntityHorse)this.playerEntity.ridingEntity).openGUI(this.playerEntity);
++        }
++    }
++
++    public void processUseEntity(C02PacketUseEntity p_147340_1_)
++    {
 +        if (this.playerEntity.isDead)
 +        {
 +            return; // CraftBukkit
 +        }
 +
-         WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
--        Entity entity = p_147340_1_.func_149564_a(worldserver);
++        WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
 +        Entity entity = p_147340_1_.func_149564_a((World) worldserver);
 +        // Spigot Start
 +        if (entity == playerEntity)
@@ -1060,17 +1142,24 @@
 +            return;
 +        }
 +        // Spigot End
-         this.playerEntity.func_143004_u();
- 
-         if (entity != null)
-@@ -805,9 +1498,53 @@
- 
-             if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
-             {
++        this.playerEntity.func_143004_u();
++
++        if (entity != null)
++        {
++            boolean flag = this.playerEntity.canEntityBeSeen(entity);
++            double d0 = 36.0D;
++
++            if (!flag)
++            {
++                d0 = 9.0D;
++            }
++
++            if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
++            {
 +                ItemStack itemInHand = this.playerEntity.inventory.getCurrentItem(); // CraftBukkit
 +
-                 if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.INTERACT)
-                 {
++                if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.INTERACT)
++                {
 +                    // CraftBukkit start
 +                    boolean triggerTagUpdate = itemInHand != null && itemInHand.getItem() == Items.name_tag && entity instanceof EntityLiving;
 +                    boolean triggerChestUpdate = itemInHand != null && itemInHand.getItem() == Item.getItemFromBlock(Blocks.chest)
@@ -1107,20 +1196,24 @@
 +                        return;
 +                    }
 +                    // CraftBukkit end
-                     this.playerEntity.interactWith(entity);
++                    this.playerEntity.interactWith(entity);
 +                    // CraftBukkit start
 +                    if (itemInHand != null && itemInHand.stackSize <= -1)
 +                    {
 +                        this.playerEntity.sendContainerToPlayer(this.playerEntity.openContainer);
 +                    }
 +                    // CraftBukkit end
-                 }
-                 else if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.ATTACK)
-                 {
-@@ -819,6 +1556,13 @@
-                     }
- 
-                     this.playerEntity.attackTargetEntityWithCurrentItem(entity);
++                }
++                else if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.ATTACK)
++                {
++                    if (entity instanceof EntityItem || entity instanceof EntityXPOrb || entity instanceof EntityArrow || entity == this.playerEntity)
++                    {
++                        this.kickPlayerFromServer("Attempting to attack an invalid entity");
++                        this.serverController.logWarning("Player " + this.playerEntity.getCommandSenderName() + " tried to attack an invalid entity");
++                        return;
++                    }
++
++                    this.playerEntity.attackTargetEntityWithCurrentItem(entity);
 +
 +                    // CraftBukkit start
 +                    if (itemInHand != null && itemInHand.stackSize <= -1)
@@ -1128,10 +1221,16 @@
 +                        this.playerEntity.sendContainerToPlayer(this.playerEntity.openContainer);
 +                    }
 +                    // CraftBukkit end
-                 }
-             }
-         }
-@@ -834,8 +1578,19 @@
++                }
++            }
++        }
++    }
++
++    public void processClientStatus(C16PacketClientStatus p_147342_1_)
+     {
+         this.playerEntity.func_143004_u();
+         C16PacketClientStatus.EnumState enumstate = p_147342_1_.func_149435_c();
+@@ -834,7 +1579,18 @@
              case 1:
                  if (this.playerEntity.playerConqueredTheEnd)
                  {
@@ -1141,18 +1240,17 @@
 +                {
 +                    // We really should be calling transferPlayerToDimension since the player is coming in contact with a portal.
 +                    this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, true); // set flag to indicate player is leaving end.
-                 }
++                }
 +                else
 +                // not coming from end
 +                {
 +                    this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, false);
 +                }
 +                // Cauldron end
-+                }
+                 }
                  else if (this.playerEntity.getServerForPlayer().getWorldInfo().isHardcoreModeEnabled())
                  {
-                     if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
-@@ -871,17 +1626,461 @@
+@@ -871,16 +1627,460 @@
  
      public void processCloseWindow(C0DPacketCloseWindow p_147356_1_)
      {
@@ -1194,7 +1292,7 @@
 +            {
 +                return;
 +            }
- 
++
 +            InventoryView inventory = this.playerEntity.openContainer.getBukkitView();
 +            SlotType type = CraftInventoryView.getSlotType(inventory, p_147351_1_.func_149544_d());
 +            InventoryClickEvent event = null;
@@ -1611,11 +1709,10 @@
 +                }
 +            }
 +            // CraftBukkit end
-+
+ 
              if (ItemStack.areItemStacksEqual(p_147351_1_.func_149546_g(), itemstack))
              {
-                 this.playerEntity.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
-@@ -903,6 +2102,12 @@
+@@ -903,6 +2103,12 @@
                  }
  
                  this.playerEntity.sendContainerAndContentsToPlayer(this.playerEntity.openContainer, arraylist);
@@ -1628,7 +1725,7 @@
              }
          }
      }
-@@ -925,9 +2130,61 @@
+@@ -925,8 +2131,60 @@
              boolean flag = p_147344_1_.func_149627_c() < 0;
              ItemStack itemstack = p_147344_1_.func_149625_d();
              boolean flag1 = p_147344_1_.func_149627_c() >= 1 && p_147344_1_.func_149627_c() < 36 + InventoryPlayer.getHotbarSize();
@@ -1645,7 +1742,7 @@
 +                InventoryView inventory = new CraftInventoryView(player, player.getInventory(), this.playerEntity.inventoryContainer);
 +                org.bukkit.inventory.ItemStack item = CraftItemStack.asBukkitCopy(p_147344_1_.func_149625_d()); // Should be packet107setcreativeslot.newitem
 +                SlotType type = SlotType.QUICKBAR;
- 
++
 +                if (flag)
 +                {
 +                    type = SlotType.OUTSIDE;
@@ -1687,11 +1784,10 @@
 +                }
 +            }
 +            // CraftBukkit end
-+
+ 
              if (flag1 && flag2 && flag3)
              {
-                 if (itemstack == null)
-@@ -956,6 +2213,11 @@
+@@ -956,6 +2214,11 @@
  
      public void processConfirmTransaction(C0FPacketConfirmTransaction p_147339_1_)
      {
@@ -1703,7 +1799,7 @@
          Short oshort = (Short)this.field_147372_n.lookup(this.playerEntity.openContainer.windowId);
  
          if (oshort != null && p_147339_1_.func_149533_d() == oshort.shortValue() && this.playerEntity.openContainer.windowId == p_147339_1_.func_149532_c() && !this.playerEntity.openContainer.isPlayerNotUsingContainer(this.playerEntity))
-@@ -966,6 +2228,11 @@
+@@ -966,6 +2229,11 @@
  
      public void processUpdateSign(C12PacketUpdateSign p_147343_1_)
      {
@@ -1715,7 +1811,7 @@
          this.playerEntity.func_143004_u();
          WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
  
-@@ -980,6 +2247,7 @@
+@@ -980,6 +2248,7 @@
                  if (!tileentitysign.func_145914_a() || tileentitysign.func_145911_b() != this.playerEntity)
                  {
                      this.serverController.logWarning("Player " + this.playerEntity.getCommandSenderName() + " just tried to change non-editable sign");
@@ -1723,7 +1819,7 @@
                      return;
                  }
              }
-@@ -990,6 +2258,7 @@
+@@ -990,6 +2259,7 @@
              for (j = 0; j < 4; ++j)
              {
                  boolean flag = true;
@@ -1731,7 +1827,7 @@
  
                  if (p_147343_1_.func_149589_f()[j].length() > 15)
                  {
-@@ -1018,7 +2287,29 @@
+@@ -1018,7 +2288,29 @@
                  int k = p_147343_1_.func_149586_d();
                  i = p_147343_1_.func_149585_e();
                  TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
@@ -1762,7 +1858,7 @@
                  tileentitysign1.markDirty();
                  worldserver.markBlockForUpdate(j, k, i);
              }
-@@ -1041,7 +2332,22 @@
+@@ -1041,7 +2333,22 @@
  
      public void processPlayerAbilities(C13PacketPlayerAbilities p_147348_1_)
      {
@@ -1786,7 +1882,7 @@
      }
  
      public void processTabComplete(C14PacketTabComplete p_147341_1_)
-@@ -1068,7 +2374,6 @@
+@@ -1068,7 +2375,6 @@
          PacketBuffer packetbuffer;
          ItemStack itemstack;
          ItemStack itemstack1;
@@ -1794,7 +1890,7 @@
          if ("MC|BEdit".equals(p_147349_1_.func_149559_c()))
          {
              packetbuffer = new PacketBuffer(Unpooled.wrappedBuffer(p_147349_1_.func_149558_e()));
-@@ -1093,16 +2398,18 @@
+@@ -1093,16 +2399,18 @@
                  {
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
@@ -1817,7 +1913,7 @@
              }
              finally
              {
-@@ -1135,19 +2442,18 @@
+@@ -1135,19 +2443,18 @@
  
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
@@ -1843,7 +1939,7 @@
              }
              finally
              {
-@@ -1174,9 +2480,12 @@
+@@ -1174,9 +2481,12 @@
                          ((ContainerMerchant)container).setCurrentRecipeIndex(i);
                      }
                  }
@@ -1857,7 +1953,7 @@
                  }
              }
              else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
-@@ -1222,9 +2531,12 @@
+@@ -1222,9 +2532,12 @@
                              this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                          }
                      }
@@ -1872,7 +1968,7 @@
                      }
                      finally
                      {
-@@ -1257,9 +2569,12 @@
+@@ -1257,9 +2570,12 @@
                              tileentitybeacon.markDirty();
                          }
                      }
@@ -1887,7 +1983,7 @@
                      }
                  }
              }
-@@ -1281,6 +2596,13 @@
+@@ -1281,6 +2597,13 @@
                      containerrepair.updateItemName("");
                  }
              }
@@ -1901,7 +1997,7 @@
          }
      }
  
-@@ -1292,6 +2614,21 @@
+@@ -1292,6 +2615,21 @@
          }
      }
  
@@ -1923,3 +2019,9 @@
      static final class SwitchEnumState
          {
              static final int[] field_151290_a = new int[C16PacketClientStatus.EnumState.values().length];
+@@ -1327,4 +2665,4 @@
+                 }
+             }
+         }
+-}
++}
