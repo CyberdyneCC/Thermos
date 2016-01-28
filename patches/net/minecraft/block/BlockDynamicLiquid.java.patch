@@ -34,6 +34,10 @@
 +            if(net.minecraft.server.MinecraftServer.getServer().cauldronConfig.infiniteWaterSource.getValue())
              {
 -                if (p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial().isSolid())
+-                {
+-                    j1 = 0;
+-                }
+-                else if (p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial() == this.blockMaterial && p_149674_1_.getBlockMetadata(p_149674_2_, p_149674_3_ - 1, p_149674_4_) == 0)
 +                if (this.field_149815_a >= 2 && this.blockMaterial == Material.water)
                  {
 -                    j1 = 0;
@@ -46,10 +50,6 @@
 +                        j1 = 0;
 +                    }
                  }
--                else if (p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial() == this.blockMaterial && p_149674_1_.getBlockMetadata(p_149674_2_, p_149674_3_ - 1, p_149674_4_) == 0)
--                {
--                    j1 = 0;
--                }
              }
 +            // Cauldron end
  
@@ -69,26 +69,31 @@
              }
              else
              {
-@@ -113,21 +136,34 @@
+@@ -113,21 +136,35 @@
  
          if (this.func_149809_q(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_))
          {
 -            if (this.blockMaterial == Material.lava && p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial() == Material.water)
-+            // CraftBukkit start - Send "down" to the server
-+            BlockFromToEvent event = new BlockFromToEvent(source, BlockFace.DOWN);
-+
-+            if (server != null)
-             {
+-            {
 -                p_149674_1_.setBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_, Blocks.stone);
 -                this.func_149799_m(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_);
 -                return;
-+                server.getPluginManager().callEvent(event);
-             }
+-            }
++            if (p_149674_1_.getType(p_149674_2_, p_149674_3_, p_149674_4_).getMaterial() != this.blockMaterial) { return; } // PaperSpigot - Stop updating flowing block if material has changed
++            // CraftBukkit start - Send "down" to the server
++            BlockFromToEvent event = new BlockFromToEvent(source, BlockFace.DOWN);
  
 -            if (l >= 8)
-+            if (!event.isCancelled())
++            if (server != null)
              {
 -                this.func_149813_h(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_, l);
++                server.getPluginManager().callEvent(event);
+             }
+-            else
++
++            if (!event.isCancelled())
+             {
+-                this.func_149813_h(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_, l + 8);
 +                if (this.blockMaterial == Material.lava && p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial() == Material.water)
 +                {
 +                    p_149674_1_.setBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_, Blocks.stone);
@@ -105,16 +110,12 @@
 +                    this.func_149813_h(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_, l + 8);
 +                }
              }
--            else
--            {
--                this.func_149813_h(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_, l + 8);
--            }
 +
 +            // CraftBukkit end
          }
          else if (l >= 0 && (l == 0 || this.func_149807_p(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_)))
          {
-@@ -144,25 +180,31 @@
+@@ -144,25 +181,31 @@
                  return;
              }
  
@@ -160,3 +161,9 @@
          }
      }
  
+@@ -351,4 +394,4 @@
+     {
+         return true;
+     }
+-}
++}
