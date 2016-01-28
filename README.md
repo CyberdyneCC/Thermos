@@ -9,7 +9,7 @@
 
 ## Chat
 
-Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE2t5yKh)
+Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE2XaJ4m)
 
 ##Patreon
 
