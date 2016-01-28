@@ -29,10 +29,11 @@
      {
          (new RecipesTools()).addRecipes(this);
          (new RecipesWeapons()).addRecipes(this);
-@@ -152,6 +160,23 @@
+@@ -152,6 +160,24 @@
          this.addShapelessRecipe(new ItemStack(Items.fire_charge, 3), new Object[] {Items.gunpowder, Items.blaze_powder, new ItemStack(Items.coal, 1, 1)});
          this.addRecipe(new ItemStack(Blocks.daylight_detector), new Object[] {"GGG", "QQQ", "WWW", 'G', Blocks.glass, 'Q', Items.quartz, 'W', Blocks.wooden_slab});
          this.addRecipe(new ItemStack(Blocks.hopper), new Object[] {"I I", "ICI", " I ", 'I', Items.iron_ingot, 'C', Blocks.chest});
++        this.addShapelessRecipe(new ItemStack(Blocks.mossy_cobblestone, 1), new Object[] { Blocks.vine, Blocks.cobblestone });
 +        /*Collections.sort(this.recipes, new Comparator() // CraftBukkit - moved below
 +        {
 +            private static final String __OBFID = "CL_00000091";
@@ -53,7 +54,7 @@
          Collections.sort(this.recipes, new Comparator()
          {
              private static final String __OBFID = "CL_00000091";
-@@ -312,7 +337,22 @@
+@@ -312,7 +338,22 @@
                  i1 = 0;
              }
  
@@ -77,13 +78,13 @@
          }
          else
          {
-@@ -320,12 +360,23 @@
+@@ -320,12 +361,23 @@
              {
                  IRecipe irecipe = (IRecipe)this.recipes.get(j);
  
 -                if (irecipe.matches(p_82787_1_, p_82787_2_))
 +                if (irecipe.matches(p_82787_1_, p_82787_2_) && p_82787_1_.resultInventory != null) // Cauldron - add null check for vanilla compatibility
-                 {
++                {
 +                    // CraftBukkit start - INVENTORY_PRE_CRAFT event
 +                    p_82787_1_.currentRecipe = irecipe;
 +                    ItemStack result = irecipe.getCraftingResult(p_82787_1_);
@@ -92,7 +93,7 @@
 +                }
 +                // Cauldron start - vanilla
 +                else if (irecipe.matches(p_82787_1_, p_82787_2_))
-+                {
+                 {
                      return irecipe.getCraftingResult(p_82787_1_);
                  }
 +                // Cauldron end
@@ -102,3 +103,9 @@
              return null;
          }
      }
+@@ -334,4 +386,4 @@
+     {
+         return this.recipes;
+     }
+-}
++}
