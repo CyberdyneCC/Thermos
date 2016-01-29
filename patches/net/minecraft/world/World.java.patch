@@ -932,7 +932,7 @@
 +            for(Object tile : loadedTileEntityList)
 +            {
 +                boolean marker = false;
-+                try { marker = !((TileEntity)tile).isGC(); } catch (Exception e) { try { marker = this.field_14783_b.contains(tile) } catch (Exception ex) { marker = false; } }
++                try { marker = !((TileEntity)tile).isGC(); } catch (Exception e) { try { marker = this.field_147483_b.contains(tile); } catch (Exception ex) { marker = false; } }
 +                if (marker) { temporary_tile_entity_list.add(tile); }
 +            }
 +            this.loadedTileEntityList = temporary_tile_entity_list;
