@@ -239,36 +239,7 @@
      }
  
      public void removeTileEntity(int p_150805_1_, int p_150805_2_, int p_150805_3_)
-@@ -915,6 +1046,7 @@
-             while (iterator.hasNext())
-             {
-                 Entity entity = (Entity)iterator.next();
-+
-                 entity.onChunkLoad();
-             }
- 
-@@ -931,11 +1063,58 @@
-         while (iterator.hasNext())
-         {
-             TileEntity tileentity = (TileEntity)iterator.next();
-+            // Spigot Start
-+            if ( tileentity instanceof IInventory )
-+            {
-+              try
-+              {
-+                for ( org.bukkit.entity.HumanEntity h : new ArrayList<org.bukkit.entity.HumanEntity>( (List) ( (IInventory) tileentity ).getViewers() ) )
-+                {
-+                    if ( h instanceof org.bukkit.craftbukkit.entity.CraftHumanEntity )
-+                    {
-+                       ( (org.bukkit.craftbukkit.entity.CraftHumanEntity) h).getHandle().closeScreen();
-+                    }
-+                }
-+              }
-+              catch(Error e) {}
-+            }
-+             // Spigot End
-             this.worldObj.func_147457_a(tileentity);
-         }
+@@ -936,6 +1067,21 @@
  
          for (int i = 0; i < this.entityLists.length; ++i)
          {
@@ -278,22 +249,6 @@
 +            while (iter.hasNext())
 +            {
 +                Entity entity = (Entity) iter.next();
-+                // Spigot Start
-+                if ( entity instanceof IInventory )
-+                {
-+                  try
-+                  {
-+                    for ( org.bukkit.entity.HumanEntity h : new ArrayList<org.bukkit.entity.HumanEntity>( (List) ( (IInventory) entity ).getViewers() ) )
-+                    {
-+                        if ( h instanceof org.bukkit.craftbukkit.entity.CraftHumanEntity )
-+                        {
-+                           ( (org.bukkit.craftbukkit.entity.CraftHumanEntity) h).getHandle().closeScreen();
-+                        }
-+                    }
-+                  }
-+                  catch(Error e) {}
-+                }
-+                // Spigot End
 +
 +                // Do not pass along players, as doing so can get them stuck outside of time.
 +                // (which for example disables inventory icon updates and prevents block breaking)
@@ -306,7 +261,7 @@
              this.worldObj.unloadEntities(this.entityLists[i]);
          }
          MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
-@@ -1015,7 +1194,7 @@
+@@ -1015,7 +1161,7 @@
                  return true;
              }
          }
@@ -315,7 +270,7 @@
          {
              return true;
          }
-@@ -1025,7 +1204,7 @@
+@@ -1025,7 +1171,7 @@
  
      public Random getRandomWithSeed(long p_76617_1_)
      {
@@ -324,7 +279,7 @@
      }
  
      public boolean isEmpty()
-@@ -1035,6 +1214,7 @@
+@@ -1035,6 +1181,7 @@
  
      public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)
      {
@@ -332,7 +287,7 @@
          if (!this.isTerrainPopulated && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_))
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_, p_76624_4_);
-@@ -1054,6 +1234,7 @@
+@@ -1054,6 +1201,7 @@
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_ - 1, p_76624_4_ - 1);
          }
@@ -340,7 +295,7 @@
      }
  
      public int getPrecipitationHeight(int p_76626_1_, int p_76626_2_)
-@@ -1091,7 +1272,7 @@
+@@ -1091,7 +1239,7 @@
      {
          if (this.isGapLightingUpdated && !this.worldObj.provider.hasNoSky && !p_150804_1_)
          {
@@ -349,25 +304,7 @@
          }
  
          this.field_150815_m = true;
-@@ -1104,7 +1285,16 @@
- 
-     public boolean func_150802_k()
-     {
--        return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
-+        //return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
-+        // Spigot Start
-+        /*
-+         * As of 1.7, Mojang added a check to make sure that only chunks which have been lit are sent to the client.
-+         * Unfortunately this interferes with our modified chunk ticking algorithm, which will only tick chunks distant from the player on a very infrequent basis.
-+         * We cannot unfortunately do this lighting stage during chunk gen as it appears to put a lot more noticeable load on the server, than when it is done at play time.
-+         * For now at least we will simply send all chunks, in accordance with pre 1.7 behaviour.
-+         */
-+        return true;
-+        // Spigot End
-     }
- 
-     public ChunkCoordIntPair getChunkCoordIntPair()
-@@ -1184,8 +1374,10 @@
+@@ -1184,8 +1332,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -380,7 +317,7 @@
              }
          }
  
-@@ -1194,8 +1386,10 @@
+@@ -1194,8 +1344,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -393,7 +330,7 @@
              }
          }
  
-@@ -1206,8 +1400,10 @@
+@@ -1206,8 +1358,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -406,7 +343,7 @@
                  }
              }
          }
-@@ -1229,8 +1425,8 @@
+@@ -1229,8 +1383,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -417,11 +354,10 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1719,21 @@
+@@ -1523,4 +1677,21 @@
              }
          }
      }
--}
 +
 +    /**
 +     * PaperSpigot - Recheck gaps asynchronously.
@@ -439,4 +375,4 @@
 +            }
 +        });
 +    }
-+}
+ }
