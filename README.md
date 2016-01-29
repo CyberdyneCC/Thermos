@@ -1,11 +1,11 @@
-# Cauldron 
+# KCauldron 
 
 ![Minecraft Forge v10.13.4.1614][forge]
 ![Minecraft v1.7.10][mc]
 ![Java JDK v1.8][java]
 ![Spigot 1.7.10 Snapshot ][spigot]
 
-### This is an unofficial fork of KCauldron aimed at producing a ridiculously low-lag server.
+### This is an unofficial fork of KCauldron aimed at eliminating all issues. In the end, we envision a seamless, low lag KCauldron experience.
 
 ## Chat
 
