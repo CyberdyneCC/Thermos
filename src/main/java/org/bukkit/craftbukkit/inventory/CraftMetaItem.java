@@ -302,7 +302,16 @@ class CraftMetaItem implements ItemMeta, Repairable {
             int id = 0xffff & ((net.minecraft.nbt.NBTTagCompound) ench.getCompoundTagAt(i)).getShort(ENCHANTMENTS_ID.NBT);
             int level = 0xffff & ((net.minecraft.nbt.NBTTagCompound) ench.getCompoundTagAt(i)).getShort(ENCHANTMENTS_LVL.NBT);
 
-            enchantments.put(Enchantment.getById(id), level);
+            // Spigot Start - skip invalid enchantments
+            /*
+             * Its a rare case but when loading a world from a modded server which added enchantments
+             * CraftMetaItem would add a null enchantment into the enchantment map which causes
+             * NullPointers later
+             */
+            Enchantment inch = Enchantment.getById(id);
+            if (inch == null) continue;
+            enchantments.put(inch, level);
+            // Spigot end
         }
 
         return enchantments;
