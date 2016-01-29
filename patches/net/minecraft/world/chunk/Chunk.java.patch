@@ -264,7 +264,7 @@
 +                    }
 +                }
 +              }
-+              catch(Exception e) {}
++              catch(Error e) {}
 +            }
 +             // Spigot End
              this.worldObj.func_147457_a(tileentity);
@@ -291,7 +291,7 @@
 +                        }
 +                    }
 +                  }
-+                  catch(Exception e) {}
++                  catch(Error e) {}
 +                }
 +                // Spigot End
 +
