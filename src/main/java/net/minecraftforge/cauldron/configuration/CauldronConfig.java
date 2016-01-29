@@ -58,8 +58,8 @@ public class CauldronConfig extends ConfigBase
     public final IntSetting maxPlayersVisible = new IntSetting(this, "world-settings.max-players-visible", -1, "How many players will visible in the tab list");
 
     // Optimization options
-    public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "How many ticks the server can skip for repeater updates");
-    public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "How many ticks the server can skip for redstoneTorch updates");
+    public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "how many milliseconds the server must ignore before trying repeater updates");
+    public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "how many milliseconds the server must ignore before trying redstoneTorch updates");
 
     // Plug-in options
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");
