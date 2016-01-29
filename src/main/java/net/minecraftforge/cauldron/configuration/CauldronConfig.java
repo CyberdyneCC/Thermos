@@ -14,7 +14,7 @@ public class CauldronConfig extends ConfigBase
             + "\n"
             + "IRC: #cauldron @ irc.esper.net ( http://webchat.esper.net/?channel=cauldron )\n"
             + "Forums: http://cauldron.minecraftforge.net/\n";
-
+    public static CauldronConfig instance;
     /* ======================================================================== */
 
     // Logging options
@@ -57,6 +57,10 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting fakePlayerLogin = new BoolSetting(this, "fake-players.do-login", false, "Raise login events for fake players");
     public final IntSetting maxPlayersVisible = new IntSetting(this, "world-settings.max-players-visible", -1, "How many players will visible in the tab list");
 
+    // Optimization options
+    public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "How many ticks the server can skip for repeater updates");
+    public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "How many ticks the server can skip for redstoneTorch updates");
+
     // Plug-in options
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");
 
@@ -66,6 +70,7 @@ public class CauldronConfig extends ConfigBase
     {
         super(fileName, commandName);
         init();
+        instance = this;
     }
 
     public void init()
@@ -101,7 +106,9 @@ public class CauldronConfig extends ConfigBase
         settings.put(userLogin.path, userLogin);
         settings.put(allowTntPunishment.path, allowTntPunishment);
         settings.put(maxPlayersVisible.path, maxPlayersVisible);
-        settings.put(chunkGCGracePeriod.path,chunkGCGracePeriod);
+        settings.put(chunkGCGracePeriod.path, chunkGCGracePeriod);
+        settings.put(repeaterL.path, repeaterL);
+        settings.put(redstoneTorchL.path, redstoneTorchL);
         load();
     }
 
