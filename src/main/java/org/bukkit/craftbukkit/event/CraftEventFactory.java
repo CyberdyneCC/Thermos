@@ -448,7 +448,10 @@ public class CraftEventFactory {
             DamageCause cause = DamageCause.ENTITY_ATTACK;
 
             if (source instanceof net.minecraft.util.EntityDamageSourceIndirect) {
-                damager = ((net.minecraft.util.EntityDamageSourceIndirect) source).getProximateDamageSource();
+                if (((net.minecraft.util.EntityDamageSourceIndirect) source).getSourceOfDamage() instanceof EntityPlayer)
+                    damager = ((net.minecraft.util.EntityDamageSourceIndirect) source).getSourceOfDamage();//.getProximateDamageSource();
+                else
+                    damager = ((net.minecraft.util.EntityDamageSourceIndirect) source).getProximateDamageSource();
                 // Cauldron start - vanilla compatibility
                 if (damager != null) {
                     if (damager.getBukkitEntity() instanceof ThrownPotion) {
