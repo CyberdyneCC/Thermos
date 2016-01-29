@@ -42,10 +42,18 @@ class InstallBundle extends DefaultTask {
 # Installation and usage
 1. Unpack this zip into server directory
 2. Use following line to start the server:
-  java -jar '''
+  java -Xmx1024M -jar '''
             it << jarPath
             it << '''
+
+  or
+
+  java -Xmx1024M -jar KCauldron.jar
+
 3. Enjoy
+
+Public builds can be found at: https://tcpr.ca/downloads/unofficial-kcauldron
+
 '''
         }
         def cp = bootstrapClasspath
