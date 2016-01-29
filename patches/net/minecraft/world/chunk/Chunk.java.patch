@@ -304,7 +304,17 @@
          }
  
          this.field_150815_m = true;
-@@ -1184,8 +1332,10 @@
+@@ -1104,7 +1252,8 @@
+ 
+     public boolean func_150802_k()
+     {
+-        return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
++        return true; // Spigot https://github.com/TCPR/KCauldron/commit/e1ada4deb899529eaf28e3de66666f880a65d60f
++        //return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
+     }
+ 
+     public ChunkCoordIntPair getChunkCoordIntPair()
+@@ -1184,8 +1333,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -317,7 +327,7 @@
              }
          }
  
-@@ -1194,8 +1344,10 @@
+@@ -1194,8 +1345,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -330,7 +340,7 @@
              }
          }
  
-@@ -1206,8 +1358,10 @@
+@@ -1206,8 +1359,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -343,7 +353,7 @@
                  }
              }
          }
-@@ -1229,8 +1383,8 @@
+@@ -1229,8 +1384,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -354,10 +364,11 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1677,21 @@
+@@ -1523,4 +1678,21 @@
              }
          }
      }
+-}
 +
 +    /**
 +     * PaperSpigot - Recheck gaps asynchronously.
@@ -375,4 +386,4 @@
 +            }
 +        });
 +    }
- }
++}
