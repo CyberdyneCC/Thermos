@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
 +++ ../src-work/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
-@@ -1,13 +1,18 @@
+@@ -1,13 +1,19 @@
  package net.minecraftforge.event.world;
  
  import java.util.List;
@@ -9,6 +9,7 @@
  import cpw.mods.fml.common.eventhandler.Cancelable;
  import cpw.mods.fml.common.eventhandler.Event;
  import net.minecraft.entity.Entity;
++import net.minecraft.entity.EntityLivingBase;
 +import net.minecraft.entity.item.*;
  import net.minecraft.world.ChunkPosition;
  import net.minecraft.world.Explosion;
@@ -21,7 +22,7 @@
  
  /** ExplosionEvent triggers when an explosion happens in the world.<br>
   * <br>
-@@ -23,9 +28,12 @@
+@@ -23,9 +29,12 @@
  {
      public final World world;
      public final Explosion explosion;
@@ -34,7 +35,7 @@
          this.world = world;
          this.explosion = explosion;
      }
-@@ -39,10 +47,41 @@
+@@ -39,10 +48,41 @@
      @Cancelable
      public static class Start extends ExplosionEvent
      {
@@ -46,13 +47,13 @@
 +            // float f = 4.0F;
 +            org.bukkit.craftbukkit.CraftServer server = world.getServer();
 +            org.bukkit.craftbukkit.entity.CraftEntity ce = null;
-+            if(explosion.exploder != null)
++            if(explosion.exploder != null && explosion.exploder instanceof EntityLivingBase)
 +            {
-+                ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, explosion.exploder);
++                ce = new org.bukkit.craftbukkit.entity.CraftTNTPrimed(server, new EntityTNTPrimed(world, explosion.explosionX, explosion.explosionY, explosion.explosionZ, (EntityLivingBase) explosion.exploder ));
 +            }
 +	    if(ce == null)
 +            {
-+                ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(server, new EntityTNTPrimed(world, explosion.explosionX, explosion.explosionY, explosion.explosionZ, exploder_fake ));
++                ce = new org.bukkit.craftbukkit.entity.CraftTNTPrimed(server, new EntityTNTPrimed(world, explosion.explosionX, explosion.explosionY, explosion.explosionZ, exploder_fake ));
 +            }
 +            event = new ExplosionPrimeEvent(ce, 8.0F, true);
 +            server.getPluginManager().callEvent(event);
@@ -76,7 +77,7 @@
      }
  
      /** ExplosionEvent.Detonate is fired once the explosion has a list of affected blocks and entities.  These lists can be modified to change the outcome.<br>
-@@ -73,4 +112,4 @@
+@@ -73,4 +113,4 @@
              return entityList;
          }
      }
