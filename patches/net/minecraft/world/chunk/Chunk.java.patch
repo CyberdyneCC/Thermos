@@ -341,7 +341,25 @@
          }
  
          this.field_150815_m = true;
-@@ -1184,8 +1357,10 @@
+@@ -1104,7 +1277,16 @@
+ 
+     public boolean func_150802_k()
+     {
+-        return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
++        //return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
++        // Spigot Start
++        /*
++         * As of 1.7, Mojang added a check to make sure that only chunks which have been lit are sent to the client.
++         * Unfortunately this interferes with our modified chunk ticking algorithm, which will only tick chunks distant from the player on a very infrequent basis.
++         * We cannot unfortunately do this lighting stage during chunk gen as it appears to put a lot more noticeable load on the server, than when it is done at play time.
++         * For now at least we will simply send all chunks, in accordance with pre 1.7 behaviour.
++         */
++        return true;
++        // Spigot End
+     }
+ 
+     public ChunkCoordIntPair getChunkCoordIntPair()
+@@ -1184,8 +1366,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -354,7 +372,7 @@
              }
          }
  
-@@ -1194,8 +1369,10 @@
+@@ -1194,8 +1378,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -367,7 +385,7 @@
              }
          }
  
-@@ -1206,8 +1383,10 @@
+@@ -1206,8 +1392,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -380,7 +398,7 @@
                  }
              }
          }
-@@ -1229,8 +1408,8 @@
+@@ -1229,8 +1417,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -391,7 +409,7 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1702,21 @@
+@@ -1523,4 +1711,21 @@
              }
          }
      }
