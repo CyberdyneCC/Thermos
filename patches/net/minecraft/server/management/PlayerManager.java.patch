@@ -102,6 +102,15 @@
      public void markBlockForUpdate(int p_151250_1_, int p_151250_2_, int p_151250_3_)
      {
          int l = p_151250_1_ >> 4;
+@@ -275,7 +313,7 @@
+                     this.getOrCreateChunkWatcher(pair.chunkXPos, pair.chunkZPos, true).addPlayer(p_72685_1_);
+                 }
+ 
+-                if (i1 > 1 || i1 < -1 || j1 > 1 || j1 < -1)
++                if (j1 > 1 || j1 < -1 || k1 > 1 || k1 < -1) // Spigot- missed diff
+                 {
+                     java.util.Collections.sort(p_72685_1_.loadedChunks, new net.minecraftforge.common.util.ChunkCoordComparator(p_72685_1_));
+                 }
 @@ -541,7 +579,7 @@
                      {
                          i = this.chunkLocation.chunkXPos * 16;
@@ -111,3 +120,9 @@
  
                          // Forge: Grabs ALL tile entities is costly on a modded server, only send needed ones
                          for (k = 0; false && k < 16; ++k)
+@@ -597,4 +635,4 @@
+             }
+         }
+     }
+-}
++}
