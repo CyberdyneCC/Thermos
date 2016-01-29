@@ -247,13 +247,15 @@
                  entity.onChunkLoad();
              }
  
-@@ -931,11 +1063,50 @@
+@@ -931,11 +1063,58 @@
          while (iterator.hasNext())
          {
              TileEntity tileentity = (TileEntity)iterator.next();
 +            // Spigot Start
 +            if ( tileentity instanceof IInventory )
 +            {
++              try
++              {
 +                for ( org.bukkit.entity.HumanEntity h : new ArrayList<org.bukkit.entity.HumanEntity>( (List) ( (IInventory) tileentity ).getViewers() ) )
 +                {
 +                    if ( h instanceof org.bukkit.craftbukkit.entity.CraftHumanEntity )
@@ -261,6 +263,8 @@
 +                       ( (org.bukkit.craftbukkit.entity.CraftHumanEntity) h).getHandle().closeScreen();
 +                    }
 +                }
++              }
++              catch(Exception e) {}
 +            }
 +             // Spigot End
              this.worldObj.func_147457_a(tileentity);
@@ -277,6 +281,8 @@
 +                // Spigot Start
 +                if ( entity instanceof IInventory )
 +                {
++                  try
++                  {
 +                    for ( org.bukkit.entity.HumanEntity h : new ArrayList<org.bukkit.entity.HumanEntity>( (List) ( (IInventory) entity ).getViewers() ) )
 +                    {
 +                        if ( h instanceof org.bukkit.craftbukkit.entity.CraftHumanEntity )
@@ -284,6 +290,8 @@
 +                           ( (org.bukkit.craftbukkit.entity.CraftHumanEntity) h).getHandle().closeScreen();
 +                        }
 +                    }
++                  }
++                  catch(Exception e) {}
 +                }
 +                // Spigot End
 +
@@ -298,7 +306,7 @@
              this.worldObj.unloadEntities(this.entityLists[i]);
          }
          MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
-@@ -1015,7 +1186,7 @@
+@@ -1015,7 +1194,7 @@
                  return true;
              }
          }
@@ -307,7 +315,7 @@
          {
              return true;
          }
-@@ -1025,7 +1196,7 @@
+@@ -1025,7 +1204,7 @@
  
      public Random getRandomWithSeed(long p_76617_1_)
      {
@@ -316,7 +324,7 @@
      }
  
      public boolean isEmpty()
-@@ -1035,6 +1206,7 @@
+@@ -1035,6 +1214,7 @@
  
      public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)
      {
@@ -324,7 +332,7 @@
          if (!this.isTerrainPopulated && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_))
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_, p_76624_4_);
-@@ -1054,6 +1226,7 @@
+@@ -1054,6 +1234,7 @@
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_ - 1, p_76624_4_ - 1);
          }
@@ -332,7 +340,7 @@
      }
  
      public int getPrecipitationHeight(int p_76626_1_, int p_76626_2_)
-@@ -1091,7 +1264,7 @@
+@@ -1091,7 +1272,7 @@
      {
          if (this.isGapLightingUpdated && !this.worldObj.provider.hasNoSky && !p_150804_1_)
          {
@@ -341,7 +349,7 @@
          }
  
          this.field_150815_m = true;
-@@ -1104,7 +1277,16 @@
+@@ -1104,7 +1285,16 @@
  
      public boolean func_150802_k()
      {
@@ -359,7 +367,7 @@
      }
  
      public ChunkCoordIntPair getChunkCoordIntPair()
-@@ -1184,8 +1366,10 @@
+@@ -1184,8 +1374,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -372,7 +380,7 @@
              }
          }
  
-@@ -1194,8 +1378,10 @@
+@@ -1194,8 +1386,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -385,7 +393,7 @@
              }
          }
  
-@@ -1206,8 +1392,10 @@
+@@ -1206,8 +1400,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -398,7 +406,7 @@
                  }
              }
          }
-@@ -1229,8 +1417,8 @@
+@@ -1229,8 +1425,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -409,7 +417,7 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1711,21 @@
+@@ -1523,4 +1719,21 @@
              }
          }
      }
