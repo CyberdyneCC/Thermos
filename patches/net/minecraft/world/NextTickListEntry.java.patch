@@ -1,0 +1,17 @@
+--- ../src-base/minecraft/net/minecraft/world/NextTickListEntry.java
++++ ../src-work/minecraft/net/minecraft/world/NextTickListEntry.java
+@@ -38,7 +38,7 @@
+ 
+     public int hashCode()
+     {
+-        return (this.xCoord * 1024 * 1024 + this.zCoord * 1024 + this.yCoord) * 256;
++        return (int) (tickEntryID & 0xFFFFFFFF);
+     }
+ 
+     public NextTickListEntry setScheduledTime(long p_77176_1_)
+@@ -71,4 +71,4 @@
+     {
+         return this.compareTo((NextTickListEntry)p_compareTo_1_);
+     }
+-}
++}
