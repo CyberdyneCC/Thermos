@@ -35,7 +35,7 @@
          PlayerEvent.HarvestCheck event = new PlayerEvent.HarvestCheck(player, block, success);
          MinecraftForge.EVENT_BUS.post(event);
          return event.success;
-@@ -80,25 +94,137 @@
+@@ -80,25 +94,136 @@
      @Deprecated // Location version below
      public static float getBreakSpeed(EntityPlayer player, Block block, int metadata, float original)
      {
@@ -129,7 +129,6 @@
 +                }
 +                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
-+// callPlayerInteractEvent(net.minecraft.entity.player.EntityPlayer who, Action action, int clickedX, int clickedY, int clickedZ, int clickedFace, net.minecraft.item.ItemStack itemstack) {
 +
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
@@ -177,7 +176,7 @@
      }
  
      public static void onPlayerDestroyItem(EntityPlayer player, ItemStack stack)
-@@ -182,29 +308,63 @@
+@@ -182,29 +307,63 @@
          return MinecraftForge.EVENT_BUS.post(new EntityStruckByLightningEvent(entity, bolt));
      }
  
@@ -262,7 +261,7 @@
  
      public static void onStartEntityTracking(Entity entity, EntityPlayer player)
      {
-@@ -290,4 +450,4 @@
+@@ -290,4 +449,4 @@
      {
          MinecraftForge.EVENT_BUS.post(new PotionBrewEvent.Post(brewingItemStacks));
      }
