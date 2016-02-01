@@ -8,15 +8,18 @@
  import java.util.ArrayList;
  import java.util.Calendar;
  import java.util.Collection;
-@@ -12,6 +13,7 @@
+@@ -10,8 +11,10 @@
+ import java.util.List;
+ import java.util.Random;
  import java.util.Set;
++import java.util.HashMap;
  import java.util.UUID;
  import java.util.concurrent.Callable;
 +
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockHopper;
  import net.minecraft.block.BlockLiquid;
-@@ -23,9 +25,11 @@
+@@ -23,9 +26,11 @@
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.entity.Entity;
@@ -28,7 +31,7 @@
  import net.minecraft.item.ItemStack;
  import net.minecraft.nbt.NBTTagCompound;
  import net.minecraft.pathfinding.PathEntity;
-@@ -51,7 +55,6 @@
+@@ -51,7 +56,6 @@
  import net.minecraft.world.storage.ISaveHandler;
  import net.minecraft.world.storage.MapStorage;
  import net.minecraft.world.storage.WorldInfo;
@@ -36,7 +39,7 @@
  import cpw.mods.fml.common.FMLLog;
  
  import com.google.common.collect.ImmutableSetMultimap;
-@@ -70,6 +73,56 @@
+@@ -70,6 +74,56 @@
  import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
  import net.minecraft.entity.EnumCreatureType;
  
@@ -93,7 +96,7 @@
  public abstract class World implements IBlockAccess
  {
     /**
-@@ -83,15 +136,14 @@
+@@ -83,15 +137,14 @@
  
      public boolean scheduledUpdatesAreImmediate;
      public List loadedEntityList = new ArrayList();
@@ -111,7 +114,7 @@
      protected final int DIST_HASH_MAGIC = 1013904223;
      public float prevRainingStrength;
      public float rainingStrength;
-@@ -100,26 +152,88 @@
+@@ -100,26 +153,88 @@
      public int lastLightningBolt;
      public EnumDifficulty difficultySetting;
      public Random rand = new Random();
@@ -207,7 +210,7 @@
      private static final String __OBFID = "CL_00000140";
      public boolean restoringBlockSnapshots = false;
      public boolean captureBlockSnapshots = false;
-@@ -166,6 +280,27 @@
+@@ -166,6 +281,27 @@
          return this.provider.worldChunkMgr;
      }
  
@@ -235,7 +238,7 @@
      @SideOnly(Side.CLIENT)
      public World(ISaveHandler p_i45368_1_, String p_i45368_2_, WorldProvider p_i45368_3_, WorldSettings p_i45368_4_, Profiler p_i45368_5_)
      {
-@@ -179,6 +314,12 @@
+@@ -179,6 +315,12 @@
          this.worldInfo = new WorldInfo(p_i45368_4_, p_i45368_2_);
          this.provider = p_i45368_3_;
          perWorldStorage = new MapStorage((ISaveHandler)null);
@@ -248,7 +251,7 @@
      }
  
      // Broken up so that the WorldClient gets the chance to set the mapstorage object before the dimension initializes
-@@ -207,8 +348,175 @@
+@@ -207,8 +349,175 @@
          this.calculateInitialWeather();
      }
  
@@ -424,7 +427,7 @@
          this.ambientTickCountdown = this.rand.nextInt(12000);
          this.spawnHostileMobs = true;
          this.spawnPeacefulMobs = true;
-@@ -216,7 +524,6 @@
+@@ -216,7 +525,6 @@
          this.lightUpdateBlockList = new int[32768];
          this.saveHandler = p_i45369_1_;
          this.theProfiler = p_i45369_5_;
@@ -432,7 +435,7 @@
          this.worldInfo = p_i45369_1_.loadWorldInfo();
  
          if (p_i45369_4_ != null)
-@@ -235,13 +542,26 @@
+@@ -235,13 +543,26 @@
          if (this.worldInfo == null)
          {
              this.worldInfo = new WorldInfo(p_i45369_3_, p_i45369_2_);
@@ -459,7 +462,7 @@
          this.chunkProvider = this.createChunkProvider();
  
          if (this instanceof WorldServer)
-@@ -294,6 +614,7 @@
+@@ -294,6 +615,7 @@
          this.calculateInitialSkylight();
          this.calculateInitialWeather();
      }
@@ -467,7 +470,7 @@
  
      private static MapStorage s_mapStorage;
      private static ISaveHandler s_savehandler;
-@@ -336,6 +657,18 @@
+@@ -336,6 +658,18 @@
  
      public Block getBlock(int p_147439_1_, int p_147439_2_, int p_147439_3_)
      {
@@ -486,7 +489,7 @@
          if (p_147439_1_ >= -30000000 && p_147439_3_ >= -30000000 && p_147439_1_ < 30000000 && p_147439_3_ < 30000000 && p_147439_2_ >= 0 && p_147439_2_ < 256)
          {
              Chunk chunk = null;
-@@ -404,7 +737,7 @@
+@@ -404,7 +738,7 @@
          }
      }
  
@@ -495,7 +498,7 @@
      {
          return this.chunkProvider.chunkExists(p_72916_1_, p_72916_2_);
      }
-@@ -421,6 +754,27 @@
+@@ -421,6 +755,27 @@
  
      public boolean setBlock(int p_147465_1_, int p_147465_2_, int p_147465_3_, Block p_147465_4_, int p_147465_5_, int p_147465_6_)
      {
@@ -523,7 +526,7 @@
          if (p_147465_1_ >= -30000000 && p_147465_3_ >= -30000000 && p_147465_1_ < 30000000 && p_147465_3_ < 30000000)
          {
              if (p_147465_2_ < 0)
-@@ -448,8 +802,22 @@
+@@ -448,8 +803,22 @@
                      this.capturedBlockSnapshots.add(blockSnapshot);
                  }
  
@@ -546,7 +549,7 @@
                  if (!flag && blockSnapshot != null)
                  {
                      this.capturedBlockSnapshots.remove(blockSnapshot);
-@@ -460,6 +828,7 @@
+@@ -460,6 +829,7 @@
                  this.func_147451_t(p_147465_1_, p_147465_2_, p_147465_3_);
                  this.theProfiler.endSection();
  
@@ -554,7 +557,7 @@
                  if (flag && blockSnapshot == null) // Don't notify clients or update physics while capturing blockstates
                  {
                      // Modularize client and physic updates
-@@ -496,6 +865,19 @@
+@@ -496,6 +866,19 @@
  
      public int getBlockMetadata(int p_72805_1_, int p_72805_2_, int p_72805_3_)
      {
@@ -574,7 +577,7 @@
          if (p_72805_1_ >= -30000000 && p_72805_3_ >= -30000000 && p_72805_1_ < 30000000 && p_72805_3_ < 30000000)
          {
              if (p_72805_2_ < 0)
-@@ -511,7 +893,7 @@
+@@ -511,7 +894,7 @@
                  Chunk chunk = this.getChunkFromChunkCoords(p_72805_1_ >> 4, p_72805_3_ >> 4);
                  p_72805_1_ &= 15;
                  p_72805_3_ &= 15;
@@ -583,7 +586,7 @@
              }
          }
          else
-@@ -610,6 +992,12 @@
+@@ -610,6 +993,12 @@
  
      public void notifyBlockChange(int p_147444_1_, int p_147444_2_, int p_147444_3_, Block p_147444_4_)
      {
@@ -596,7 +599,7 @@
          this.notifyBlocksOfNeighborChange(p_147444_1_, p_147444_2_, p_147444_3_, p_147444_4_);
      }
  
-@@ -694,6 +1082,21 @@
+@@ -694,6 +1083,21 @@
  
              try
              {
@@ -618,7 +621,7 @@
                  block.onNeighborBlockChange(this, p_147460_1_, p_147460_2_, p_147460_3_, p_147460_4_);
              }
              catch (Throwable throwable1)
-@@ -1307,6 +1710,13 @@
+@@ -1307,6 +1711,13 @@
  
      public boolean spawnEntityInWorld(Entity p_72838_1_)
      {
@@ -632,7 +635,7 @@
          // do not drop any items while restoring blocksnapshots. Prevents dupes
          if (!this.isRemote && (p_72838_1_ == null || (p_72838_1_ instanceof net.minecraft.entity.item.EntityItem && this.restoringBlockSnapshots))) return false;
  
-@@ -1319,23 +1729,99 @@
+@@ -1319,23 +1730,99 @@
              flag = true;
          }
  
@@ -734,7 +737,7 @@
              return true;
          }
      }
-@@ -1346,6 +1832,8 @@
+@@ -1346,6 +1833,8 @@
          {
              ((IWorldAccess)this.worldAccesses.get(i)).onEntityCreate(p_72923_1_);
          }
@@ -743,7 +746,7 @@
      }
  
      public void onEntityRemoved(Entity p_72847_1_)
-@@ -1354,6 +1842,8 @@
+@@ -1354,6 +1843,8 @@
          {
              ((IWorldAccess)this.worldAccesses.get(i)).onEntityDestroy(p_72847_1_);
          }
@@ -752,7 +755,7 @@
      }
  
      public void removeEntity(Entity p_72900_1_)
-@@ -1397,6 +1887,19 @@
+@@ -1397,6 +1888,19 @@
          }
  
          this.loadedEntityList.remove(p_72973_1_);
@@ -772,7 +775,7 @@
          this.onEntityRemoved(p_72973_1_);
      }
  
-@@ -1408,40 +1911,58 @@
+@@ -1408,40 +1912,58 @@
      public List getCollidingBoundingBoxes(Entity p_72945_1_, AxisAlignedBB p_72945_2_)
      {
          this.collidingBoundingBoxes.clear();
@@ -845,7 +848,7 @@
  
          for (int j2 = 0; j2 < list.size(); ++j2)
          {
-@@ -1797,11 +2318,22 @@
+@@ -1797,11 +2319,22 @@
          Entity entity;
          CrashReport crashreport;
          CrashReportCategory crashreportcategory;
@@ -868,7 +871,7 @@
              try
              {
                  ++entity.ticksExisted;
-@@ -1862,10 +2394,14 @@
+@@ -1862,10 +2395,14 @@
  
          this.unloadedEntityList.clear();
          this.theProfiler.endStartSection("regular");
@@ -886,7 +889,7 @@
  
              if (entity.ridingEntity != null)
              {
-@@ -1884,7 +2420,9 @@
+@@ -1884,7 +2421,9 @@
              {
                  try
                  {
@@ -896,7 +899,7 @@
                  }
                  catch (Throwable throwable1)
                  {
-@@ -1916,30 +2454,83 @@
+@@ -1916,30 +2455,83 @@
                  {
                      this.getChunkFromChunkCoords(j, l).removeEntity(entity);
                  }
@@ -987,7 +990,7 @@
                      crashreport = CrashReport.makeCrashReport(throwable, "Ticking block entity");
                      crashreportcategory = crashreport.makeCategory("Block entity being ticked");
                      tileentity.func_145828_a(crashreportcategory);
-@@ -1955,23 +2546,13 @@
+@@ -1955,23 +2547,13 @@
                      }
                  }
              }
@@ -1016,7 +1019,7 @@
          if (!this.field_147483_b.isEmpty())
          {
              for (Object tile : field_147483_b)
-@@ -1981,6 +2562,7 @@
+@@ -1981,6 +2563,7 @@
              this.loadedTileEntityList.removeAll(this.field_147483_b);
              this.field_147483_b.clear();
          }
@@ -1024,7 +1027,7 @@
  
          this.field_147481_N = false;
  
-@@ -2016,17 +2598,23 @@
+@@ -2016,17 +2599,23 @@
              this.addedTileEntityList.clear();
          }
  
@@ -1051,7 +1054,7 @@
      }
  
      public void updateEntity(Entity p_72870_1_)
-@@ -2036,21 +2624,36 @@
+@@ -2036,21 +2625,36 @@
  
      public void updateEntityWithOptionalForce(Entity p_72866_1_, boolean p_72866_2_)
      {
@@ -1090,7 +1093,7 @@
              p_72866_1_.lastTickPosX = p_72866_1_.posX;
              p_72866_1_.lastTickPosY = p_72866_1_.posY;
              p_72866_1_.lastTickPosZ = p_72866_1_.posZ;
-@@ -2134,6 +2737,7 @@
+@@ -2134,6 +2738,7 @@
                      p_72866_1_.riddenByEntity = null;
                  }
              }
@@ -1098,7 +1101,7 @@
          }
      }
  
-@@ -2570,7 +3174,7 @@
+@@ -2570,7 +3175,7 @@
              return;
          }
  
@@ -1107,7 +1110,7 @@
          {
              if (this.field_147481_N)
              {
-@@ -2718,7 +3322,15 @@
+@@ -2718,7 +3323,15 @@
  
                      if (i <= 0)
                      {
@@ -1124,7 +1127,7 @@
                      }
                  }
  
-@@ -2754,7 +3366,15 @@
+@@ -2754,7 +3367,15 @@
  
                      if (j <= 0)
                      {
@@ -1141,7 +1144,7 @@
                      }
                  }
  
-@@ -2777,8 +3397,41 @@
+@@ -2777,8 +3398,41 @@
      protected void setActivePlayerChunksAndCheckLight()
      {
          this.activeChunkSet.clear();
@@ -1184,7 +1187,7 @@
          int i;
          EntityPlayer entityplayer;
          int j;
-@@ -2788,17 +3441,28 @@
+@@ -2788,17 +3442,28 @@
          for (i = 0; i < this.playerEntities.size(); ++i)
          {
              entityplayer = (EntityPlayer)this.playerEntities.get(i);
@@ -1220,7 +1223,7 @@
          }
  
          this.theProfiler.endSection();
-@@ -2810,7 +3474,7 @@
+@@ -2810,7 +3475,7 @@
  
          this.theProfiler.startSection("playerCheckLight");
  
@@ -1229,7 +1232,7 @@
          {
              i = this.rand.nextInt(this.playerEntities.size());
              entityplayer = (EntityPlayer)this.playerEntities.get(i);
-@@ -3034,9 +3698,9 @@
+@@ -3034,9 +3699,9 @@
          }
      }
  
@@ -1241,7 +1244,7 @@
          {
              return false;
          }
-@@ -3166,6 +3830,16 @@
+@@ -3166,6 +3831,16 @@
                  }
              }
  
@@ -1258,14 +1261,14 @@
              this.theProfiler.endSection();
              return true;
          }
-@@ -3284,8 +3958,21 @@
+@@ -3284,8 +3959,21 @@
          {
              Entity entity = (Entity)this.loadedEntityList.get(j);
  
 -            if ((!(entity instanceof EntityLiving) || !((EntityLiving)entity).isNoDespawnRequired()) && p_72907_1_.isAssignableFrom(entity.getClass()))
 +            // CraftBukkit start - Split out persistent check, don't apply it to special persistent mobs
 +            if (entity instanceof EntityLiving)
-             {
++            {
 +                EntityLiving entityliving = (EntityLiving) entity;
 +
 +                if (entityliving.canDespawn_CB() && entityliving.isNoDespawnRequired())
@@ -1275,13 +1278,13 @@
 +            }
 +
 +            if (p_72907_1_.isAssignableFrom(entity.getClass()))
-+            {
+             {
 +                // if ((!(entity instanceof EntityLiving) || !((EntityLiving)entity).isNoDespawnRequired()) && p_72907_1_.isAssignableFrom(entity.getClass()))
 +                // CraftBukkit end
                  ++i;
              }
          }
-@@ -3298,6 +3985,7 @@
+@@ -3298,6 +3986,7 @@
          for (int i = 0; i < p_72868_1_.size(); ++i)
          {
              Entity entity = (Entity)p_72868_1_.get(i);
@@ -1289,7 +1292,7 @@
              if (!MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entity, this)))
              {
                  loadedEntityList.add(entity);
-@@ -3314,8 +4002,17 @@
+@@ -3314,8 +4003,17 @@
      public boolean canPlaceEntityOnSide(Block p_147472_1_, int p_147472_2_, int p_147472_3_, int p_147472_4_, boolean p_147472_5_, int p_147472_6_, Entity p_147472_7_, ItemStack p_147472_8_)
      {
          Block block1 = this.getBlock(p_147472_2_, p_147472_3_, p_147472_4_);
@@ -1308,7 +1311,28 @@
      }
  
      public PathEntity getPathEntityToEntity(Entity p_72865_1_, Entity p_72865_2_, float p_72865_3_, boolean p_72865_4_, boolean p_72865_5_, boolean p_72865_6_, boolean p_72865_7_)
-@@ -3464,6 +4161,12 @@
+@@ -3418,10 +4116,19 @@
+         return this.getIndirectPowerLevelTo(p_94574_1_, p_94574_2_, p_94574_3_, p_94574_4_) > 0;
+     }
+ 
++    private final HashMap<Block, long[]> indirect = new HashMap<Block, long[]>(); // TCPR KC
++
+     public int getIndirectPowerLevelTo(int p_72878_1_, int p_72878_2_, int p_72878_3_, int p_72878_4_)
+     {
+         Block block = this.getBlock(p_72878_1_, p_72878_2_, p_72878_3_);
+-        return block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
++
++        if(!indirect.containsKey(block) || System.currentTimeMillis() - (indirect.get(block)[1]) > 50)
++        {
++            int power = block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
++            indirect.put(block, new long[] { power, (System.currentTimeMillis()) });
++            return power;
++        }
++        return (int)(indirect.get(block)[0]);
+     }
+ 
+     public boolean isBlockIndirectlyGettingPowered(int p_72864_1_, int p_72864_2_, int p_72864_3_)
+@@ -3464,6 +4171,12 @@
          for (int i = 0; i < this.playerEntities.size(); ++i)
          {
              EntityPlayer entityplayer1 = (EntityPlayer)this.playerEntities.get(i);
@@ -1321,7 +1345,7 @@
              double d5 = entityplayer1.getDistanceSq(p_72977_1_, p_72977_3_, p_72977_5_);
  
              if ((p_72977_7_ < 0.0D || d5 < p_72977_7_ * p_72977_7_) && (d4 == -1.0D || d5 < d4))
-@@ -3489,7 +4192,12 @@
+@@ -3489,7 +4202,12 @@
          for (int i = 0; i < this.playerEntities.size(); ++i)
          {
              EntityPlayer entityplayer1 = (EntityPlayer)this.playerEntities.get(i);
@@ -1335,7 +1359,7 @@
              if (!entityplayer1.capabilities.disableDamage && entityplayer1.isEntityAlive())
              {
                  double d5 = entityplayer1.getDistanceSq(p_72846_1_, p_72846_3_, p_72846_5_);
-@@ -3660,6 +4368,18 @@
+@@ -3660,6 +4378,18 @@
  
      public void updateAllPlayersSleepingFlag() {}
  
@@ -1354,7 +1378,7 @@
      public float getWeightedThunderStrength(float p_72819_1_)
      {
          return (this.prevThunderingStrength + (this.thunderingStrength - this.prevThunderingStrength) * p_72819_1_) * this.getRainStrength(p_72819_1_);
-@@ -3932,8 +4652,8 @@
+@@ -3932,8 +4662,8 @@
       */
      public void addTileEntity(TileEntity entity)
      {
@@ -1365,7 +1389,7 @@
          {
              dest.add(entity);
          }
-@@ -4029,4 +4749,122 @@
+@@ -4029,4 +4759,122 @@
          }
          return count;
      }
