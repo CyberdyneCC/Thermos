@@ -5,7 +5,7 @@
      public int hashCode()
      {
 -        return (this.xCoord * 1024 * 1024 + this.zCoord * 1024 + this.yCoord) * 256;
-+        return (int) (tickEntryID & 0xFFFFFFFF);
++        return ((yCoord * 31 + xCoord) * 31 + zCoord) * 17 + yCoord;
      }
  
      public NextTickListEntry setScheduledTime(long p_77176_1_)
