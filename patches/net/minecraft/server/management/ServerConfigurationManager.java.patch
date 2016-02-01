@@ -625,9 +625,9 @@
 +        // If world changed then fire the appropriate change world event else respawn
 +        if (fromWorld != location.getWorld())
 +        {
++            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
 +            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(entityplayermp1, ((CraftWorld) fromWorld).getHandle().provider.dimensionId,
 +                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId, (CraftWorld) fromWorld); // Cauldron - fire forge changed dimension event
-+            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
 +        }
 +        else
 +            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
