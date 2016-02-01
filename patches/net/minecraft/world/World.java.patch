@@ -1315,20 +1315,20 @@
          return this.getIndirectPowerLevelTo(p_94574_1_, p_94574_2_, p_94574_3_, p_94574_4_) > 0;
      }
  
-+    private final HashMap<Block, long[]> indirect = new HashMap<Block, long[]>(); // TCPR KC
++    private final HashMap<kcauldron.Coords, long[]> indirect = new HashMap<kcauldron.Coords, long[]>(); // TCPR KC
 +
      public int getIndirectPowerLevelTo(int p_72878_1_, int p_72878_2_, int p_72878_3_, int p_72878_4_)
      {
          Block block = this.getBlock(p_72878_1_, p_72878_2_, p_72878_3_);
 -        return block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
-+
-+        if(!indirect.containsKey(block) || System.currentTimeMillis() - (indirect.get(block)[1]) > 1)
++        kcauldron.Coords c = new kcauldron.Coords(p_72878_1_, p_72878_2_, p_72878_3_)
++        if(!indirect.containsKey(c) || System.currentTimeMillis() - (indirect.get(c)[1]) > 50)
 +        {
 +            int power = block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
-+            indirect.put(block, new long[] { power, (System.currentTimeMillis()) });
++            indirect.put(c, new long[] { power, (System.currentTimeMillis()) });
 +            return power;
 +        }
-+        return (int)(indirect.get(block)[0]);
++        return (int)(indirect.get(c)[0]);
      }
  
      public boolean isBlockIndirectlyGettingPowered(int p_72864_1_, int p_72864_2_, int p_72864_3_)
