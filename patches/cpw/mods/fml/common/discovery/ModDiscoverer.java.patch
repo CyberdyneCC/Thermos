@@ -10,7 +10,18 @@
  import com.google.common.base.Throwables;
  import com.google.common.collect.ImmutableList;
  import com.google.common.collect.Lists;
-@@ -148,6 +150,17 @@
+@@ -105,6 +107,10 @@
+             }
+             else
+             {
++                if (modFile.getName().toLowerCase().contains("profiler") || modfile.getName().toLowerCase().contains("opis") || modFile.getName().toLowerCase().contains("tickp"))
++                {
++                    FMLLog.info("[KCauldron] Refusing to load " + modFile.getName());
++                }
+                 Matcher matcher = zipJar.matcher(modFile.getName());
+ 
+                 if (matcher.matches())
+@@ -148,6 +154,17 @@
              }
          }
  
@@ -28,3 +39,9 @@
          return modList;
      }
  
+@@ -160,4 +177,4 @@
+     {
+         return nonModLibs;
+     }
+-}
++}
