@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-We will always have a need for developers to help improve TCPR/KCauldron. Just make sure you follow our guidelines.
+We will always have a need for developers to help improve Thermos. Just make sure you follow our guidelines.
 
 **Note**: Use the handy ./makepatch.sh script to create patch files for changes between eclipse/Clean and eclipse/cauldron.
 Coding and Pull Request Conventions
@@ -23,10 +23,10 @@ If you make changes to or add upstream classes (net.minecraft, net.minecraftforg
 * Make a separate commit adding the new net.minecraft classes (commit message: "Added x for diff visibility" or so).
 * Then make further commits with your changes.
 * Mark your changes with:
-    * 1 line; add a trailing: `// KCauldron [- Optional reason]`
+    * 1 line; add a trailing: `// Thermos [- Optional reason]`
     * 2+ lines; add
-        * Before: `// KCauldron start [- Optional comment]`
-        * After: `// KCauldron end`
+        * Before: `// Thermos start [- Optional comment]`
+        * After: `// Thermos end`
 * Keep the diffs to a minimum (*somewhat* important)
 
 Tips to get your pull request accepted
@@ -46,7 +46,7 @@ Making sure you follow the above conventions is important, but just the beginnin
 Credits
 -------
 
-* [MCP](http://mcp.ocean-labs.de) - permission to use data to make KCauldron.
+* [MCP](http://mcp.ocean-labs.de) - permission to use data to make Thermos.
 * [Forge](http://www.minecraftforge.net) - mod support.
 * [CraftBukkit](http://bukkit.org) - plugin support.
 * [Spigot](http://www.spigotmc.org) - performance optimizations.
