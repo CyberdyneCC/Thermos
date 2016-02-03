@@ -62,7 +62,7 @@ ext.buildInfoCached = null;
 def buildInfo(String key) {
     if (!buildInfoCached) {
         if (project.hasProperty('officialBuild')) {
-            buildInfoCached = new JsonSlurper().parse(new URL("http://i.tcpr.ca/thermos/version"))
+            buildInfoCached = new JsonSlurper().parse(new URL("http://i.yive.me/thermos/version"))
         } else {
             buildInfoCached = [
                     nextBuildNumber: 'UNOFFICIAL',
