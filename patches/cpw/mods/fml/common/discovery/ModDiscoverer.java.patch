@@ -10,19 +10,7 @@
  import com.google.common.base.Throwables;
  import com.google.common.collect.ImmutableList;
  import com.google.common.collect.Lists;
-@@ -105,6 +107,11 @@
-             }
-             else
-             {
-+                if (modFile.getName().toLowerCase().contains("profiler") || modfile.getName().toLowerCase().contains("opis") || modFile.getName().toLowerCase().contains("tickp"))
-+                {
-+                    FMLLog.info("[KCauldron] Refusing to load " + modFile.getName());
-+                    break;
-+                }
-                 Matcher matcher = zipJar.matcher(modFile.getName());
- 
-                 if (matcher.matches())
-@@ -148,6 +155,17 @@
+@@ -148,6 +150,28 @@
              }
          }
  
@@ -31,7 +19,18 @@
 +            while(iterator.hasNext()) {
 +                ModContainer container = iterator.next();
 +                if ("FastCraft".equals(container.getModId())) {
-+                    FMLLog.log(Level.WARN, "Found FastCraft mod, removing it...");
++                    FMLLog.log(Level.WARN, "[KC] Sorry, the FastCraft mod will not be loaded due to KCauldron compatibility issues. If you still wish to enable it, add \"-kcauldron.fastcraft.disable=false\" to your server launch script.");
++                    iterator.remove();
++                }
++            }
++        }
++
++        if (!"false".equals(System.getProperty("kcauldron.tickprofiler.disable", "true"))) {
++            java.util.Iterator<ModContainer> iterator = modList.iterator();
++            while(iterator.hasNext()) {
++                ModContainer container = iterator.next();
++                if (container.getModId().toLowerCase().contains("tickprofiler")) {
++                    FMLLog.log(Level.WARN, "[KC] Sorry, the TickProfiler mod will not be loaded. Please read https://github.com/TCPR/KCauldron/issues/52 . If you still wish to enable it, add \"-kcauldron.tickprofiler.disable=false\" to your server launch script.");
 +                    iterator.remove();
 +                }
 +            }
@@ -40,7 +39,7 @@
          return modList;
      }
  
-@@ -160,4 +178,4 @@
+@@ -160,4 +184,4 @@
      {
          return nonModLibs;
      }
