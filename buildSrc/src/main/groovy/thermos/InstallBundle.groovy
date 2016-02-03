@@ -1,4 +1,4 @@
-package kcauldron
+package thermos
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -35,9 +35,9 @@ class InstallBundle extends DefaultTask {
         new File(installLocation, "README.txt").withWriter {
             def String jarPath = 'bin/' << (project.group as String).replace('.', File.separator) << File.separator << project.name << File.separator << project.version << File.separator << project.name << '-' << project.version << '.jar'
 
-            it << '''Unofficial KCauldron installation guide
+            it << '''Thermos installation guide
 
-# This is an unofficial version of KCauldron from https://github.com/TCPR/KCauldron
+# This is Thermos from https://github.com/TCPR/Thermos
 
 # Installation and usage
 1. Unpack this zip into server directory
@@ -48,11 +48,11 @@ class InstallBundle extends DefaultTask {
 
   or
 
-  java -Xmx1024M -jar KCauldron.jar
+  java -Xmx1024M -jar Thermos.jar
 
 3. Enjoy
 
-Public builds can be found at: https://tcpr.ca/downloads/unofficial-kcauldron
+Public builds can be found at: https://tcpr.ca/downloads/thermos
 
 '''
         }

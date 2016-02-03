@@ -1,4 +1,4 @@
-package kcauldron.updater;
+package thermos.updater;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import kcauldron.KCauldron;
-import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
+import thermos.Thermos;
+import thermos.updater.TVersionRetriever.IVersionCheckCallback;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.io.IOUtils;
@@ -25,7 +25,7 @@ import org.bukkit.command.CommandSender;
 
 import com.google.common.base.Joiner;
 
-public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
+public class ThermosUpdater implements Runnable, IVersionCheckCallback {
     private static final class LatestVersionCallback extends
             CommandSenderUpdateCallback {
         public LatestVersionCallback(CommandSender sender) {
@@ -39,32 +39,32 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
 
         @Override
         public void upToDate() {
-            KCauldron.sUpdateInProgress = false;
+            Thermos.sUpdateInProgress = false;
             CommandSender sender = getSender();
             if (sender != null) {
                 sender.sendMessage(ChatColor.DARK_PURPLE + "Current version ("
-                        + KCauldron.getCurrentVersion() + ") is up to date");
+                        + Thermos.getCurrentVersion() + ") is up to date");
             }
         }
 
         @Override
         public void error(Throwable t) {
             super.error(t);
-            KCauldron.sUpdateInProgress = false;
+            Thermos.sUpdateInProgress = false;
         }
     }
 
     public static void initUpdate(CommandSender sender, String version) {
-        if (KCauldron.sUpdateInProgress) {
+        if (Thermos.sUpdateInProgress) {
             sender.sendMessage(ChatColor.RED
                     + "Update stopped: another update in progress");
             return;
         }
-        KCauldron.sUpdateInProgress = true;
+        Thermos.sUpdateInProgress = true;
         if (version == null) {
             sender.sendMessage(ChatColor.DARK_PURPLE
                     + "Fetching latest version...");
-            KVersionRetriever.startServer(new LatestVersionCallback(sender),
+            TVersionRetriever.startServer(new LatestVersionCallback(sender),
                     false);
         } else {
             startUpdate(sender, version);
@@ -76,28 +76,28 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
             sender.sendMessage(ChatColor.DARK_PURPLE + "Starting update to "
                     + version + "...");
         }
-        new KCauldronUpdater(sender, version);
+        new ThermosUpdater(sender, version);
     }
 
     private final CommandSender mSender;
     private final String mVersion;
     private final Thread mThread;
 
-    public KCauldronUpdater(CommandSender sender, String version) {
+    public ThermosUpdater(CommandSender sender, String version) {
         mSender = sender;
         mVersion = version;
-        mThread = new Thread(KCauldron.sKCauldronThreadGroup, this, "KCauldron updated");
+        mThread = new Thread(Thermos.sThermosThreadGroup, this, "Thermos updated");
         mThread.setPriority(Thread.MIN_PRIORITY);
         mThread.start();
     }
 
     @Override
     public void run() {
-        if (!MinecraftServer.kcauldronConfig.updatecheckerQuiet.getValue()) {
+        if (!MinecraftServer.thermosConfig.updatecheckerQuiet.getValue()) {
             mSender.sendMessage(ChatColor.DARK_PURPLE
                     + "Retrieving latest KBootstrap version...");
         }
-        new KVersionRetriever(this, false, false, "pw.prok", "KBootstrap");
+        new TVersionRetriever(this, false, false, "pw.prok", "KBootstrap");
     }
 
     @Override
@@ -107,7 +107,7 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
 
     @Override
     public void newVersion(String kbootstrapVersion) {
-        boolean quiet = MinecraftServer.kcauldronConfig.updatecheckerQuiet
+        boolean quiet = MinecraftServer.thermosConfig.updatecheckerQuiet
                 .getValue();
         try {
             if (!quiet) {
@@ -121,7 +121,7 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
                     kbootstrap);
             if (!quiet) {
                 mSender.sendMessage(ChatColor.DARK_PURPLE
-                        + "Installing KCauldron " + mVersion
+                        + "Installing Thermos " + mVersion
                         + " via KBootstrap " + kbootstrapVersion + "...");
             }
 
@@ -133,10 +133,10 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
             command.add("-jar");
             command.add(kbootstrap.getCanonicalPath());
             command.add("--serverDir");
-            command.add(KCauldron.getServerHome().getCanonicalPath());
-            command.add("--installKCauldron");
-            command.add(String.format("%s:%s:%s", KCauldron.getGroup(), KCauldron.getChannel(), mVersion));
-            final String[] symlinks = MinecraftServer.kcauldronConfig.updatecheckerSymlinks
+            command.add(Thermos.getServerHome().getCanonicalPath());
+            command.add("--installThermos");
+            command.add(String.format("%s:%s:%s", Thermos.getGroup(), Thermos.getChannel(), mVersion));
+            final String[] symlinks = MinecraftServer.thermosConfig.updatecheckerSymlinks
                     .getValue().trim().split(File.pathSeparator);
             for (String symlink : symlinks) {
                 command.add("--serverSymlinks");
@@ -150,12 +150,12 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
             builder.environment().put("JAVA_HOME", javahome);
             switch (builder.start().waitFor()) {
             case 0:
-                mSender.sendMessage(ChatColor.GREEN + "KCauldron " + mVersion
+                mSender.sendMessage(ChatColor.GREEN + "Thermos " + mVersion
                         + " installed");
                 break;
             default:
                 mSender.sendMessage(ChatColor.RED
-                        + "Failed to install KCauldron " + mVersion);
+                        + "Failed to install Thermos " + mVersion);
             }
         } catch (Exception e) {
             if (!quiet) {
@@ -166,13 +166,13 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
                         + mVersion);
             }
         } finally {
-            KCauldron.sUpdateInProgress = false;
+            Thermos.sUpdateInProgress = false;
         }
     }
 
     @Override
     public void error(Throwable t) {
-        KCauldron.sUpdateInProgress = false;
+        Thermos.sUpdateInProgress = false;
         t.printStackTrace();
     }
 
@@ -188,7 +188,7 @@ public class KCauldronUpdater implements Runnable, IVersionCheckCallback {
                 .build();
         CloseableHttpClient client = HttpClientBuilder.create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
-                .setUserAgent("KCauldron Updater").build();
+                .setUserAgent("Thermos Updater").build();
 
         HttpResponse response = client.execute(request);
         if (response.getStatusLine().getStatusCode() != 200) {

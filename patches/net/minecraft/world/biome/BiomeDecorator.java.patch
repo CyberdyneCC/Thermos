@@ -28,7 +28,7 @@
          {
              throw new RuntimeException("Already decorating!!");
 +            // TODO Runtime with Timeout https://stackoverflow.com/questions/2275443/how-to-timeout-a-thread
-+            /*System.out.println("[KC-Unofficial] Already Decorating a Chunk! Waiting...");
++            /*System.out.println("[Thermos] Already Decorating a Chunk! Waiting...");
 +            for(int i = 0; i < 10; i++)
 +            {
 +                try{ Thread.sleep(100L); } catch(Exception e){}
@@ -36,7 +36,7 @@
 +            if(this.currentWorld != null)
 +                decorateChunk(p_150512_1_, p_150512_2_, p_150512_3_, p_150512_4_, p_150512_5_);
 +            else
-+                System.out.println("[KC-Unofficial] Decoration failure @ X:" + (p_150512_4_ << 4) + ", Z:" + (p_150512_5_ << 4) );
++                System.out.println("[Thermos] Decoration failure @ X:" + (p_150512_4_ << 4) + ", Z:" + (p_150512_5_ << 4) );
 +*/
          }
          else

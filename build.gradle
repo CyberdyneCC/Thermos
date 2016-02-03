@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
-import kcauldron.CreateChangelog
-import kcauldron.InstallBundle
-import kcauldron.VersionParser
+import thermos.CreateChangelog
+import thermos.InstallBundle
+import thermos.VersionParser
 
 buildscript {
     repositories {
@@ -100,7 +100,7 @@ ext.mcVersion = "1.7.10"
 ext.forgeVersion = VersionParser.parseForgeRevision(file('src/main/resources/fmlversion.properties'))
 ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
 version = "${mcVersion}-${forgeVersion}.${revision}"
-if (project.hasProperty('officialBuild')) println "Updated KCauldron version: ${version}"
+if (project.hasProperty('officialBuild')) println "Updated Thermos version: ${version}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -167,13 +167,13 @@ def generateClasspath(boolean legacy = false) {
 
 def generateManifest(boolean legacy = false) {
     [
-            'KCauldron-Git-Branch'  : gitInfo('branch'),
-            'KCauldron-Git-Hash'    : gitInfo('fullHash'),
-            'KCauldron-Group'       : project.group,
-            'KCauldron-Channel'     : project.name,
-            'KCauldron-Version'     : project.version,
-            'KCauldron-Legacy'      : legacy,
-            'Implementation-Vendor' : 'Prototik',
+            'Thermos-Git-Branch'    : gitInfo('branch'),
+            'Thermos-Git-Hash'      : gitInfo('fullHash'),
+            'Thermos-Group'         : project.group,
+            'Thermos-Channel'       : project.name,
+            'Thermos-Version'       : project.version,
+            'Thermos-Legacy'        : legacy,
+            'Implementation-Vendor' : 'TCPR',
             'Implementation-Title'  : project.name,
             'Implementation-Version': project.version,
             'Specification-Vendor'  : 'Bukkit Team',
@@ -229,7 +229,7 @@ task packageBundle(type: Zip, dependsOn: installBundle) {
     classifier = 'bundle'
     from fileTree(installBundle.installLocation)
     from bundleStub
-    rename bundleStub.archiveName, 'KCauldron.jar'
+    rename bundleStub.archiveName, 'Thermos.jar'
 }
 
 task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, packageBundle, jar, 'generatePomFileForMavenPublication']) {

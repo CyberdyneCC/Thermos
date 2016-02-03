@@ -51,7 +51,7 @@
              String cascadedTweaker = mfAttributes.getValue("TweakClass");
              if (cascadedTweaker != null)
              {
-+                if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
++                if ("fastcraft.Tweaker".equals(cascadedTweaker) && !"false".equals(System.getProperty("thermos.fastcraft.disable", "true"))) {
 +                    FMLRelaunchLog.info("Found FastCraft tweaker, skipping...");
 +                    continue;
 +                }
@@ -62,7 +62,7 @@
                  FMLRelaunchLog.fine("Not found coremod data in %s", coreMod.getName());
                  continue;
              }
-+            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin) && !"false".equals(System.getProperty("kcauldron.fastcraft.disable", "true"))) {
++            if ("fastcraft.LoadingPlugin".equals(fmlCorePlugin) && !"false".equals(System.getProperty("thermos.fastcraft.disable", "true"))) {
 +                FMLRelaunchLog.warning("Found FastCraft coremod, skipping...");
 +                continue;
 +            }

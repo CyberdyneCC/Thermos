@@ -13,7 +13,7 @@
  import java.util.List;
  import java.util.concurrent.Callable;
 +
-+import kcauldron.KCauldron;
++import thermos.Thermos;
  import net.minecraft.util.ReportedException;
  import net.minecraft.world.gen.layer.IntCache;
 +
@@ -24,10 +24,10 @@
                  return "1.7.10";
              }
          });
-+        this.theReportCategory.addCrashSectionCallable("KCauldron Version", new Callable<String>() {
++        this.theReportCategory.addCrashSectionCallable("Thermos Version", new Callable<String>() {
 +            @Override
 +            public String call() throws Exception {
-+                return String.format("%s:%s:%s", KCauldron.getGroup(), KCauldron.getChannel(), KCauldron.getCurrentVersion());
++                return String.format("%s:%s:%s", Thermos.getGroup(), Thermos.getChannel(), Thermos.getCurrentVersion());
 +            }
 +        });
          this.theReportCategory.addCrashSectionCallable("Operating System", new Callable()

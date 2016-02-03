@@ -215,7 +215,7 @@
 +            p_72377_1_.playerNetServerHandler.sendPacket(new S38PacketPlayerListItem(entityplayermp1.listName, true, entityplayermp1.ping));
          }
 +        // CraftBukkit end
-+        kcauldron.updater.DefaultUpdateCallback.INSTANCE.onPlayerJoin(playerJoinEvent);
++        thermos.updater.DefaultUpdateCallback.INSTANCE.onPlayerJoin(playerJoinEvent);
      }
  
      public void updatePlayerPertinentChunks(EntityPlayerMP p_72358_1_)

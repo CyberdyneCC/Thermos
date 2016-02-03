@@ -1,4 +1,4 @@
-package kcauldron
+package thermos
 
 import org.gradle.api.GradleException
 import org.gradle.api.GradleScriptException

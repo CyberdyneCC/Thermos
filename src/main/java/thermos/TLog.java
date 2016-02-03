@@ -1,23 +1,23 @@
-package kcauldron;
+package thermos;
 
 import org.apache.logging.log4j.Level;
 
 import cpw.mods.fml.common.FMLLog;
 
-public class KLog {
-    private static final KLog DEFAULT_LOGGER = new KLog("KCauldron");
+public class TLog {
+    private static final TLog DEFAULT_LOGGER = new TLog("Thermos");
 
-    public static KLog get() {
+    public static TLog get() {
         return DEFAULT_LOGGER;
     }
 
-    public static KLog get(String tag) {
-        return new KLog("KCauldron: " + tag);
+    public static TLog get(String tag) {
+        return new TLog("Thermos: " + tag);
     }
     
     private final String mTag;
 
-    public KLog(String tag) {
+    public TLog(String tag) {
         mTag = tag;
     }
 

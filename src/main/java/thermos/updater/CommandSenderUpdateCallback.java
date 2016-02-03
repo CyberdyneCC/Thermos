@@ -1,10 +1,10 @@
-package kcauldron.updater;
+package thermos.updater;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
-import kcauldron.KCauldron;
-import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
+import thermos.Thermos;
+import thermos.updater.TVersionRetriever.IVersionCheckCallback;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -25,8 +25,8 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
         CommandSender sender = mSender.get();
         if (sender != null) {
             sender.sendMessage(ChatColor.GREEN
-                    + "Running version of KCauldron is up-to-date: "
-                    + KCauldron.getCurrentVersion());
+                    + "Running version of Thermos is up-to-date: "
+                    + Thermos.getCurrentVersion());
         }
         DefaultUpdateCallback.INSTANCE.upToDate();
     }
@@ -35,7 +35,7 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
     public void newVersion(String newVersion) {
         CommandSender sender = mSender.get();
         if (sender != null) {
-            newVersion(sender, KCauldron.getCurrentVersion(), newVersion);
+            newVersion(sender, Thermos.getCurrentVersion(), newVersion);
         }
         DefaultUpdateCallback.INSTANCE.newVersion(newVersion);
     }
@@ -43,7 +43,7 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
     public static void newVersion(CommandSender sender, String currentVersion,
             String newVersion) {
         sender.sendMessage(new String[] {
-                ChatColor.YELLOW + "Found new version of KCauldron: "
+                ChatColor.YELLOW + "Found new version of Thermos: "
                         + newVersion,
                 ChatColor.YELLOW + "Current is " + currentVersion,
                 ChatColor.YELLOW + "Type '" + ChatColor.BLUE + "/kc update"

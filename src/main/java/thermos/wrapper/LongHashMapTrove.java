@@ -1,4 +1,4 @@
-package kcauldron.wrapper;
+package thermos.wrapper;
 
 import gnu.trove.map.TLongObjectMap;
 import net.minecraft.util.LongHashMap;

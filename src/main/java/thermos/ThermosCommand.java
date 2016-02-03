@@ -1,4 +1,4 @@
-package kcauldron;
+package thermos;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,9 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
-import kcauldron.updater.CommandSenderUpdateCallback;
-import kcauldron.updater.KCauldronUpdater;
-import kcauldron.updater.KVersionRetriever;
+import thermos.updater.CommandSenderUpdateCallback;
+import thermos.updater.ThermosUpdater;
+import thermos.updater.TVersionRetriever;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,15 +26,15 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 
-public class KCauldronCommand extends Command {
-    public static final String NAME = "kc";
+public class ThermosCommand extends Command {
+    public static final String NAME = "th";
     public static final String CHECK = NAME + ".check";
     public static final String UPDATE = NAME + ".update";
     public static final String TPS = NAME + ".tps";
     public static final String RESTART = NAME + ".restart";
     public static final String DUMP = NAME + ".dump";
 
-    public KCauldronCommand() {
+    public ThermosCommand() {
         super(NAME);
 
         StringBuilder builder = new StringBuilder();
@@ -42,10 +42,10 @@ public class KCauldronCommand extends Command {
         builder.append(String.format("/%s update [version] - Update to specified or latest version\n", NAME));
         builder.append(String.format("/%s tps - Show tps statistics\n", NAME));
         builder.append(String.format("/%s restart - Restart server\n", NAME));
-        builder.append(String.format("/%s dump - Dump statistics into kcauldron.dump file\n", NAME));
+        builder.append(String.format("/%s dump - Dump statistics into thermos.dump file\n", NAME));
         setUsage(builder.toString());
 
-        setPermission("kc");
+        setPermission("th");
     }
 
     public boolean testPermission(CommandSender target, String permission) {
@@ -81,9 +81,9 @@ public class KCauldronCommand extends Command {
             if (!testPermission(sender, CHECK))
                 return true;
             sender.sendMessage(ChatColor.GREEN + "Initiated version check...");
-            KVersionRetriever.startServer(new CommandSenderUpdateCallback(sender), false);
+            TVersionRetriever.startServer(new CommandSenderUpdateCallback(sender), false);
         } else if ("update".equals(action)) {
-            KCauldronUpdater.initUpdate(sender, args.length > 1 ? args[1] : null);
+            ThermosUpdater.initUpdate(sender, args.length > 1 ? args[1] : null);
         } else if ("tps".equals(action)) {
             if (!testPermission(sender, TPS))
                 return true;
@@ -117,12 +117,12 @@ public class KCauldronCommand extends Command {
         } else if ("restart".equals(action)) {
             if (!testPermission(sender, RESTART))
                 return true;
-            KCauldron.restart();
+            Thermos.restart();
         } else if ("dump".equals(action)) {
             if (!testPermission(sender, DUMP))
                 return true;
             try {
-                File outputFile = new File("kcauldron.dump");
+                File outputFile = new File("thermos.dump");
                 OutputStream os = new FileOutputStream(outputFile);
                 Writer writer = new OutputStreamWriter(os);
                 for (WorldServer world : DimensionManager.getWorlds()) {

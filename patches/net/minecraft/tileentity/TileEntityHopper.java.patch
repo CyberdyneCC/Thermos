@@ -182,7 +182,7 @@
 +                {
 +                    sourceInventory = null;
 +                }
-+                finally { if (sourceInventory == null) { sourceInventory = new kcauldron.CraftInventoryWrapper(p_145892_1_); } }
++                finally { if (sourceInventory == null) { sourceInventory = new thermos.CraftInventoryWrapper(p_145892_1_); } }
 +                // Cauldron end
 +            }
 +

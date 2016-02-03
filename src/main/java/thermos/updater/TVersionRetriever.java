@@ -1,10 +1,10 @@
-package kcauldron.updater;
+package thermos.updater;
 
 import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import kcauldron.KCauldron;
-import kcauldron.KLog;
+import thermos.Thermos;
+import thermos.TLog;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.http.HttpResponse;
@@ -15,29 +15,29 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
+public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
     private static final boolean DEBUG;
-    private static final KLog sLogger;
+    private static final TLog sLogger;
     private static final JSONParser sParser;
     private static MinecraftServer sServer;
 
     static {
         DEBUG = false;
-        sLogger = KLog.get(KVersionRetriever.class.getSimpleName());
+        sLogger = TLog.get(TVersionRetriever.class.getSimpleName());
 
         sParser = new JSONParser();
     }
 
     public static void init(MinecraftServer server) {
         sServer = server;
-        if (MinecraftServer.kcauldronConfig.updatecheckerEnable.getValue()) {
+        if (MinecraftServer.thermosConfig.updatecheckerEnable.getValue()) {
             startServer(DefaultUpdateCallback.INSTANCE, true);
         }
     }
 
     public static void startServer(IVersionCheckCallback callback, boolean loop) {
-        new KVersionRetriever(callback, loop, true, KCauldron.getGroup(),
-                KCauldron.getChannel());
+        new TVersionRetriever(callback, loop, true, Thermos.getGroup(),
+                Thermos.getChannel());
     }
 
     private final IVersionCheckCallback mCallback;
@@ -47,7 +47,7 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
     private final String mName;
     private final boolean mUpToDateSupport;
 
-    public KVersionRetriever(IVersionCheckCallback callback, boolean loop,
+    public TVersionRetriever(IVersionCheckCallback callback, boolean loop,
             boolean upToDateSupport, String group, String name) {
         if (DEBUG)
             sLogger.info("Created new version retrivier");
@@ -56,7 +56,7 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
         mUpToDateSupport = upToDateSupport;
         mGroup = group;
         mName = name;
-        mThread = new Thread(KCauldron.sKCauldronThreadGroup, this, "KCauldron version retrievier");
+        mThread = new Thread(Thermos.sThermosThreadGroup, this, "Thermos version retrievier");
         mThread.setPriority(Thread.MIN_PRIORITY);
         mThread.setDaemon(true);
         mThread.setUncaughtExceptionHandler(this);
@@ -83,11 +83,11 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
                     .get()
                     .setUri("https://api.prok.pw/repo/version/" + mGroup + "/"
                             + mName)
-                    .addParameter("version", KCauldron.getCurrentVersion())
+                    .addParameter("version", Thermos.getCurrentVersion())
                     .addParameter("hostname", sServer.getHostname())
                     .addParameter("port", "" + sServer.getPort()).build();
             HttpResponse response = HttpClientBuilder.create()
-                    .setUserAgent("KCauldron Version Retriever")
+                    .setUserAgent("Thermos Version Retriever")
                     .setRedirectStrategy(new LaxRedirectStrategy()).build()
                     .execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
@@ -98,8 +98,8 @@ public class KVersionRetriever implements Runnable, UncaughtExceptionHandler {
             JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
                     response.getEntity().getContent()));
             String version = (String) json.get("version");
-            if (!mUpToDateSupport || KCauldron.getCurrentVersion() == null
-                    || !version.equals(KCauldron.getCurrentVersion())) {
+            if (!mUpToDateSupport || Thermos.getCurrentVersion() == null
+                    || !version.equals(Thermos.getCurrentVersion())) {
                 mCallback.newVersion(version);
             } else {
                 mCallback.upToDate();

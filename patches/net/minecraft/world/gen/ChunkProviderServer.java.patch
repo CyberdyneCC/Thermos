@@ -67,12 +67,12 @@
 -    public List loadedChunks = new ArrayList();
 +    public boolean loadChunkOnProvideRequest = MinecraftServer.getServer().cauldronConfig.loadChunkOnRequest.getValue(); // Cauldron - if true, allows mods to force load chunks. to disable, set load-chunk-on-request in cauldron.yml to false
 +    public int initialTick; // Cauldron counter to keep track of when this loader was created
-+    public TLongObjectMap<Chunk> loadedChunkHashMap_KC = new TSynchronizedLongObjectMap<Chunk>(new TLongObjectHashMap<Chunk>());
-+    public ConcurrentHashMap<Integer,Chunk[][]> chunkt_KC = new ConcurrentHashMap<Integer,Chunk[][]>(); //KCauldron IntMap
++    public TLongObjectMap<Chunk> loadedChunkHashMap_TH = new TSynchronizedLongObjectMap<Chunk>(new TLongObjectHashMap<Chunk>());
++    public ConcurrentHashMap<Integer,Chunk[][]> chunkt_TH = new ConcurrentHashMap<Integer,Chunk[][]>(); //KCauldron IntMap
 +    public List loadedChunks = new ArrayList(); // Cauldron - vanilla compatibility
      public WorldServer worldObj;
      private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
-+    public LongHashMap loadedChunkHashMap = new kcauldron.wrapper.VanillaChunkHashMap(loadedChunkHashMap_KC); // KCauldron - vanilla/mystcraft compatibility
++    public LongHashMap loadedChunkHashMap = new thermos.wrapper.VanillaChunkHashMap(loadedChunkHashMap_TH); // KCauldron - vanilla/mystcraft compatibility
      private static final String __OBFID = "CL_00001436";
  
      public ChunkProviderServer(WorldServer p_i1520_1_, IChunkLoader p_i1520_2_, IChunkProvider p_i1520_3_)
@@ -145,7 +145,7 @@
      public void unloadAllChunks()
      {
 -        Iterator iterator = this.loadedChunks.iterator();
-+        this.loadedChunkHashMap_KC.forEachValue(new TObjectProcedure<Chunk>() {
++        this.loadedChunkHashMap_TH.forEachValue(new TObjectProcedure<Chunk>() {
 +            @Override
 +            public boolean execute(Chunk chunk) {
 +                unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
@@ -225,7 +225,7 @@
 +                newChunk = true; // CraftBukkit
 +            }
 +
-+            this.loadedChunkHashMap_KC.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk);
++            this.loadedChunkHashMap_TH.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk);
 +            Chunk[][] temp_chunk_bunch = chunk_array_get(p_73158_1_, p_73158_2_);
 +            if(temp_chunk_bunch != null)
 +            {
@@ -235,7 +235,7 @@
 +            {
 +                temp_chunk_bunch = new Chunk[16][16];
 +                temp_chunk_bunch[chunk_array(p_73158_1_)][chunk_array(p_73158_2_)] = chunk;
-+                this.chunkt_KC.put(chunk_hash(p_73158_1_ >> 4, p_73158_2_ >> 4), temp_chunk_bunch); //KCauldron - IntHash
++                this.chunkt_TH.put(chunk_hash(p_73158_1_ >> 4, p_73158_2_ >> 4), temp_chunk_bunch); //KCauldron - IntHash
 +            }
 +            this.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
 +            loadingChunks.remove(LongHash.toLong(p_73158_1_, p_73158_2_)); // Cauldron - LongHash
@@ -450,7 +450,7 @@
              {
 -                if (!this.chunksToUnload.isEmpty())
 +                long chunkcoordinates = this.chunksToUnload.popFirst();
-+                Chunk chunk = this.loadedChunkHashMap_KC.get(chunkcoordinates); //Not using the IntMap for this
++                Chunk chunk = this.loadedChunkHashMap_TH.get(chunkcoordinates); //Not using the IntMap for this
 +
 +                if (chunk == null)
                  {
@@ -505,7 +505,7 @@
 -
 -                    this.chunksToUnload.remove(olong);
 -                    this.loadedChunkHashMap.remove(olong.longValue());
-+                    this.loadedChunkHashMap_KC.remove(chunkcoordinates); // CraftBukkit
++                    this.loadedChunkHashMap_TH.remove(chunkcoordinates); // CraftBukkit
 +                    this.loadedChunks.remove(chunk);
 +                    Chunk[][] temp_bunch_array = chunk_array_get(chunk.xPosition, chunk.zPosition);
 +                    if(temp_bunch_array != null)
@@ -517,7 +517,7 @@
 +                        if(count == 256) chunk_array_remove(chunk.xPosition, chunk.zPosition);
 +                    }
 +                    ForgeChunkManager.putDormantChunk(chunkcoordinates, chunk);
-+                    if(this.loadedChunkHashMap_KC.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
++                    if(this.loadedChunkHashMap_TH.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
 +                        DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);
 +                        return currentChunkProvider.unloadQueuedChunks();
 +                    }
@@ -534,7 +534,7 @@
      public String makeString()
      {
 -        return "ServerChunkCache: " + this.loadedChunkHashMap.getNumHashElements() + " Drop: " + this.chunksToUnload.size();
-+        return "ServerChunkCache: " + this.loadedChunkHashMap_KC.size() + " Drop: " + this.chunksToUnload.size(); // Cauldron
++        return "ServerChunkCache: " + this.loadedChunkHashMap_TH.size() + " Drop: " + this.chunksToUnload.size(); // Cauldron
      }
  
      public List getPossibleCreatures(EnumCreatureType p_73155_1_, int p_73155_2_, int p_73155_3_, int p_73155_4_)
@@ -543,7 +543,7 @@
      public int getLoadedChunkCount()
      {
 -        return this.loadedChunkHashMap.getNumHashElements();
-+        return this.loadedChunkHashMap_KC.size(); // Cauldron
++        return this.loadedChunkHashMap_TH.size(); // Cauldron
      }
  
      public void recreateStructures(int p_82695_1_, int p_82695_2_) {}
@@ -583,7 +583,7 @@
 +
 +     private Chunk chunk_get(int x, int z)
 +     {
-+         Chunk[][] bunch = chunkt_KC.get(chunk_hash(x >> 4, z >> 4));
++         Chunk[][] bunch = chunkt_TH.get(chunk_hash(x >> 4, z >> 4));
 +         if(bunch == null) return null;
 +         return bunch[Math.abs(x % 16)][Math.abs(z % 16)];
 +     }
@@ -591,12 +591,12 @@
 +
 +     private Chunk[][] chunk_array_get(int x, int z)
 +     {
-+         Chunk[][] bunch = chunkt_KC.get(chunk_hash(x >> 4, z >> 4));
++         Chunk[][] bunch = chunkt_TH.get(chunk_hash(x >> 4, z >> 4));
 +	 return bunch;
 +     }
 +     private Chunk[][] chunk_array_remove(int x, int z)
 +     {
-+         Chunk[][] bunch = chunkt_KC.remove(chunk_hash(x >> 4, z >> 4));
++         Chunk[][] bunch = chunkt_TH.remove(chunk_hash(x >> 4, z >> 4));
 +	 return bunch;
 +     }
 +
@@ -611,7 +611,7 @@
 +            {
 +                temp_chunk_bunch = new Chunk[16][16];
 +                temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = chunk;
-+                this.chunkt_KC.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //KCauldron - IntHash
++                this.chunkt_TH.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //KCauldron - IntHash
 +            }
 +     }
 +    // Cauldron end

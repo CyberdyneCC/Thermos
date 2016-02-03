@@ -15,7 +15,7 @@
      {
          Loader.instance().serverStarted();
          sidedDelegate.allowLogins();
-+        kcauldron.updater.KVersionRetriever.init(MinecraftServer.getServer());
++        thermos.updater.KVersionRetriever.init(MinecraftServer.getServer());
      }
  
      public void handleServerStopping()
@@ -39,10 +39,11 @@
 -        List<String> modNames = Lists.newArrayListWithExpectedSize(3);
 +        // Cauldron start    
 +        List<String> modNames = Lists.newArrayListWithExpectedSize(6);
-+        modNames.add("kcauldron");
++        modNames.add("thermos");
 +        modNames.add("cauldron");
 +        modNames.add("craftbukkit");
 +        modNames.add("mcpc");
++        modNames.add("kcauldron");
 +        // Cauldron end
          modNames.add("fml");
          if (!noForge)

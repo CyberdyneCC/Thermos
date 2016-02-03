@@ -1,4 +1,4 @@
-package kcauldron;
+package thermos;
 
 import java.util.Collections;
 import java.util.List;

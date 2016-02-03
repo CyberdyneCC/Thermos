@@ -1,8 +1,8 @@
-package kcauldron.updater;
+package thermos.updater;
 
-import kcauldron.KCauldron;
-import kcauldron.KCauldronCommand;
-import kcauldron.updater.KVersionRetriever.IVersionCheckCallback;
+import thermos.Thermos;
+import thermos.ThermosCommand;
+import thermos.updater.TVersionRetriever.IVersionCheckCallback;
 import net.minecraft.server.MinecraftServer;
 
 import org.bukkit.Bukkit;
@@ -21,10 +21,9 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (hasPermission(player)) {
-            if (KCauldron.isLegacy()) {
+            if (Thermos.isLegacy()) {
             }            
-            if (!KCauldron.isOfficial()) {
-                player.sendMessage(ChatColor.YELLOW + "[KC-Unofficial] " + ChatColor.GOLD + "You're running KC-Unofficial, make sure to check https://github.com/TCPR/KCauldron for updates or to report bugs.");
+            if (!Thermos.isOfficial()) {
             }            
             if (mHasUpdate) {
                 sendUpdate(player);
@@ -33,7 +32,7 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     }
 
     private boolean hasPermission(CommandSender player) {
-        return player.hasPermission(KCauldronCommand.UPDATE) || player.isOp();
+        return player.hasPermission(ThermosCommand.UPDATE) || player.isOp();
     }
 
     private void sendUpdate(CommandSender player) {
@@ -51,17 +50,17 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     @Override
     public void upToDate() {
         mHasUpdate = false;
-        mCurrentVersion = KCauldron.getCurrentVersion();
+        mCurrentVersion = Thermos.getCurrentVersion();
         mNewVersion = null;
     }
 
     @Override
     public void newVersion(String newVersion) {
-        mCurrentVersion = KCauldron.getCurrentVersion();
+        mCurrentVersion = Thermos.getCurrentVersion();
         mNewVersion = newVersion;
         if (!mHasUpdate) {
             Bukkit.getConsoleSender().sendMessage(
-                    "New version of KCauldron avaiable: " + newVersion);
+                    "New version of Thermos avaiable: " + newVersion);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (hasPermission(player)) {
                     sendUpdate(player);

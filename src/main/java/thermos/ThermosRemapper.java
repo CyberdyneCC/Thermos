@@ -1,10 +1,10 @@
-package kcauldron;
+package thermos;
 
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
 
-public class KCauldronRemapper extends JarRemapper {
-    public KCauldronRemapper(JarMapping jarMapping) {
+public class ThermosRemapper extends JarRemapper {
+    public ThermosRemapper(JarMapping jarMapping) {
         super(jarMapping);
     }
 

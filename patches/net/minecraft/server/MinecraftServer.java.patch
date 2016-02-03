@@ -59,7 +59,7 @@
 +import java.lang.reflect.Constructor;
 +
 +import joptsimple.OptionParser;
-+import kcauldron.KCauldronConfig;
++import thermos.ThermosConfig;
 +import cpw.mods.fml.common.asm.transformers.SideTransformer;
 +import net.minecraft.command.ServerCommand;
 +import net.minecraft.tileentity.TileEntity;
@@ -116,7 +116,7 @@
 +    // Spigot end
 +    // Cauldron start
 +    public static CauldronConfig cauldronConfig;
-+    public static KCauldronConfig kcauldronConfig;
++    public static ThermosConfig thermosConfig;
 +    public static TileEntityConfig tileEntityConfig;
 +    public static YamlConfiguration configuration;
 +    public static YamlConfiguration commandsConfiguration;
@@ -139,7 +139,7 @@
          this.field_147143_S = this.field_152364_T.createMinecraftSessionService();
          this.field_152365_W = this.field_152364_T.createProfileRepository();
 +        this.primaryThread = new Thread(this, "Server thread"); // CraftBukkit
-+        kcauldronConfig = new KCauldronConfig();
++        thermosConfig = new ThermosConfig();
 +        cauldronConfig = new CauldronConfig("cauldron.yml", "cauldron");
 +        tileEntityConfig = new TileEntityConfig("tileentities.yml", "cauldron_te");
      }
@@ -159,7 +159,7 @@
 +        this.field_147143_S = this.field_152364_T.createMinecraftSessionService();
 +        this.field_152365_W = this.field_152364_T.createProfileRepository();
 +        // Cauldron start
-+        kcauldronConfig = new KCauldronConfig();
++        thermosConfig = new ThermosConfig();
 +        cauldronConfig = new CauldronConfig("cauldron.yml", "cauldron");
 +        tileEntityConfig = new TileEntityConfig("tileentities.yml", "cauldron_te");
 +        // Cauldron end

@@ -1,4 +1,4 @@
-package kcauldron;
+package thermos;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -8,13 +8,13 @@ import net.minecraftforge.cauldron.configuration.ConfigBase;
 import net.minecraftforge.cauldron.configuration.Setting;
 import net.minecraftforge.cauldron.configuration.StringSetting;
 
-public class KCauldronConfig extends ConfigBase {
+public class ThermosConfig extends ConfigBase {
     public BoolSetting commandEnable = new BoolSetting(this, "command.enable",
-            true, "Enable KCauldron command");
+            true, "Enable Thermos command");
     public BoolSetting updatecheckerEnable = new BoolSetting(this,
-            "updatechecker.enable", false, "Enable KCauldron update checker");
+            "updatechecker.enable", false, "Enable Thermos update checker");
     public StringSetting updatecheckerSymlinks = new StringSetting(this,
-            "updatechecker.symlinks", "KCauldron.jar", "(Re)create symlinks after update");
+            "updatechecker.symlinks", "Thermos.jar", "(Re)create symlinks after update");
     public BoolSetting updatecheckerQuiet = new BoolSetting(this,
             "updatechecker.quiet", false, "Print less info during update");
 
@@ -26,8 +26,8 @@ public class KCauldronConfig extends ConfigBase {
     public BoolSetting commonAllowNetherPortal = new BoolSetting(this,
             "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
     
-    public KCauldronConfig() {
-        super("kcauldron.yml", "kc");
+    public ThermosConfig() {
+        super("thermos.yml", "th");
         register(commandEnable);
         register(updatecheckerEnable);
         register(updatecheckerSymlinks);
@@ -51,7 +51,7 @@ public class KCauldronConfig extends ConfigBase {
 
     @Override
     protected void addCommands() {
-        commands.put(commandName, new KCauldronCommand());
+        commands.put(commandName, new ThermosCommand());
     }
 
     @Override

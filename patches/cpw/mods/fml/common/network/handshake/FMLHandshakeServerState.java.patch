@@ -5,7 +5,7 @@
  
              FMLHandshakeMessage.ModList client = (FMLHandshakeMessage.ModList)msg;
 -            FMLLog.info("Client attempting to join with %d mods : %s", client.modListSize(), client.modListAsString());
-+            if (net.minecraft.server.MinecraftServer.kcauldronConfig.loggingClientModList.getValue()) {
++            if (net.minecraft.server.MinecraftServer.thermosConfig.loggingClientModList.getValue()) {
 +                FMLLog.info("Client attempting to join with %d mods : %s", client.modListSize(), client.modListAsString());
 +            } else {
 +                FMLLog.info("Client attempting to join with %d mods", client.modListSize());

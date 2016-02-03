@@ -138,7 +138,7 @@ public class CraftWorld implements World {
     }
 
     public Chunk[] getLoadedChunks() {
-        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap_KC.values();
+        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap_TH.values();
         org.bukkit.Chunk[] craftChunks = new CraftChunk[chunks.length];
 
         for (int i = 0; i < chunks.length; i++) {
@@ -262,8 +262,8 @@ public class CraftWorld implements World {
         }
 
         world.theChunkProviderServer.chunksToUnload.remove(x, z);
-        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_KC.get(LongHash.toLong(x, z));
-        //net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.chunkt_KC.get(world.theChunkProviderServer.chunk_hash(x,z)); //KCauldron replacement for line above
+        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_TH.get(LongHash.toLong(x, z));
+        //net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.chunkt_TH.get(world.theChunkProviderServer.chunk_hash(x,z)); //KCauldron replacement for line above
 
         if (chunk == null) {
             world.timings.syncChunkLoadTimer.startTiming(); // Spigot
@@ -277,7 +277,7 @@ public class CraftWorld implements World {
 
     private void chunkLoadPostProcess(net.minecraft.world.chunk.Chunk chunk, int x, int z) {
         if (chunk != null) {
-            world.theChunkProviderServer.loadedChunkHashMap_KC.put(LongHash.toLong(x, z), chunk);
+            world.theChunkProviderServer.loadedChunkHashMap_TH.put(LongHash.toLong(x, z), chunk);
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
             world.theChunkProviderServer.chunk_put(x,z,chunk);
             chunk.onChunkLoad();
@@ -1395,7 +1395,7 @@ public class CraftWorld implements World {
         }
 
         final net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
-        cps.loadedChunkHashMap_KC.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
+        cps.loadedChunkHashMap_TH.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
             @Override
             public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
                 // If in use, skip it

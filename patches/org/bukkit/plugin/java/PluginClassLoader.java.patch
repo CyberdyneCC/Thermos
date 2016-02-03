@@ -164,7 +164,7 @@
 +            jarMapping.setFallbackInheritanceProvider(new ClassLoaderProvider(this));
 +        }
 +
-+        remapper = new kcauldron.KCauldronRemapper(jarMapping);
++        remapper = new thermos.ThermosRemapper(jarMapping);
 +
 +        if (pluginInherit || reflectFields || reflectClass) {
 +            remapperProcessor = new RemapperProcessor(

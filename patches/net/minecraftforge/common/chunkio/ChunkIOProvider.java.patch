@@ -15,7 +15,7 @@
          MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(chunk, queuedChunk.compound)); // Don't call ChunkDataEvent.Load async
          chunk.lastSaveTime = queuedChunk.provider.worldObj.getTotalWorldTime();
 -        queuedChunk.provider.loadedChunkHashMap.add(ChunkCoordIntPair.chunkXZ2Int(queuedChunk.x, queuedChunk.z), chunk);
-+        queuedChunk.provider.loadedChunkHashMap_KC.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
++        queuedChunk.provider.loadedChunkHashMap_TH.put(LongHash.toLong(queuedChunk.x, queuedChunk.z), chunk);
 +        queuedChunk.provider.chunk_put(queuedChunk.x,queuedChunk.z, chunk); //KCauldron int hashmap
          queuedChunk.provider.loadedChunks.add(chunk);
          chunk.onChunkLoad();

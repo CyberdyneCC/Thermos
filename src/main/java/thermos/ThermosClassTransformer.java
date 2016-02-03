@@ -1,4 +1,4 @@
-package kcauldron;
+package thermos;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ARETURN;
@@ -15,7 +15,7 @@ import pw.prok.imagine.asm.Transformer;
 import cpw.mods.fml.common.FMLLog;
 
 @Transformer.RegisterTransformer
-public class KCauldronClassTransformer implements Transformer {
+public class ThermosClassTransformer implements Transformer {
     @Override
     public void transform(final ImagineASM asm) {
         if (asm.is("climateControl.utils.ChunkGeneratorExtractor")) {
@@ -26,7 +26,7 @@ public class KCauldronClassTransformer implements Transformer {
             } catch (Exception ignored) {
             }
             if (!undergroundBiomesInstalled) {
-                FMLLog.log(Level.INFO, "KCauldron: Patching " + asm.getActualName() + " for compatibility with Climate Control");
+                FMLLog.log(Level.INFO, "Thermos: Patching " + asm.getActualName() + " for compatibility with Climate Control");
                 extractFrom(asm, asm.method("extractFrom",
                         "(Lnet/minecraft/world/WorldServer;)Lnet/minecraft/world/chunk/IChunkProvider;").instructions());
             }
