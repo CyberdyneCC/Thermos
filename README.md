@@ -1,4 +1,5 @@
 # Thermos 
+![Thermos](thermos_icon.png)
 
 ![Minecraft Forge v10.13.4.1614][forge]
 ![Minecraft v1.7.10][mc]
