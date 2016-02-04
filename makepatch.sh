@@ -51,7 +51,7 @@ else
 		mkdir -p `java makepatch dir $FILE`
 		touch $PATCH
 	fi
-	git diff --minimal --no-prefix  --no-index $CLEAN $CAULD > $PATCH
+	git diff --minimal --no-prefix --ignore-space-at-eol --ignore-blank-lines --no-index $CLEAN $CAULD > $PATCH
 	java makepatch $PATCH
 	echo "Diff of ${redf}$CLEAN${reset} and ${gref}$CAULD${reset} written to ${yelf}$PATCH${reset}"
 fi
