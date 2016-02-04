@@ -93,11 +93,6 @@ public class ThermosUpdater implements Runnable, IVersionCheckCallback {
 
     @Override
     public void run() {
-        if (!MinecraftServer.thermosConfig.updatecheckerQuiet.getValue()) {
-            mSender.sendMessage(ChatColor.DARK_PURPLE
-                    + "Retrieving latest KBootstrap version...");
-        }
-        new TVersionRetriever(this, false, false, "pw.prok", "KBootstrap");
     }
 
     @Override
@@ -107,67 +102,6 @@ public class ThermosUpdater implements Runnable, IVersionCheckCallback {
 
     @Override
     public void newVersion(String kbootstrapVersion) {
-        boolean quiet = MinecraftServer.thermosConfig.updatecheckerQuiet
-                .getValue();
-        try {
-            if (!quiet) {
-                mSender.sendMessage(ChatColor.DARK_PURPLE
-                        + "Downloading KBootstrap " + kbootstrapVersion + "...");
-            }
-            File kbootstrap = File.createTempFile("kbootstrap",
-                    String.valueOf(System.currentTimeMillis()));
-            download(
-                    "https://api.prok.pw/repo/blob/pw.prok/KBootstrap/latest/app",
-                    kbootstrap);
-            if (!quiet) {
-                mSender.sendMessage(ChatColor.DARK_PURPLE
-                        + "Installing Thermos " + mVersion
-                        + " via KBootstrap " + kbootstrapVersion + "...");
-            }
-
-            String javahome = System.getProperty("java.home");
-            String javapath = javahome + "/bin/java";
-
-            List<String> command = new ArrayList<String>();
-            command.add(javapath);
-            command.add("-jar");
-            command.add(kbootstrap.getCanonicalPath());
-            command.add("--serverDir");
-            command.add(Thermos.getServerHome().getCanonicalPath());
-            command.add("--installThermos");
-            command.add(String.format("%s:%s:%s", Thermos.getGroup(), Thermos.getChannel(), mVersion));
-            final String[] symlinks = MinecraftServer.thermosConfig.updatecheckerSymlinks
-                    .getValue().trim().split(File.pathSeparator);
-            for (String symlink : symlinks) {
-                command.add("--serverSymlinks");
-                command.add(symlink);
-            }
-
-            Bukkit.getConsoleSender().sendMessage(
-                    "Starting command: " + Joiner.on(' ').join(command));
-
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.environment().put("JAVA_HOME", javahome);
-            switch (builder.start().waitFor()) {
-            case 0:
-                mSender.sendMessage(ChatColor.GREEN + "Thermos " + mVersion
-                        + " installed");
-                break;
-            default:
-                mSender.sendMessage(ChatColor.RED
-                        + "Failed to install Thermos " + mVersion);
-            }
-        } catch (Exception e) {
-            if (!quiet) {
-                e.printStackTrace();
-            }
-            if (mSender != null) {
-                mSender.sendMessage(ChatColor.RED + "Failed update to "
-                        + mVersion);
-            }
-        } finally {
-            Thermos.sUpdateInProgress = false;
-        }
     }
 
     @Override
