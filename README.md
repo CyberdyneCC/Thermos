@@ -8,6 +8,16 @@
 
 ### Thermos is a server software aimed at eliminating all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Thermos experience.
 
+## Downloads
+You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
+
+**These unofficial builds are in beta, they may cause issues with your server. You have been warned!**
+
+P.S. **PLEASE** look at the release notes before downloading! :smile:
+
+##Installing WarmRoast
+[Tutorial Video](https://youtu.be/c0ffjooX7Jw)
+
 ## Chat
 
 Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE2XaJ4m)
@@ -15,6 +25,7 @@ Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2
 ## Patreon
 
 You can pledge to support Robotia and his work [here](https://www.patreon.com/robotia).
+
 ## Issues
 
 **FIRST: Test if the mod has the same error in Vanilla Forge**. If it does, then Thermos is *not at fault* and we cannot help you here.
@@ -52,12 +63,7 @@ description:
 
 Please read the [guide](https://github.com/TCPR/Thermos/blob/master/CONTRIBUTING.md) on how to contribute - TCPR/Thermos always needs improvements :smile: 
 
-## Downloads
-You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
 
-**These unofficial builds are in beta, they may cause issues with your server. You have been warned!**
-
-P.S. **PLEASE** look at the release notes before downloading! :smile:
 
 
 ## Build Requirements
