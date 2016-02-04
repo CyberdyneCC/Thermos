@@ -9,9 +9,3 @@
      public Result useBlock = DEFAULT;
      public Result useItem = DEFAULT;
  
-@@ -76,4 +76,4 @@
-         useBlock = (cancel ? DENY : useBlock == DENY ? DEFAULT : useBlock);
-         useItem = (cancel ? DENY : useItem == DENY ? DEFAULT : useItem);
-     }
--}
-+}
