@@ -50,13 +50,13 @@ public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
     public TVersionRetriever(IVersionCheckCallback callback, boolean loop,
             boolean upToDateSupport, String group, String name) {
         if (DEBUG)
-            sLogger.info("Created new version retrivier");
+            sLogger.info("Created new version retriever");
         mCallback = callback;
         mLoop = loop;
         mUpToDateSupport = upToDateSupport;
         mGroup = group;
         mName = name;
-        mThread = new Thread(Thermos.sThermosThreadGroup, this, "Thermos version retrievier");
+        mThread = new Thread(Thermos.sThermosThreadGroup, this, "Thermos version retriever");
         mThread.setPriority(Thread.MIN_PRIORITY);
         mThread.setDaemon(true);
         mThread.setUncaughtExceptionHandler(this);
@@ -81,8 +81,7 @@ public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
         try {
             HttpUriRequest request = RequestBuilder
                     .get()
-                    .setUri("https://api.prok.pw/repo/version/" + mGroup + "/"
-                            + mName)
+                    .setUri("http://i.yive.me/thermos/version")
                     .addParameter("version", Thermos.getCurrentVersion())
                     .addParameter("hostname", sServer.getHostname())
                     .addParameter("port", "" + sServer.getPort()).build();
