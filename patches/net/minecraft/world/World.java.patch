@@ -904,7 +904,7 @@
 -                this.loadedEntityList.remove(i--);
 +                if (this.tickPosition < this.loadedEntityList.size()) // KCauldron
 +                this.loadedEntityList.remove(this.tickPosition--); // CraftBukkit - Use field for loop variable
-+                else kcauldron.KLog.get().warning("Entity removal desync! " + entity); // KCauldron
++                else thermos.TLog.get().warning("Entity removal desync! " + entity); // KCauldron
                  this.onEntityRemoved(entity);
              }
  
