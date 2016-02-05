@@ -1,13 +1,5 @@
 --- ../src-base/minecraft/net/minecraft/world/World.java
 +++ ../src-work/minecraft/net/minecraft/world/World.java
-@@ -2,6 +2,7 @@
- 
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
-+
- import java.util.ArrayList;
- import java.util.Calendar;
- import java.util.Collection;
 @@ -10,8 +11,12 @@
  import java.util.List;
  import java.util.Random;
@@ -33,14 +25,6 @@
  import net.minecraft.item.ItemStack;
  import net.minecraft.nbt.NBTTagCompound;
  import net.minecraft.pathfinding.PathEntity;
-@@ -51,7 +58,6 @@
- import net.minecraft.world.storage.ISaveHandler;
- import net.minecraft.world.storage.MapStorage;
- import net.minecraft.world.storage.WorldInfo;
--
- import cpw.mods.fml.common.FMLLog;
- 
- import com.google.common.collect.ImmutableSetMultimap;
 @@ -70,6 +76,56 @@
  import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
  import net.minecraft.entity.EnumCreatureType;
@@ -964,7 +948,8 @@
 +                continue;
 +            }
 +            // Spigot end
-+
+ 
+-            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
 +            if (tileentity.isInvalid()) {
 +                tilesThisCycle--;
 +                this.loadedTileEntityList.remove(tileTickPosition--);
@@ -974,8 +959,7 @@
 +                }
 +                continue;
 +            }
- 
--            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
++
 +            if (tileentity.hasWorldObj() && CauldronHooks.canTileEntityTick(tileentity, this)
 +                    && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
              {
@@ -1324,7 +1308,7 @@
          Block block = this.getBlock(p_72878_1_, p_72878_2_, p_72878_3_);
 -        return block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
 +        Coords c = new Coords(p_72878_1_, p_72878_2_, p_72878_3_);
-+        if(!indirect.containsKey(c) || System.currentTimeMillis() - (indirect.get(c)[1]) > 50)
++        if(!indirect.containsKey(c) || System.currentTimeMillis() - (indirect.get(c)[1]) > 10)
 +        {
 +            int power = block.shouldCheckWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_) ? this.getBlockPowerInput(p_72878_1_, p_72878_2_, p_72878_3_) : block.isProvidingWeakPower(this, p_72878_1_, p_72878_2_, p_72878_3_, p_72878_4_);
 +            indirect.put(c, new long[] { power, (System.currentTimeMillis()) });
@@ -1395,7 +1379,6 @@
          }
          return count;
      }
--}
 +
 +    // Cauldron start
 +    public boolean isEmpty(int x, int y, int z) // Required until SS inheritance bug is fixed
@@ -1514,4 +1497,4 @@
 +        });
 +        return true;
 +    }
-+}
+ }
