@@ -368,7 +368,6 @@
              }
          }
      }
--}
 +
 +    /**
 +     * PaperSpigot - Recheck gaps asynchronously.
@@ -386,4 +385,4 @@
 +            }
 +        });
 +    }
-+}
+ }
