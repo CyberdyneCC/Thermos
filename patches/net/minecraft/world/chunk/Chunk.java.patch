@@ -18,12 +18,10 @@
  public class Chunk
  {
      private static final Logger logger = LogManager.getLogger();
-@@ -50,7 +61,8 @@
-     public final int xPosition;
+@@ -51,6 +62,7 @@
      public final int zPosition;
      private boolean isGapLightingUpdated;
--    public Map chunkTileEntityMap;
-+    private Map chunkTileEntityMap;
+     public Map chunkTileEntityMap;
 +    private Map<Integer,Object[][]> chunkTileEntityMap_TH;
      public List[] entityLists;
      public boolean isTerrainPopulated;
