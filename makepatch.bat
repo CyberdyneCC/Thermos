@@ -9,7 +9,7 @@ IF [%1]==[] (
 	echo "%FILE%"
 	set CLEAN="eclipse\Clean\src\main\java\%FILE%"
 	set CAULD="eclipse\cauldron\src\main\java\%FILE%"
-	set PATCH="patches/%FILE%.patch"
+	set PATCH="patches\%FILE%.patch"
     git diff --minimal --no-prefix --ignore-space-at-eol --ignore-blank-lines --no-index %CLEAN% %CAULD% > %PATCH%
 	java makepatch %PATCH%
 	call :pr "Diff of "
