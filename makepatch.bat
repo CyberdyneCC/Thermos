@@ -12,24 +12,33 @@ IF [%1]==[] (
 	set PATCH="patches/%FILE%.patch"
     git diff --minimal --no-prefix --ignore-space-at-eol --ignore-blank-lines --no-index %CLEAN% %CAULD% > %PATCH%
 	java makepatch %PATCH%
-	REM call :green "Diff of ${redf}%CLEAN%${reset} and ${gref}%CAULD%${reset} written to ${yelf}%PATCH%${reset}"
+	call :pr "Diff of "
+	call :red "%CLEAN%"
+	call :pr " and "
+	call :green "%CAULD%"
+	call :pr " written to " 
+	call :yellow "%PATCH%"
 )
 goto :eof
 
 :blue
-powershell -Command Write-Host "%*" -foreground "blue" -background "black"
+powershell -Command Write-Host -NoNewline "%*" -foreground "blue" -background "black"
 goto :eof
 
 :yellow
-powershell -Command Write-Host "%*" -foreground "yellow" -background "black"
+powershell  -Command Write-Host -NoNewline "%*" -foreground "yellow" -background "black"
 goto :eof
 
 :red
-powershell -Command Write-Host "%*" -foreground "red" -background "black"
+powershell -Command Write-Host -NoNewline "%*" -foreground "red" -background "black"
 goto :eof
 
 :green
-powershell -Command Write-Host "%*" -foreground "green" -background "black"
+powershell -Command Write-Host -NoNewline "%*" -foreground "green" -background "black"
+goto :eof
+
+:pr
+<nul set /p=%*
 goto :eof
 
 :eof
