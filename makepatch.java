@@ -14,7 +14,7 @@ String post = "";
 Scanner in = new Scanner(new File(args[0]));
 in.nextLine();in.nextLine();
 post += in.nextLine().replace("eclipse/Clean/src/main/java","../src-base/minecraft")+"\n";
-post += in.nextLine().replace("eclipse/cauldron/src/main/java","../src-work/minecraft")+"\n";
+post += in.nextLine().replace("eclipse/cauldron/src/main/java","../src-work/minecraft").replace("eclipse/Cauldron/src/main/java","../src-work/minecraft")+"\n";
 while(in.hasNextLine())
 {
 
@@ -51,7 +51,8 @@ else if(args.length == 2)
 {
 if(args[0].equalsIgnoreCase("chop"))
 {
-System.out.println(args[1].replace("eclipse/cauldron/src/main/java/",""));
+System.out.println(args[1].replace("eclipse/cauldron/src/main/java/","").replace("eclipse/Cauldron/src/main/java/","").replace("eclipse\\cauldron\\src\\main\\java\\","").replace("eclipse\\Cauldron\\src\\main\\java\\",""));
+
 return;
 }
 else if(args[0].equalsIgnoreCase("dir"))
