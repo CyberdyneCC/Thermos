@@ -13,8 +13,8 @@ System.out.println("[JPATCH] Patching the patch!");
 String post = "";
 Scanner in = new Scanner(new File(args[0]));
 in.nextLine();in.nextLine();
-post += in.nextLine().replace("eclipse/Clean/src/main/java","../src-base/minecraft")+"\n";
-post += in.nextLine().replace("eclipse/cauldron/src/main/java","../src-work/minecraft").replace("eclipse/Cauldron/src/main/java","../src-work/minecraft")+"\n";
+post += in.nextLine().replace("\\","/").replace("\\","/").replace("\"","").replace("//","/").replace("eclipse/Clean/src/main/java","../src-base/minecraft").replace("eclipse\\\\Clean\\\\src\\\\main\\\\java\\\\","../src-base/minecraft/")+"\n";
+post += in.nextLine().replace("\\\\","/").replace("\\","/").replace("\"","").replace("//","/").replace("eclipse/cauldron/src/main/java","../src-work/minecraft").replace("eclipse/Cauldron/src/main/java","../src-work/minecraft").replace("eclipse\\\\Cauldron\\\\src\\\\main\\\\java\\\\","../src-work/minecraft")+"\n";
 while(in.hasNextLine())
 {
 
