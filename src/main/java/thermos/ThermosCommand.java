@@ -29,7 +29,6 @@ import net.minecraftforge.common.DimensionManager;
 public class ThermosCommand extends Command {
     public static final String NAME = "th";
     public static final String CHECK = NAME + ".check";
-    public static final String UPDATE = NAME + ".update";
     public static final String TPS = NAME + ".tps";
     public static final String RESTART = NAME + ".restart";
     public static final String DUMP = NAME + ".dump";
