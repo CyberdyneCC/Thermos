@@ -443,10 +443,10 @@
 +    // Cauldron start - refactor entire method for sanity.
 +    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3)
 +    {
-+       return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null);
++       return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null, TeleportCause.DEATH);
 +    }
 +
-+    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location)
++    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location, TeleportCause cause)
 +    {
 +        // Phase 1 - check if the player is allowed to respawn in same dimension
 +        World world = mcServer.worldServerForDimension(targetDimension);
@@ -504,7 +504,7 @@
 +        par1EntityPlayerMP.dimension = targetDimension;
 +        // CraftBukkit start
 +        EntityPlayerMP entityplayermp1 = par1EntityPlayerMP;
-+        entityplayermp1.clonePlayer(par1EntityPlayerMP, returnFromEnd); // KCauldron - clone player
++        entityplayermp1.clonePlayer(par1EntityPlayerMP, cause != TeleportCause.DEATH); // KCauldron - clone player
 +        entityplayermp1.setWorld(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension)); // make sure to update reference for bed spawn logic
 +        entityplayermp1.playerConqueredTheEnd = false;
          ChunkCoordinates chunkcoordinates1;
@@ -519,8 +519,7 @@
 +            {
 +                chunkcoordinates1 = EntityPlayer.verifyRespawnCoordinates(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension),
 +                        bedSpawnChunkCoords, spawnForced);
- 
--            if (chunkcoordinates1 != null)
++
 +                if (chunkcoordinates1 != null)
 +                {
 +                    isBedSpawn = true;
@@ -537,7 +536,8 @@
 +                    location = new Location(toWorld, toWorld.getSpawnLocation().getX(), toWorld.getSpawnLocation().getY(), toWorld.getSpawnLocation().getZ()); // use the spawnpoint as location
 +                }
 +            }
-+
+ 
+-            if (chunkcoordinates1 != null)
 +            if (location == null)
              {
 -                entityplayermp1.setLocationAndAngles((double)((float)chunkcoordinates1.posX + 0.5F), (double)((float)chunkcoordinates1.posY + 0.1F), (double)((float)chunkcoordinates1.posZ + 0.5F), 0.0F, 0.0F);
@@ -980,9 +980,3 @@
  
      public void sendChatMsgImpl(IChatComponent p_148544_1_, boolean p_148544_2_)
      {
-@@ -1103,4 +1662,4 @@
-     {
-         return this.whiteListEnforced;
-     }
--}
-+}
