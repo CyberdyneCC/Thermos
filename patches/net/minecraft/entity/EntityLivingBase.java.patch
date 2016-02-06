@@ -1,26 +1,11 @@
 --- ../src-base/minecraft/net/minecraft/entity/EntityLivingBase.java
 +++ ../src-work/minecraft/net/minecraft/entity/EntityLivingBase.java
-@@ -2,12 +2,14 @@
- 
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
-+
- import java.util.Collection;
- import java.util.HashMap;
- import java.util.Iterator;
- import java.util.List;
- import java.util.Random;
- import java.util.UUID;
-+
- import net.minecraft.block.Block;
- import net.minecraft.block.material.Material;
- import net.minecraft.enchantment.EnchantmentHelper;
 @@ -50,14 +52,30 @@
  import net.minecraft.world.World;
  import net.minecraft.world.WorldServer;
  import net.minecraftforge.common.ForgeHooks;
 +import net.minecraftforge.common.ISpecialArmor.ArmorProperties;
- 
++
 +// CraftBukkit start
 +import net.minecraft.nbt.NBTTagInt;
 +import net.minecraft.network.play.server.S28PacketEffect;
@@ -35,7 +20,7 @@
 +import org.bukkit.craftbukkit.inventory.CraftItemStack; // Cauldron
 +
 +import com.google.common.base.Function;
-+
+ 
  public abstract class EntityLivingBase extends Entity
  {
      private static final UUID sprintingSpeedBoostModifierUUID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
@@ -423,7 +408,7 @@
 +            float originalDamage = f;
 +            // Cauldron start - apply forge damage hook
 +            f = ForgeHooks.onLivingHurt(this, damagesource, f);
-+            if (f <= 0) return true;
++            if (f < 0) return true;
 +            // Cauldron end
 +            Function<Double, Double> hardHat = new Function<Double, Double>() {
 +                @Override
@@ -515,7 +500,7 @@
 +            EntityDamageEvent event = CraftEventFactory.handleLivingEntityDamageEvent(this, damagesource, originalDamage, hardHatModifier, blockingModifier,
 +                    armorModifier, resistanceModifier, magicModifier, absorptionModifier, hardHat, blocking, armor, resistance, magic, absorption);
 +            if (event.isCancelled())
-             {
++            {
 +                return false;
 +            }
 +
@@ -529,7 +514,7 @@
 +
 +            // Apply damage to armor
 +            if (!damagesource.isUnblockable())
-+            {
+             {
 +                float armorDamage = (float) (event.getDamage() + event.getDamage(DamageModifier.BLOCKING) + event.getDamage(DamageModifier.HARD_HAT));
 +                if (human) {
 +                    EntityPlayer player = (EntityPlayer) this;
@@ -654,7 +639,7 @@
 +                {
 +                    break; // Spigot
 +                }
- 
++
 +                Entity entity = (Entity) list.get(i);
 +
 +                // TODO better check now?
@@ -665,7 +650,7 @@
 +                    continue;
 +                }
 +                // CraftBukkit end
-+
+ 
                  if (entity.canBePushed())
                  {
 +                    entity.numCollisions++; // Spigot
