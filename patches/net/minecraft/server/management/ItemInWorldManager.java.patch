@@ -146,7 +146,18 @@
                  if (!block.isAir(theWorld, p_73074_1_, p_73074_2_, p_73074_3_) && f >= 1.0F)
                  {
                      this.tryHarvestBlock(p_73074_1_, p_73074_2_, p_73074_3_);
-@@ -269,6 +329,12 @@
+@@ -197,6 +257,10 @@
+                 }
+             }
+         }
++        else
++        {
++        	org.bukkit.event.player.PlayerInteractEvent cbEvent = CraftEventFactory.callPlayerInteractEvent(this.thisPlayerMP, Action.LEFT_CLICK_BLOCK, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_, this.thisPlayerMP.inventory.getCurrentItem());
++        }
+     }
+ 
+     public void uncheckedTryHarvestBlock(int p_73082_1_, int p_73082_2_, int p_73082_3_)
+@@ -269,6 +333,12 @@
                  return false;
              }
              Block block = this.theWorld.getBlock(p_73084_1_, p_73084_2_, p_73084_3_);
@@ -159,7 +170,7 @@
              int l = this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_);
              this.theWorld.playAuxSFXAtEntity(this.thisPlayerMP, 2001, p_73084_1_, p_73084_2_, p_73084_3_, Block.getIdFromBlock(block) + (this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_) << 12));
              boolean flag = false;
-@@ -312,6 +378,7 @@
+@@ -312,6 +382,7 @@
      public boolean tryUseItem(EntityPlayer p_73085_1_, World p_73085_2_, ItemStack p_73085_3_)
      {
          int i = p_73085_3_.stackSize;
@@ -167,7 +178,7 @@
          int j = p_73085_3_.getItemDamage();
          ItemStack itemstack1 = p_73085_3_.useItemRightClick(p_73085_2_, p_73085_1_);
  
-@@ -350,57 +417,106 @@
+@@ -350,57 +421,106 @@
  
      public boolean activateBlockOrUseItem(EntityPlayer p_73078_1_, World p_73078_2_, ItemStack p_73078_3_, int p_73078_4_, int p_73078_5_, int p_73078_6_, int p_73078_7_, float p_73078_8_, float p_73078_9_, float p_73078_10_)
      {
