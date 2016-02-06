@@ -1,5 +1,4 @@
 import groovy.json.JsonSlurper
-import thermos.CreateChangelog
 import thermos.InstallBundle
 import thermos.VersionParser
 
@@ -20,14 +19,11 @@ buildscript {
     }
 }
 
-tasks.whenTaskAdded {
-    if (it.name.startsWith('publish')) it.dependsOn 'preparePublication'
-}
 
 apply plugin: 'maven'
 apply plugin: 'cauldron'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+
+group = 'ca.tcpr'
 
 repositories {
     clear()
@@ -55,7 +51,6 @@ minecraft {
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'pw.prok'
 
 ext.buildInfoCached = null;
 
@@ -113,7 +108,7 @@ configurations {
 }
 
 dependencies {
-    bootstrap 'pw.prok:KBootstrap:0.2.+'
+    bootstrap 'pw.prok:KBootstrap:0.1.+'
 
     libraries 'net.minecraft:launchwrapper:1.12@jar'
     libraries 'org.ow2.asm:asm-all:5.0.3'
@@ -142,7 +137,7 @@ dependencies {
     libraries 'mysql:mysql-connector-java:5.1.14'
     libraries 'javax.persistence:persistence-api:1.0.2'
     libraries 'net.minecraft:server:1.7.10'
-    libraries 'pw.prok:KImagine:0.2.0@jar'
+    libraries 'pw.prok:KImagine:0.1.12@jar'
     libraries 'org.apache.httpcomponents:httpclient:4.4.1'
 }
 
@@ -169,12 +164,12 @@ def generateManifest(boolean legacy = false) {
     [
             'Thermos-Git-Branch'    : gitInfo('branch'),
             'Thermos-Git-Hash'      : gitInfo('fullHash'),
-            'Thermos-Group'         : project.group,
-            'Thermos-Channel'       : project.name,
+            'Thermos-Group'         : 'ca.tcpr',
+            'Thermos-Channel'       : 'Thermos',
             'Thermos-Version'       : project.version,
             'Thermos-Legacy'        : legacy,
             'Implementation-Vendor' : 'TCPR',
-            'Implementation-Title'  : project.name,
+            'Implementation-Title'  : 'Thermos',
             'Implementation-Version': project.version,
             'Specification-Vendor'  : 'Bukkit Team',
             'Specification-Title'   : 'Bukkit',
@@ -198,24 +193,11 @@ task jar(type: Jar, dependsOn: packageUniversal) {
     manifest.attributes(generateManifest())
 }
 
-tasks.createChangelog.onlyIf { false }
-tasks.packageInstaller.onlyIf { false }
-
-task packageChangelog(type: CreateChangelog) {
-    onlyIf { project.hasProperty('officialBuild') }
-    classifier = 'changelog'
-    extension = 'txt'
-    oldChangelogUrl = "https://repo.prok.pw/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
-    hash = gitInfo('hash')
-    message = gitInfo('message')
-    version = project.version
-}
-
 task bundleStub(type: Jar) {
     classifier = 'stub'
     manifest.attributes([
             'Main-Class': 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
-            'Class-Path': "bin/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
+            'Class-Path': "bin/ca/tcpr/thermos/${project.version}/${project.name}-${project.version}.jar"
     ])
 }
 
@@ -232,69 +214,6 @@ task packageBundle(type: Zip, dependsOn: installBundle) {
     rename bundleStub.archiveName, 'Thermos.jar'
 }
 
-task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, packageBundle, jar, 'generatePomFileForMavenPublication']) {
-    sign packageUniversal
-    sign packageChangelog
-    sign packageBundle
-    sign jar
-}
-
-task signPom(type: Sign, dependsOn: 'generatePomFileForMavenPublication') {
-    outputs.upToDateWhen { false }
-    sign file("${buildDir}/publications/maven/pom-default.xml")
-}
-
-task preparePublication(dependsOn: [signJars, signPom]) {}
-
-def getPomSignature = {
-    return project.tasks.signPom.signatureFiles.collect { it }[0]
-}
-
-def getSignatureFiles = {
-    def allFiles = project.tasks.signJars.signatureFiles.collect { it }
-    def signedServer = allFiles.find { it.name.contains('-server') }
-    def signedChangelog = allFiles.find { it.name.contains('-changelog') }
-    def signedBundle = allFiles.find { it.name.contains('-bundle') }
-    def signedJar = (allFiles - [signedServer, signedChangelog, signedBundle])[0]
-    return [
-            [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
-            [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc'],
-            [archive: signedBundle, classifier: 'bundle', extension: 'zip.asc'],
-            [archive: signedJar, classifier: null, extension: 'jar.asc']
-    ]
-}
-
-publishing {
-    repositories {
-        maven {
-            name 'ProK'
-            url 'https://repo.prok.pw/'
-            credentials {
-                username project.hasProperty('prokRepoUsername') ? prokRepoUsername : null
-                password project.hasProperty('prokRepoPassword') ? prokRepoPassword : null
-            }
-        }
-    }
-
-    publications {
-        maven(MavenPublication) {
-            getSignatureFiles().each { signature ->
-                artifact(signature.archive) {
-                    classifier = signature.classifier
-                    extension = signature.extension
-                }
-            }
-            artifact(getPomSignature()) {
-                classifier = null
-                extension = 'pom.asc'
-            }
-            artifact packageUniversal
-            artifact packageChangelog
-            artifact packageBundle
-            artifact jar
-        }
-    }
-}
 
 tasks.generateProjectCauldron << {
     def file = new File('eclipse/cauldron/build.gradle')
