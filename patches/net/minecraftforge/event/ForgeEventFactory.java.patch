@@ -129,7 +129,7 @@
 +                }
 +                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
 +                event.cb = eve;
-+                if(eve.isCancelled()) { event.setCanceled(true); return event; }
++                if(eve.isCancelled() && !(x == 0 && z == 0 && player.posY > 3)) { event.setCanceled(true); return event; }
 +
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
@@ -146,7 +146,7 @@
 -        PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 -        MinecraftForge.EVENT_BUS.post(event);
 -        return event;
-+
++		if(x == 0 && y== 0 && z == 0 && player.posY > 3)return null;
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 +                org.bukkit.event.block.Action aktor = null;
 +                switch (action)
@@ -165,7 +165,7 @@
 +                }
 +                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
 +                event.cb = eve;
-+                if(eve.isCancelled()) { event.setCanceled(true); return event; }
++                if(eve.isCancelled() && !(x == 0 && z == 0 && player.posY > 3)) { event.setCanceled(true); return event; }
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
 +                        event.setCanceled(true);
@@ -263,9 +263,3 @@
  
      public static void onStartEntityTracking(Entity entity, EntityPlayer player)
      {
-@@ -290,4 +451,4 @@
-     {
-         MinecraftForge.EVENT_BUS.post(new PotionBrewEvent.Post(brewingItemStacks));
-     }
--}
-+}
