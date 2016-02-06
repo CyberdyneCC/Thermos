@@ -486,15 +486,6 @@
              }
  
              this.theProfiler.startSection("cleaning");
-@@ -515,7 +741,7 @@
-             for (int j = 0; j < i; ++j)
-             {
-                 nextticklistentry = (NextTickListEntry)this.pendingTickListEntriesTreeSet.first();
--
-+                Chunk chunk = getChunkIfLoaded(nextticklistentry.xCoord >> 4, nextticklistentry.zCoord >> 4);
-                 if (!p_72955_1_ && nextticklistentry.scheduledTime > this.worldInfo.getWorldTotalTime())
-                 {
-                     break;
 @@ -579,6 +805,7 @@
              this.pendingTickListEntriesThisTick.clear();
              return !this.pendingTickListEntriesTreeSet.isEmpty();
