@@ -463,7 +463,7 @@
          {
 -            throw new IllegalStateException("TickNextTick list out of synch");
 +	    if(System.currentTimeMillis() - last > 20000){
-+	    System.out.println("[WARN - Robotia] TickNextTick list out of synch by " +Math.abs(this.pendingTickListEntriesTreeSet.size()-this.pendingTickListEntriesHashSet.size() ));
++	    //System.out.println("[WARN - Robotia] TickNextTick list out of synch by " +Math.abs(this.pendingTickListEntriesTreeSet.size()-this.pendingTickListEntriesHashSet.size() ));
 +	    reevaluate(); last = System.currentTimeMillis();}
 +            //throw new IllegalStateException("TickNextTick list out of synch");
          }
