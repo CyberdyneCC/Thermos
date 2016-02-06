@@ -198,11 +198,24 @@ task jar(type: Jar, dependsOn: packageUniversal) {
     manifest.attributes(generateManifest())
 }
 
+tasks.createChangelog.onlyIf { false }
+tasks.packageInstaller.onlyIf { false }
+
+task packageChangelog(type: CreateChangelog) {
+    onlyIf { project.hasProperty('officialBuild') }
+    classifier = 'changelog'
+    extension = 'txt'
+    oldChangelogUrl = "https://repo.prok.pw/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
+    hash = gitInfo('hash')
+    message = gitInfo('message')
+    version = project.version
+}
+
 task bundleStub(type: Jar) {
     classifier = 'stub'
     manifest.attributes([
             'Main-Class': 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
-            'Class-Path': "bin/ca/tcpr/thermos/${project.version}/${project.name}-${project.version}.jar"
+            'Class-Path': "bin/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
     ])
 }
 
