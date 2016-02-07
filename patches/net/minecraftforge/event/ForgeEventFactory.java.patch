@@ -35,7 +35,7 @@
          PlayerEvent.HarvestCheck event = new PlayerEvent.HarvestCheck(player, block, success);
          MinecraftForge.EVENT_BUS.post(event);
          return event.success;
-@@ -80,25 +94,140 @@
+@@ -80,25 +94,139 @@
      @Deprecated // Location version below
      public static float getBreakSpeed(EntityPlayer player, Block block, int metadata, float original)
      {
@@ -127,11 +127,10 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                if(!(x==0 && y==0 && z == 0 && face==-1)) {
++                if((x==0 && y==0 && z == 0 && face==-1)) { y = 256; face = 0;} // 0, 256, 0, 0, 
 +                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
-+                }
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
 +                        event.setCanceled(true);
@@ -163,11 +162,11 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                if(!(x==0 && y==0 && z == 0 && face==-1)) {
++                if((x==0 && y==0 && z == 0 && face==-1)) { y = 256; face = 0;} // 0, 256, 0, 0,
 +                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
-+                }
++
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
 +                        event.setCanceled(true);
@@ -180,7 +179,7 @@
      }
  
      public static void onPlayerDestroyItem(EntityPlayer player, ItemStack stack)
-@@ -182,30 +311,64 @@
+@@ -182,30 +310,64 @@
          return MinecraftForge.EVENT_BUS.post(new EntityStruckByLightningEvent(entity, bolt));
      }
  

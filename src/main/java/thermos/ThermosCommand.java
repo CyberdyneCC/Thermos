@@ -36,7 +36,7 @@ public class ThermosCommand extends Command {
         super(NAME);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(String.format("-------------------[" + ChatColor.RED + "Thermos" + ChatColor.RESET + "]-------------------"))
+        builder.append(String.format("-------------------[" + ChatColor.RED + "Thermos" + ChatColor.RESET + "]-------------------"));
         builder.append(String.format("/%s check - Check for an update.\n", NAME));
         builder.append(String.format("/%s tps - Show tps statistics.\n", NAME));
         builder.append(String.format("/%s restart - Restart the server.\n", NAME));
