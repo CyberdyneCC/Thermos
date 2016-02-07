@@ -83,7 +83,7 @@ Please read the [guide](https://github.com/TCPR/Thermos/blob/master/CONTRIBUTING
   * If you have gradle integration in IDE - you can still use gui
   * Auto: `build.sh`
   * Manual:
-  `./gradlew setupCauldron jar packageBundle`
+  `./gradlew setupCauldron jar`
 
 All builds will be in `build/distributions`
   
@@ -91,7 +91,7 @@ All builds will be in `build/distributions`
 * Update sources
   * `git pull origin master`
 * Re apply patches & build binaries
-  * `./gradlew clean setupCauldron jar packageBundle`
+  * `./gradlew clean setupCauldron jar`
 
 [forge]: https://img.shields.io/badge/Minecraft%20Forge-v10.13.4.1614-green.svg "Minecraft Forge v10.13.4.1614"
 [mc]: https://img.shields.io/badge/Minecraft-v1.7.10-green.svg "Minecraft 1.7.10"
