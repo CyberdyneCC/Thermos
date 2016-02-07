@@ -17,6 +17,8 @@ Advantages over KCauldron:
 + Many patches that KCauldron didn't get from Spigot
 
 
+## Installation
+Click [here](INSTALLATION.md)
 
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
