@@ -128,7 +128,7 @@
 +                        break;
 +                }
 +                if(!(x==0 && y==0 && z == 0 && face==-1)) {
-+                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
++                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
 +                }
@@ -164,7 +164,7 @@
 +                        break;
 +                }
 +                if(!(x==0 && y==0 && z == 0)) {
-+                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.getHeldItem());
++                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
 +                }
