@@ -6,7 +6,17 @@
 ![Java JDK v1.8][java]
 ![Spigot 1.7.10 Snapshot ][spigot]
 
-### Thermos is a server software aimed at eliminating all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Thermos experience.
+### What's Thermos?
+Thermos is a fork of KCauldron, a craftbukkit forge server for Minecraft 1.7.10. After periods of inactivity on KCauldron's GitLab concerning major issues, Thermos was created to allow active members of the Minecraft coding community to optimize it and provide fixes in a timely manner.
+
+We hope to eliminate all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Thermos experience.
+
+Advantages over KCauldron:
++ Lag-lowering optimizations
++ Better world protection (Forge stuff doesn't bypass Bukkit plugins!)
++ Many patches that KCauldron didn't get from Spigot
+
+
 
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
