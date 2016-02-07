@@ -21,10 +21,6 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (hasPermission(player)) {
-            if (Thermos.isLegacy()) {
-            }            
-            if (!Thermos.isOfficial()) {
-            }            
             if (mHasUpdate) {
                 sendUpdate(player);
             }
@@ -36,8 +32,7 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     }
 
     private void sendUpdate(CommandSender player) {
-        CommandSenderUpdateCallback.newVersion(player, mCurrentVersion,
-                mNewVersion);
+        CommandSenderUpdateCallback.newVersion(player, mCurrentVersion, mNewVersion);
     }
 
     private boolean mHasUpdate;
@@ -59,8 +54,8 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
         mCurrentVersion = Thermos.getCurrentVersion();
         mNewVersion = newVersion;
         if (!mHasUpdate) {
-            Bukkit.getConsoleSender().sendMessage(
-                    "New version of Thermos avaiable: " + newVersion);
+            Bukkit.getConsoleSender().sendMessage("New version of Thermos avaiable: " + newVersion);
+            Bukkit.getConsoleSender().sendMessage("Download at: https://tcpr.ca/downloads/thermos");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (hasPermission(player)) {
                     sendUpdate(player);

@@ -11,20 +11,14 @@ import net.minecraftforge.cauldron.configuration.StringSetting;
 public class ThermosConfig extends ConfigBase {
     public BoolSetting commandEnable = new BoolSetting(this, "command.enable",
             true, "Enable Thermos command");
-    public BoolSetting updatecheckerEnable = new BoolSetting(this,
-            "updatechecker.enable", false, "Enable Thermos update checker");
-    public StringSetting updatecheckerSymlinks = new StringSetting(this,
-            "updatechecker.symlinks", "Thermos.jar", "(Re)create symlinks after update");
-    public BoolSetting updatecheckerQuiet = new BoolSetting(this,
-            "updatechecker.quiet", false, "Print less info during update");
+    public BoolSetting updatecheckerEnable = new BoolSetting(this, "updatechecker.enable", true, "Enable Thermos update checker");
+    public StringSetting updatecheckerSymlinks = new StringSetting(this, "updatechecker.symlinks", "Thermos.jar", "(Re)create symlinks after update");
+    public BoolSetting updatecheckerQuiet = new BoolSetting(this, "updatechecker.quiet", false, "Print less info during update");
 
-    public BoolSetting loggingMaterialInjection = new BoolSetting(this,
-            "logging.materialInjection", false, "Log material injection event");
-    public BoolSetting loggingClientModList = new BoolSetting(this,
-            "logging.clientModList", true, "Print client's mod list during attempt to join");
+    public BoolSetting loggingMaterialInjection = new BoolSetting(this, "logging.materialInjection", false, "Log material injection event");
+    public BoolSetting loggingClientModList = new BoolSetting(this, "logging.clientModList", true, "Print client's mod list during attempt to join");
         
-    public BoolSetting commonAllowNetherPortal = new BoolSetting(this,
-            "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
+    public BoolSetting commonAllowNetherPortal = new BoolSetting(this, "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
     
     public ThermosConfig() {
         super("thermos.yml", "th");

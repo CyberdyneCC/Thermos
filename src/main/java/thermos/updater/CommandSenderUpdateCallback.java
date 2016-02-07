@@ -24,9 +24,7 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
     public void upToDate() {
         CommandSender sender = mSender.get();
         if (sender != null) {
-            sender.sendMessage(ChatColor.GREEN
-                    + "Running version of Thermos is up-to-date: "
-                    + Thermos.getCurrentVersion());
+            sender.sendMessage(ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Thermos is up-to-date: " + Thermos.getCurrentVersion());
         }
         DefaultUpdateCallback.INSTANCE.upToDate();
     }
@@ -43,19 +41,16 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
     public static void newVersion(CommandSender sender, String currentVersion,
             String newVersion) {
         sender.sendMessage(new String[] {
-                ChatColor.YELLOW + "Found new version of Thermos: "
-                        + newVersion,
-                ChatColor.YELLOW + "Current is " + currentVersion,
-                ChatColor.YELLOW + "Type '" + ChatColor.BLUE + "/kc update"
-                        + ChatColor.YELLOW + "' to update" });
+                ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Found new version of Thermos: " + newVersion,
+                ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Current version is: " + currentVersion,
+                ChatColor.RED + "[Thermos] " + ChatColor.GREEN + "Download at: https://tcpr.ca/downloads/thermos" });
     }
 
     @Override
     public void error(Throwable t) {
         CommandSender sender = mSender.get();
         if (sender != null) {
-            sender.sendMessage(ChatColor.RED
-                    + "Error ocurred durring version check, see details in server log");
+            sender.sendMessage(ChatColor.RED + "[Thermos] " + ChatColor.DARK_RED + "Error ocurred durring version check, see details in server log.");
         }
     }
 }
