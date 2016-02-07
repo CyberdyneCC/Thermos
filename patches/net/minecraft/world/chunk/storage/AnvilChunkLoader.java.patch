@@ -57,7 +57,7 @@
                  // Have to move tile entities since we don't load them at this stage
                  NBTTagList tileEntities = p_75822_4_.getCompoundTag("Level").getTagList("TileEntities", 10);
  
-@@ -187,7 +199,17 @@
+@@ -187,8 +199,18 @@
  
      public void saveChunk(World p_75816_1_, Chunk p_75816_2_) throws MinecraftException, IOException
      {
@@ -71,11 +71,12 @@
 +        {
 +            ex.printStackTrace();
 +        }
-+
-+        // CraftBukkit end
  
++        // CraftBukkit end
++
          try
          {
+             NBTTagCompound nbttagcompound = new NBTTagCompound();
 @@ -230,7 +252,7 @@
  
      public boolean writeNextIO()
@@ -167,14 +168,14 @@
 -                            entity.mountEntity(entity1);
 -                        }
 +                            Entity entity1 = EntityList.createEntityFromNBT(nbttagcompound2.getCompoundTag("Riding"), p_75823_1_);
-+
+ 
+-                        entity = entity1;
 +                            if (entity1 != null)
 +                            {
 +                                chunk.addEntity(entity1);
 +                                entity.mountEntity(entity1);
 +                            }
- 
--                        entity = entity1;
++
 +                            entity = entity1;
 +                        }
                      }
@@ -232,9 +233,3 @@
  
          // return chunk;
      }
-@@ -531,4 +586,4 @@
-                 this.nbtTags = p_i2002_2_;
-             }
-         }
--}
-+}

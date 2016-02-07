@@ -219,7 +219,6 @@
  
          return ichatcomponent;
      }
--}
 +    
 +    // Spigot start
 +    public static boolean fastMatches(ItemStack is1, ItemStack is2) {
@@ -228,4 +227,4 @@
 +        return false;
 +    }
 +    // Spigot end
-+}
+ }

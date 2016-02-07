@@ -12,20 +12,21 @@
  public class BlockSkull extends BlockContainer
  {
      private static final String __OBFID = "CL_00000307";
-@@ -135,9 +140,11 @@
+@@ -135,10 +140,12 @@
              if ((p_149749_6_ & 8) == 0)
              {
                  ItemStack itemstack = new ItemStack(Items.skull, 1, this.getDamageValue(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_));
 -                TileEntitySkull tileentityskull = (TileEntitySkull)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
 +                TileEntity tileEntity = p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
-+
-+                if (!(tileEntity instanceof TileEntitySkull)) return ret;
  
 -                if (tileentityskull == null) return ret;
-+                TileEntitySkull tileentityskull = (TileEntitySkull) tileEntity;
++                if (!(tileEntity instanceof TileEntitySkull)) return ret;
  
++                TileEntitySkull tileentityskull = (TileEntitySkull) tileEntity;
++
                  if (tileentityskull.func_145904_a() == 3 && tileentityskull.func_152108_a() != null)
                  {
+                     itemstack.setTagCompound(new NBTTagCompound());
 @@ -172,16 +179,18 @@
              {
                  if (p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + l) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + l + 1) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 2, p_149965_4_ + l + 1) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + l + 2) == Blocks.soul_sand && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + l, 1) && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + l + 1, 1) && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + l + 2, 1))
@@ -168,9 +169,3 @@
                      return;
                  }
              }
-@@ -300,4 +305,4 @@
-     {
-         return this.getTextureName() + "_" + ItemSkull.field_94587_a[0];
-     }
--}
-+}

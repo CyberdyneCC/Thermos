@@ -199,7 +199,7 @@
 +            {
 +                entityplayermp1.playerNetServerHandler.sendPacket(packet);
 +            }
-+        }
+         }
 +        // CraftBukkit end
 +        for (int i = 0; i < this.playerEntityList.size(); ++i)
 +        {
@@ -213,7 +213,7 @@
 +
 +            // .name -> .listName
 +            p_72377_1_.playerNetServerHandler.sendPacket(new S38PacketPlayerListItem(entityplayermp1.listName, true, entityplayermp1.ping));
-         }
++        }
 +        // CraftBukkit end
 +        thermos.updater.DefaultUpdateCallback.INSTANCE.onPlayerJoin(playerJoinEvent);
      }
@@ -432,8 +432,15 @@
          {
 -            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(p_72368_1_.dimension));
 +            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(0));
-+        }
-+
+         }
+ 
+-        EntityPlayerMP entityplayermp1 = new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);
+-        entityplayermp1.playerNetServerHandler = p_72368_1_.playerNetServerHandler;
+-        entityplayermp1.clonePlayer(p_72368_1_, p_72368_3_);
+-        entityplayermp1.dimension = p_72368_2_;
+-        entityplayermp1.setEntityId(p_72368_1_.getEntityId());
+-        WorldServer worldserver = this.mcServer.worldServerForDimension(p_72368_1_.dimension);
+-        this.func_72381_a(entityplayermp1, p_72368_1_, worldserver);
 +        return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
 +       // */
 +        return player;
@@ -482,15 +489,8 @@
 +            {
 +                return null;
 +            }
-         }
- 
--        EntityPlayerMP entityplayermp1 = new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);
--        entityplayermp1.playerNetServerHandler = p_72368_1_.playerNetServerHandler;
--        entityplayermp1.clonePlayer(p_72368_1_, p_72368_3_);
--        entityplayermp1.dimension = p_72368_2_;
--        entityplayermp1.setEntityId(p_72368_1_.getEntityId());
--        WorldServer worldserver = this.mcServer.worldServerForDimension(p_72368_1_.dimension);
--        this.func_72381_a(entityplayermp1, p_72368_1_, worldserver);
++        }
++
 +        // Phase 3 - remove current player from current dimension
 +        par1EntityPlayerMP.getServerForPlayer().getEntityTracker().removePlayerFromTrackers(par1EntityPlayerMP);
 +        // par1EntityPlayerMP.getServerForPlayer().getEntityTracker().removeEntityFromAllTrackingPlayers(par1EntityPlayerMP); // CraftBukkit
@@ -519,7 +519,8 @@
 +            {
 +                chunkcoordinates1 = EntityPlayer.verifyRespawnCoordinates(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension),
 +                        bedSpawnChunkCoords, spawnForced);
-+
+ 
+-            if (chunkcoordinates1 != null)
 +                if (chunkcoordinates1 != null)
 +                {
 +                    isBedSpawn = true;
@@ -536,8 +537,7 @@
 +                    location = new Location(toWorld, toWorld.getSpawnLocation().getX(), toWorld.getSpawnLocation().getY(), toWorld.getSpawnLocation().getZ()); // use the spawnpoint as location
 +                }
 +            }
- 
--            if (chunkcoordinates1 != null)
++
 +            if (location == null)
              {
 -                entityplayermp1.setLocationAndAngles((double)((float)chunkcoordinates1.posX + 0.5F), (double)((float)chunkcoordinates1.posY + 0.1F), (double)((float)chunkcoordinates1.posZ + 0.5F), 0.0F, 0.0F);
@@ -559,12 +559,12 @@
 +                location = respawnEvent.getRespawnLocation();
              }
 +            par1EntityPlayerMP.reset();
-+        }
+         }
 +        else
 +        // plugin
 +        {
 +            location.setWorld(this.mcServer.worldServerForDimension(targetDimension).getWorld());
-         }
++        }
  
 -        worldserver.theChunkProviderServer.loadChunk((int)entityplayermp1.posX >> 4, (int)entityplayermp1.posZ >> 4);
 +        WorldServer targetWorld = ((CraftWorld) location.getWorld()).getHandle();
@@ -634,16 +634,6 @@
  
 -    public void transferPlayerToDimension(EntityPlayerMP p_72356_1_, int p_72356_2_, Teleporter teleporter)
 +    public void transferPlayerToDimension(EntityPlayerMP p_72356_1_, int p_72356_2_, Teleporter teleporter) // mods such as Twilight Forest call this method directly
-+    {
-+        this.transferPlayerToDimension(p_72356_1_, p_72356_2_, teleporter, TeleportCause.MOD); // use our mod cause
-+    }
-+
-+    public void transferPlayerToDimension(EntityPlayerMP par1EntityPlayerMP, int par2, TeleportCause cause)
-+    {
-+        this.transferPlayerToDimension(par1EntityPlayerMP, par2, mcServer.worldServerForDimension(par2).getDefaultTeleporter(), cause);
-+    }
-+
-+    public void transferPlayerToDimension(EntityPlayerMP par1EntityPlayerMP, int targetDimension, Teleporter teleporter, TeleportCause cause) // Cauldron - add TeleportCause
      {
 -        int j = p_72356_1_.dimension;
 -        WorldServer worldserver = this.mcServer.worldServerForDimension(p_72356_1_.dimension);
@@ -659,6 +649,16 @@
 -        this.updateTimeAndWeatherForPlayer(p_72356_1_, worldserver1);
 -        this.syncPlayerInventory(p_72356_1_);
 -        Iterator iterator = p_72356_1_.getActivePotionEffects().iterator();
++        this.transferPlayerToDimension(p_72356_1_, p_72356_2_, teleporter, TeleportCause.MOD); // use our mod cause
++    }
+ 
++    public void transferPlayerToDimension(EntityPlayerMP par1EntityPlayerMP, int par2, TeleportCause cause)
++    {
++        this.transferPlayerToDimension(par1EntityPlayerMP, par2, mcServer.worldServerForDimension(par2).getDefaultTeleporter(), cause);
++    }
++
++    public void transferPlayerToDimension(EntityPlayerMP par1EntityPlayerMP, int targetDimension, Teleporter teleporter, TeleportCause cause) // Cauldron - add TeleportCause
++    {
 +        // Allow Forge hotloading on teleport
 +        WorldServer fromWorld = this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension);
 +        WorldServer exitWorld = this.mcServer.worldServerForDimension(targetDimension);
@@ -736,7 +736,7 @@
 +        this.updateTimeAndWeatherForPlayer(par1EntityPlayerMP, exitWorld);
 +        this.syncPlayerInventory(par1EntityPlayerMP);
 +        Iterator iterator = par1EntityPlayerMP.getActivePotionEffects().iterator();
- 
++
          while (iterator.hasNext())
          {
 -            PotionEffect potioneffect = (PotionEffect)iterator.next();
@@ -948,13 +948,14 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,11 +1573,29 @@
+@@ -1032,12 +1573,30 @@
  
      public void removeAllPlayers()
      {
 -        for (int i = 0; i < this.playerEntityList.size(); ++i)
 +        while (!this.playerEntityList.isEmpty())
-+        {
+         {
+-            ((EntityPlayerMP)this.playerEntityList.get(i)).playerNetServerHandler.kickPlayerFromServer("Server closed");
 +            // Spigot start
 +            EntityPlayerMP p = (EntityPlayerMP) this.playerEntityList.get(0);
 +            p.playerNetServerHandler.kickPlayerFromServer(this.mcServer.server.getShutdownMessage());
@@ -964,19 +965,19 @@
 +                this.playerEntityList.remove(0); // Prevent shutdown hang if already disconnected
 +            }
 +            // Spigot end
-+        }
-+    }
-+
+         }
+     }
+ 
 +    // CraftBukkit start - Support multi-line messages
 +    public void sendMessage(IChatComponent[] ichatbasecomponent)
 +    {
 +        for (IChatComponent component : ichatbasecomponent)
-         {
--            ((EntityPlayerMP)this.playerEntityList.get(i)).playerNetServerHandler.kickPlayerFromServer("Server closed");
++        {
 +            sendChatMsgImpl(component, true);
-         }
-     }
++        }
++    }
 +    // CraftBukkit end
- 
++
      public void sendChatMsgImpl(IChatComponent p_148544_1_, boolean p_148544_2_)
      {
+         this.mcServer.addChatMessage(p_148544_1_);

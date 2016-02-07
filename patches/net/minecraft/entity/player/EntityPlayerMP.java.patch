@@ -119,7 +119,7 @@
      }
  
      public void readEntityFromNBT(NBTTagCompound p_70037_1_)
-@@ -170,13 +232,56 @@
+@@ -170,14 +232,57 @@
                  this.theItemInWorldManager.setGameType(WorldSettings.GameType.getByID(p_70037_1_.getInteger("playerGameType")));
              }
          }
@@ -132,8 +132,8 @@
          super.writeEntityToNBT(p_70014_1_);
          p_70014_1_.setInteger("playerGameType", this.theItemInWorldManager.getGameType().getID());
 +        this.getBukkitEntity().setExtraData(p_70014_1_); // CraftBukkit
-+    }
-+
+     }
+ 
 +    // CraftBukkit start - World fallback code, either respawn location or global spawn
 +
 +    /**
@@ -171,11 +171,12 @@
 +
 +        this.dimension = ((WorldServer) this.worldObj).provider.dimensionId;
 +        this.theItemInWorldManager.setWorld((WorldServer) world);
-     }
++    }
 +    // CraftBukkit end
- 
++
      public void addExperienceLevel(int p_82242_1_)
      {
+         super.addExperienceLevel(p_82242_1_);
 @@ -240,7 +345,7 @@
              ArrayList arraylist1 = new ArrayList();
              Chunk chunk;
@@ -265,11 +266,11 @@
 +        {
 +            return;
 +        }
-+
-+        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<org.bukkit.inventory.ItemStack>();
-+        boolean keepInventory = this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
  
 -        if (!this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))
++        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<org.bukkit.inventory.ItemStack>();
++        boolean keepInventory = this.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory");
++
 +        if (!keepInventory)
          {
 +            // Cauldron start - rework CraftBukkit logic to support Forge better
@@ -372,7 +373,7 @@
          if (this.isPlayerSleeping())
          {
              this.getServerForPlayer().getEntityTracker().func_151248_b(this, new S0BPacketAnimation(this, 2));
-@@ -584,9 +754,25 @@
+@@ -584,11 +754,27 @@
  
      public void mountEntity(Entity p_70078_1_)
      {
@@ -381,8 +382,8 @@
 -        this.playerNetServerHandler.setPlayerLocation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
 +        // CraftBukkit start
 +        this.setPassengerOf(p_70078_1_);
-+    }
-+
+     }
+ 
 +    public void setPassengerOf(Entity entity)
 +    {
 +        // mount(null) doesn't really fly for overloaded methods,
@@ -398,9 +399,11 @@
 +        }
 +
 +        // CraftBukkit end
-     }
- 
++    }
++
      protected void updateFallState(double p_70064_1_, boolean p_70064_3_) {}
+ 
+     public void handleFalling(double p_71122_1_, boolean p_71122_3_)
 @@ -610,29 +796,64 @@
          this.currentWindowId = this.currentWindowId % 100 + 1;
      }
@@ -688,13 +691,13 @@
          this.playerNetServerHandler.sendPacket(new S2EPacketCloseWindow(this.openContainer.windowId));
          this.closeContainer();
      }
-@@ -853,7 +1174,18 @@
+@@ -853,8 +1174,19 @@
      public void setPlayerHealthUpdated()
      {
          this.lastHealth = -1.0E8F;
 +        this.lastExperience = -1; // CraftBukkit - Added to reset
-+    }
-+
+     }
+ 
 +    // CraftBukkit start - Support multi-line messages
 +    public void sendMessage(IChatComponent[] ichatcomponent) 
 +    {
@@ -702,11 +705,12 @@
 +        {
 +            this.addChatComponentMessage(component);
 +        }
-     }
++    }
 +    // CraftBukkit end
- 
++
      public void addChatComponentMessage(IChatComponent p_146105_1_)
      {
+         this.playerNetServerHandler.sendPacket(new S02PacketChat(p_146105_1_));
 @@ -1037,6 +1369,114 @@
          return this.field_143005_bX;
      }
@@ -822,9 +826,3 @@
      /* ===================================== FORGE START =====================================*/
      /**
       * Returns the default eye height of the player
-@@ -1048,4 +1488,4 @@
-         return 1.62F;
-     }
-     /* ===================================== FORGE END =====================================*/
--}
-+}

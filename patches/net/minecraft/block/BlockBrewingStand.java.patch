@@ -22,9 +22,3 @@
                          p_149749_1_.spawnEntityInWorld(entityitem);
                      }
                  }
-@@ -177,4 +183,4 @@
-     {
-         return this.iconBrewingStandBase;
-     }
--}
-+}

@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
 +++ ../src-work/minecraft/net/minecraftforge/event/world/ExplosionEvent.java
-@@ -1,13 +1,19 @@
+@@ -1,14 +1,20 @@
  package net.minecraftforge.event.world;
  
  import java.util.List;
@@ -15,13 +15,14 @@
  import net.minecraft.world.Explosion;
 -import net.minecraft.world.World;
 +import net.minecraft.world.*;
-+
+ 
 +import net.minecraftforge.common.util.*;
 +
 +import com.mojang.authlib.GameProfile;
- 
++
  /** ExplosionEvent triggers when an explosion happens in the world.<br>
   * <br>
+  * ExplosionEvent.Start is fired before the explosion actually occurs.<br>
 @@ -23,9 +29,12 @@
  {
      public final World world;
@@ -57,7 +58,7 @@
 +            }
 +            event = new ExplosionPrimeEvent(ce, 8.0F, true);
 +            server.getPluginManager().callEvent(event);
-+        }
+         }
 +        @Override
 +        public boolean isCanceled()
 +        {
@@ -72,14 +73,8 @@
 +                throw new IllegalArgumentException("Attempted to cancel a uncancelable event");
 +            }
 +            super.setCanceled(cancel); this.event.setCancelled(cancel);
-         }
++        }
 +
      }
  
      /** ExplosionEvent.Detonate is fired once the explosion has a list of affected blocks and entities.  These lists can be modified to change the outcome.<br>
-@@ -73,4 +113,4 @@
-             return entityList;
-         }
-     }
--}
-+}

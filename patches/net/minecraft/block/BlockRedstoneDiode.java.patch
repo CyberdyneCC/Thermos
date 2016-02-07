@@ -63,9 +63,3 @@
                  if (!flag)
                  {
                      p_149674_1_.scheduleBlockUpdateWithPriority(p_149674_2_, p_149674_3_, p_149674_4_, this.getBlockPowered(), this.func_149899_k(l), -1);
-@@ -315,4 +336,4 @@
-     {
-         return this.func_149907_e(p_149667_1_);
-     }
--}
-+}

@@ -15,7 +15,9 @@
 -                }
 -
 -                name.append(arg);
--            }
++            if (true) {
++                sender.sendMessage("This server is not running any plugins.");
+             }
 -
 -            String pluginName = name.toString();
 -            Plugin exactPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
@@ -36,9 +38,7 @@
 -            if (!found) {
 -                sender.sendMessage("This server is not running any plugin by that name.");
 -                sender.sendMessage("Use /plugins to get a list of plugins.");
-+            if (true) {
-+                sender.sendMessage("This server is not running any plugins.");
-             }
+-            }
          }
          return true;
      }
@@ -94,5 +94,4 @@
 -        return ImmutableList.of();
 +        return ImmutableList.of();*/
      }
--}
-+}
+ }

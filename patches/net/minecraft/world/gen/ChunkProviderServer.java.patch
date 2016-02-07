@@ -223,8 +223,12 @@
                  }
 +
 +                newChunk = true; // CraftBukkit
-+            }
-+
+             }
+ 
+-            this.loadedChunkHashMap.add(k, chunk);
+-            this.loadedChunks.add(chunk);
+-            loadingChunks.remove(k);
+-            chunk.onChunkLoad();
 +            this.loadedChunkHashMap_TH.put(LongHash.toLong(p_73158_1_, p_73158_2_), chunk);
 +            Chunk[][] temp_chunk_bunch = chunk_array_get(p_73158_1_, p_73158_2_);
 +            if(temp_chunk_bunch != null)
@@ -255,12 +259,8 @@
 +                 * no way of creating a CraftWorld/CraftServer at that point.
 +                 */
 +                server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(chunk.bukkitChunk, newChunk));
-             }
- 
--            this.loadedChunkHashMap.add(k, chunk);
--            this.loadedChunks.add(chunk);
--            loadingChunks.remove(k);
--            chunk.onChunkLoad();
++            }
++
 +            // Update neighbor counts
 +            for (int x = -2; x < 3; x++) {
 +                for (int z = -2; z < 3; z++) {
@@ -547,7 +547,6 @@
      }
  
      public void recreateStructures(int p_82695_1_, int p_82695_2_) {}
--}
 +
 +    // Cauldron start
 +    private boolean shouldLoadChunk()
@@ -615,4 +614,4 @@
 +            }
 +     }
 +    // Cauldron end
-+}
+ }

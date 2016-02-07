@@ -127,6 +127,9 @@
          if (this.ridingEntity != null && p_70078_1_ == null)
          {
 -            if (!this.worldObj.isRemote)
+-            {
+-                this.dismountEntity(this.ridingEntity);
+-            }
 +            worldObj.getServer().getPluginManager()
 +                    .callEvent(new org.spigotmc.event.entity.EntityDismountEvent(this.getBukkitEntity(), this.ridingEntity.getBukkitEntity())); // Spigot
 +            // CraftBukkit start - use parent method instead to correctly fire
@@ -142,17 +145,13 @@
 +             * this.vehicle = null;
 +             */
 +            super.setPassengerOf(p_70078_1_);
-+
+ 
+-            if (this.ridingEntity != null)
 +            if (!this.worldObj.isRemote && this.ridingEntity == null)
              {
--                this.dismountEntity(this.ridingEntity);
+-                this.ridingEntity.riddenByEntity = null;
 +                this.dismountEntity(originalVehicle);
              }
--
--            if (this.ridingEntity != null)
--            {
--                this.ridingEntity.riddenByEntity = null;
--            }
 -
 -            this.ridingEntity = null;
 +            // CraftBukkit end
@@ -512,9 +511,3 @@
          }
      }
  
-@@ -2332,4 +2550,4 @@
- 
-         private static final String __OBFID = "CL_00001712";
-     }
--}
-+}

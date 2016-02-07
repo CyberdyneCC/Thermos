@@ -157,7 +157,7 @@
 +            // CraftBukkit start - Call event on collection of items from inventories into the hopper
 +            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(p_145892_1_.decrStackSize(p_145892_2_, 1));
 +            Inventory sourceInventory = null;
-+
+ 
 +            // Have to special case large chests as they work oddly
 +            if (p_145892_1_ instanceof InventoryLargeChest)
 +            {
@@ -206,7 +206,7 @@
 +            }
 +
 +            ItemStack itemstack2 = func_145889_a(p_145892_0_, CraftItemStack.asNMSCopy(event.getItem()), -1);
- 
++
              if (itemstack2 == null || itemstack2.stackSize == 0)
              {
 -                p_145892_1_.markDirty();
@@ -244,9 +244,3 @@
              ItemStack itemstack = p_145898_1_.getEntityItem().copy();
              ItemStack itemstack1 = func_145889_a(p_145898_0_, itemstack, -1);
  
-@@ -641,4 +814,4 @@
-     {
-         return this.field_145901_j > 0;
-     }
--}
-+}

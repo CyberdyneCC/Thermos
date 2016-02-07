@@ -115,9 +115,3 @@
          p_148840_1_.writeShort(this.field_149266_a.length);
          p_148840_1_.writeInt(this.field_149261_g);
          p_148840_1_.writeBoolean(this.field_149267_h);
-@@ -241,4 +251,4 @@
-     {
-         this.processPacket((INetHandlerPlayClient)p_148833_1_);
-     }
--}
-+}

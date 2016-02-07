@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/crash/CrashReport.java
 +++ ../src-work/minecraft/net/minecraft/crash/CrashReport.java
-@@ -15,12 +16,18 @@
+@@ -15,12 +15,18 @@
  import java.util.Iterator;
  import java.util.List;
  import java.util.concurrent.Callable;
@@ -19,7 +19,7 @@
  
  public class CrashReport
  {
-@@ -51,6 +58,38 @@
+@@ -51,6 +57,38 @@
                  return "1.7.10";
              }
          });

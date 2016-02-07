@@ -61,9 +61,3 @@
                  }
              }
          }
-@@ -293,4 +301,4 @@
-             public int field_150281_c;
-             private static final String __OBFID = "CL_00001305";
-         }
--}
-+}

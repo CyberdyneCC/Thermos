@@ -39,9 +39,3 @@
          return modList;
      }
  
-@@ -160,4 +184,4 @@
-     {
-         return nonModLibs;
-     }
--}
-+}

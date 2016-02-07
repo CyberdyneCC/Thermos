@@ -24,7 +24,7 @@
  import net.minecraft.network.play.server.S23PacketBlockChange;
  import net.minecraft.network.play.server.S2FPacketSetSlot;
  import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-@@ -81,18 +84,74 @@
+@@ -81,19 +84,75 @@
  import net.minecraft.util.IChatComponent;
  import net.minecraft.util.IntHashMap;
  import net.minecraft.util.ReportedException;
@@ -42,7 +42,7 @@
  import net.minecraftforge.event.ServerChatEvent;
  import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 -import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-+
+ 
 +// CraftBukkit start
 +import java.io.UnsupportedEncodingException;
 +import java.util.concurrent.ExecutionException;
@@ -98,9 +98,10 @@
 +import org.bukkit.craftbukkit.CraftServer;
 +import org.bukkit.event.inventory.InventoryType;
 +// Cauldron end
- 
++
  public class NetHandlerPlayServer implements INetHandlerPlayServer
  {
+     private static final Logger logger = LogManager.getLogger();
 @@ -107,13 +166,12 @@
      private long field_147379_i;
      private static Random field_147376_j = new Random();
@@ -538,7 +539,7 @@
              {
                  this.sendPacket(new S2FPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
              }
-@@ -624,13 +925,33 @@
+@@ -624,14 +925,34 @@
  
      public void onDisconnect(IChatComponent p_147231_1_)
      {
@@ -568,15 +569,16 @@
          this.playerEntity.mountEntityAndWakeUp();
 -        this.serverController.getConfigurationManager().playerLoggedOut(this.playerEntity);
 +        String quitMessage = this.serverController.getConfigurationManager().disconnect(this.playerEntity);
-+
+ 
 +        if ((quitMessage != null) && (quitMessage.length() > 0))
 +        {
 +            this.serverController.getConfigurationManager().sendMessage(CraftChatMessage.fromString(quitMessage));
 +        }
 +        // CraftBukkit end
- 
++
          if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
          {
+             logger.info("Stopping singleplayer server as player logged out");
 @@ -657,6 +978,18 @@
              }
          }
@@ -698,7 +700,7 @@
 -                if (chatcomponenttranslation1 == null) return;
 -                this.serverController.getConfigurationManager().sendChatMsgImpl(chatcomponenttranslation1, false);
 +                logger.warn(this.playerEntity.getCommandSenderName() + " tried to send an empty message");
-+            }
+             }
 +            else if (getPlayerB().isConversing())
 +            {
 +                getPlayerB().acceptConversationInput(s);
@@ -713,16 +715,13 @@
 +            {
 +                this.chat(s, true);
 +                // CraftBukkit end - the below is for reference. :)
-             }
++            }
  
 -            this.chatSpamThresholdCount += 20;
--
--            if (this.chatSpamThresholdCount > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
 +            // CraftBukkit start - replaced with thread safe throttle
 +            // this.chatSpamThresholdCount += 20;
 +            if (chatSpamField.addAndGet(this, 20) > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
-             {
--                this.kickPlayerFromServer("disconnect.spam");
++            {
 +                if (p_147354_1_.hasPriority())
 +                {
 +                    Waitable waitable = new Waitable() {
@@ -734,7 +733,8 @@
 +                        }
 +                    };
 +                    this.serverController.processQueue.add(waitable);
-+
+ 
+-            if (this.chatSpamThresholdCount > 200 && !this.serverController.getConfigurationManager().func_152596_g(this.playerEntity.getGameProfile()))
 +                    try
 +                    {
 +                        waitable.get();
@@ -754,10 +754,10 @@
 +                }
 +
 +                // CraftBukkit end
-             }
-         }
-     }
- 
++            }
++        }
++    }
++
 +    // CraftBukkit start
 +    public void chat(String s, boolean async)
 +    {
@@ -783,10 +783,11 @@
 +
 +            if (chatcomponenttranslation1 != null
 +                    && chatcomponenttranslation1.getFormatArgs()[chatcomponenttranslation1.getFormatArgs().length - 1] instanceof String)
-+            {
+             {
+-                this.kickPlayerFromServer("disconnect.spam");
 +                // use event message from Forge
 +                s = (String) chatcomponenttranslation1.getFormatArgs()[chatcomponenttranslation1.getFormatArgs().length - 1];
-+            }
+             }
 +            // Cauldron end
 +            Player player = this.getPlayerB();
 +            AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, s, new LazyPlayerSet()); // Cauldron - pass changed message if any from Forge
@@ -878,10 +879,10 @@
 +                    }
 +                }
 +            }
-+        }
-+    }
+         }
+     }
 +    // CraftBukkit end
-+
+ 
      private void handleSlashCommand(String p_147361_1_)
      {
 -        this.serverController.getCommandManager().executeCommand(this.playerEntity, p_147361_1_);
@@ -1133,7 +1134,7 @@
                  }
              }
          }
-@@ -834,7 +1581,18 @@
+@@ -834,8 +1581,19 @@
              case 1:
                  if (this.playerEntity.playerConqueredTheEnd)
                  {
@@ -1143,17 +1144,18 @@
 +                {
 +                    // We really should be calling transferPlayerToDimension since the player is coming in contact with a portal.
 +                    this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, true); // set flag to indicate player is leaving end.
-+                }
+                 }
 +                else
 +                // not coming from end
 +                {
 +                    this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, false);
 +                }
 +                // Cauldron end
-                 }
++                }
                  else if (this.playerEntity.getServerForPlayer().getWorldInfo().isHardcoreModeEnabled())
                  {
-@@ -871,16 +1629,460 @@
+                     if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
+@@ -871,17 +1629,461 @@
  
      public void processCloseWindow(C0DPacketCloseWindow p_147356_1_)
      {
@@ -1195,7 +1197,7 @@
 +            {
 +                return;
 +            }
-+
+ 
 +            InventoryView inventory = this.playerEntity.openContainer.getBukkitView();
 +            SlotType type = CraftInventoryView.getSlotType(inventory, p_147351_1_.func_149544_d());
 +            InventoryClickEvent event = null;
@@ -1612,9 +1614,10 @@
 +                }
 +            }
 +            // CraftBukkit end
- 
++
              if (ItemStack.areItemStacksEqual(p_147351_1_.func_149546_g(), itemstack))
              {
+                 this.playerEntity.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
 @@ -903,6 +2105,12 @@
                  }
  
@@ -1628,7 +1631,7 @@
              }
          }
      }
-@@ -925,8 +2133,60 @@
+@@ -925,9 +2133,61 @@
              boolean flag = p_147344_1_.func_149627_c() < 0;
              ItemStack itemstack = p_147344_1_.func_149625_d();
              boolean flag1 = p_147344_1_.func_149627_c() >= 1 && p_147344_1_.func_149627_c() < 36 + InventoryPlayer.getHotbarSize();
@@ -1645,7 +1648,7 @@
 +                InventoryView inventory = new CraftInventoryView(player, player.getInventory(), this.playerEntity.inventoryContainer);
 +                org.bukkit.inventory.ItemStack item = CraftItemStack.asBukkitCopy(p_147344_1_.func_149625_d()); // Should be packet107setcreativeslot.newitem
 +                SlotType type = SlotType.QUICKBAR;
-+
+ 
 +                if (flag)
 +                {
 +                    type = SlotType.OUTSIDE;
@@ -1687,9 +1690,10 @@
 +                }
 +            }
 +            // CraftBukkit end
- 
++
              if (flag1 && flag2 && flag3)
              {
+                 if (itemstack == null)
 @@ -956,6 +2216,11 @@
  
      public void processConfirmTransaction(C0FPacketConfirmTransaction p_147339_1_)
@@ -1785,7 +1789,7 @@
      }
  
      public void processTabComplete(C14PacketTabComplete p_147341_1_)
-@@ -1093,16 +2401,18 @@
+@@ -1093,16 +2402,18 @@
                  {
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
@@ -1808,7 +1812,7 @@
              }
              finally
              {
-@@ -1135,19 +2445,18 @@
+@@ -1135,19 +2446,18 @@
  
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
@@ -1834,7 +1838,7 @@
              }
              finally
              {
-@@ -1174,9 +2483,12 @@
+@@ -1174,9 +2484,12 @@
                          ((ContainerMerchant)container).setCurrentRecipeIndex(i);
                      }
                  }
@@ -1848,7 +1852,7 @@
                  }
              }
              else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
-@@ -1222,9 +2534,12 @@
+@@ -1222,9 +2535,12 @@
                              this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                          }
                      }
@@ -1863,7 +1867,7 @@
                      }
                      finally
                      {
-@@ -1257,9 +2572,12 @@
+@@ -1257,9 +2573,12 @@
                              tileentitybeacon.markDirty();
                          }
                      }
@@ -1878,7 +1882,7 @@
                      }
                  }
              }
-@@ -1281,6 +2599,13 @@
+@@ -1281,6 +2600,13 @@
                      containerrepair.updateItemName("");
                  }
              }
@@ -1892,7 +1896,7 @@
          }
      }
  
-@@ -1292,6 +2617,21 @@
+@@ -1292,6 +2618,21 @@
          }
      }
  

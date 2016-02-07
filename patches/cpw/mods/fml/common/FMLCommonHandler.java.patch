@@ -32,7 +32,7 @@
          handlerSet.add(handler);
          handlerToCheck = new WeakReference<SaveHandler>(handler); // for confirmBackupLevelDatUse
          Map<String,NBTBase> additionalProperties = Maps.newHashMap();
-@@ -496,7 +502,13 @@
+@@ -496,7 +502,14 @@
  
      public String getModName()
      {
@@ -48,7 +48,7 @@
          modNames.add("fml");
          if (!noForge)
          {
-@@ -540,8 +552,17 @@
+@@ -540,8 +553,17 @@
          bus().post(new InputEvent.KeyInputEvent());
      }
  

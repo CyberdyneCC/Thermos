@@ -84,7 +84,7 @@
  
 -                if (irecipe.matches(p_82787_1_, p_82787_2_))
 +                if (irecipe.matches(p_82787_1_, p_82787_2_) && p_82787_1_.resultInventory != null) // Cauldron - add null check for vanilla compatibility
-+                {
+                 {
 +                    // CraftBukkit start - INVENTORY_PRE_CRAFT event
 +                    p_82787_1_.currentRecipe = irecipe;
 +                    ItemStack result = irecipe.getCraftingResult(p_82787_1_);
@@ -93,7 +93,7 @@
 +                }
 +                // Cauldron start - vanilla
 +                else if (irecipe.matches(p_82787_1_, p_82787_2_))
-                 {
++                {
                      return irecipe.getCraftingResult(p_82787_1_);
                  }
 +                // Cauldron end
@@ -103,9 +103,3 @@
              return null;
          }
      }
-@@ -334,4 +386,4 @@
-     {
-         return this.recipes;
-     }
--}
-+}

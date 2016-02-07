@@ -135,9 +135,3 @@
      static class InboundHandlerTuplePacketListener
          {
              private final Packet field_150774_a;
-@@ -334,4 +377,4 @@
-                 this.field_150773_b = p_i45146_2_;
-             }
-         }
--}
-+}

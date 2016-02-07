@@ -25,9 +25,3 @@
              if (!file2.exists())
              {
                  file2.mkdirs();
-@@ -76,4 +81,4 @@
-         RegionFile regionfile = createOrLoadRegionFile(p_76552_0_, p_76552_1_, p_76552_2_);
-         return regionfile.getChunkDataOutputStream(p_76552_1_ & 31, p_76552_2_ & 31);
-     }
--}
-+}

@@ -120,9 +120,3 @@
  
                          // Forge: Grabs ALL tile entities is costly on a modded server, only send needed ones
                          for (k = 0; false && k < 16; ++k)
-@@ -597,4 +635,4 @@
-             }
-         }
-     }
--}
-+}
