@@ -5,7 +5,7 @@
          super(p_i1568_1_, p_i1568_2_);
          this.indirectEntity = p_i1568_3_;
 +        // KCauldron start - pass projectlie source
-+        if (damageSourceEntity != null && damageSourceEntity.getBukkitEntity() instanceof org.bukkit.entity.Projectile && indirectEntity.getBukkitEntity() instanceof org.bukkit.projectiles.ProjectileSource)
++        if (damageSourceEntity != null && damageSourceEntity.getBukkitEntity() instanceof org.bukkit.entity.Projectile && indirectEntity != null && indirectEntity.getBukkitEntity() instanceof org.bukkit.projectiles.ProjectileSource)
 +            ((org.bukkit.entity.Projectile) damageSourceEntity.getBukkitEntity()).setShooter((org.bukkit.projectiles.ProjectileSource) indirectEntity.getBukkitEntity());
 +        // KCauldron end
      }
