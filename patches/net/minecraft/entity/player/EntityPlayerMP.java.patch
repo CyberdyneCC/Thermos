@@ -711,7 +711,15 @@
      public void addChatComponentMessage(IChatComponent p_146105_1_)
      {
          this.playerNetServerHandler.sendPacket(new S02PacketChat(p_146105_1_));
-@@ -1037,6 +1369,114 @@
+@@ -878,6 +1210,7 @@
+ 
+     public void clonePlayer(EntityPlayer p_71049_1_, boolean p_71049_2_)
+     {
++    	if (p_71049_1_ instanceof EntityPlayerMP) ((org.bukkit.craftbukkit.entity.CraftLivingEntity) (bukkitEntity = ((EntityPlayerMP) p_71049_1_).bukkitEntity)).updateEntity(this); // KCauldron forward craft player
+         super.clonePlayer(p_71049_1_, p_71049_2_);
+         this.lastExperience = -1;
+         this.lastHealth = -1.0F;
+@@ -1037,6 +1370,114 @@
          return this.field_143005_bX;
      }
  
