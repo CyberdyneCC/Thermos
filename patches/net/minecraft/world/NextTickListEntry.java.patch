@@ -5,7 +5,7 @@
      public int hashCode()
      {
 -        return (this.xCoord * 1024 * 1024 + this.zCoord * 1024 + this.yCoord) * 256;
-+        return ((yCoord * 31 + xCoord) * 31 + zCoord) * 17 + yCoord;
++    	return (((yCoord * 31 + xCoord) * 17 + zCoord) * 13 + yCoord) * 7 + Block.getIdFromBlock(field_151352_g);
      }
  
      public NextTickListEntry setScheduledTime(long p_77176_1_)

@@ -404,15 +404,33 @@
      }
  
      public boolean isBlockTickScheduledThisTick(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
-@@ -451,6 +635,7 @@
+@@ -447,10 +631,10 @@
+                 nextticklistentry.setPriority(p_147454_6_);
+             }
+ 
+-            if (!this.pendingTickListEntriesHashSet.contains(nextticklistentry))
++            if (this.pendingTickListEntriesHashSet.add(nextticklistentry))
              {
-                 this.pendingTickListEntriesHashSet.add(nextticklistentry);
-                 this.pendingTickListEntriesTreeSet.add(nextticklistentry);
-+                getChunkFromBlockCoords(p_147454_1_, p_147454_3_).blockUpdates.add(nextticklistentry);
+-                this.pendingTickListEntriesHashSet.add(nextticklistentry);
+-                this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++            	if (!this.pendingTickListEntriesTreeSet.add(nextticklistentry)) pendingTickListEntriesHashSet.remove(nextticklistentry); else {
++            		Chunk chunk = getChunkIfLoaded(p_147454_1_ >> 4, p_147454_3_ >> 4); if (chunk != null) chunk.blockUpdates.add(nextticklistentry); } // KCauldron
              }
          }
      }
-@@ -474,7 +659,7 @@
+@@ -465,16 +649,16 @@
+             nextticklistentry.setScheduledTime((long)p_147446_5_ + this.worldInfo.getWorldTotalTime());
+         }
+ 
+-        if (!this.pendingTickListEntriesHashSet.contains(nextticklistentry))
++        if (this.pendingTickListEntriesHashSet.add(nextticklistentry))
+         {
+-            this.pendingTickListEntriesHashSet.add(nextticklistentry);
+-            this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++        	 if (!this.pendingTickListEntriesTreeSet.add(nextticklistentry)) pendingTickListEntriesHashSet.remove(nextticklistentry); else {
++        		 Chunk chunk = getChunkIfLoaded(p_147446_1_ >> 4, p_147446_3_ >> 4); if (chunk != null) chunk.blockUpdates.add(nextticklistentry); }
+         }
+     }
  
      public void updateEntities()
      {
@@ -421,7 +439,7 @@
          {
              if (this.updateEntityTick++ >= 1200)
              {
-@@ -487,6 +672,7 @@
+@@ -487,6 +671,7 @@
          }
  
          super.updateEntities();
@@ -429,7 +447,7 @@
      }
  
      public void resetUpdateEntityTick()
-@@ -494,19 +680,60 @@
+@@ -494,19 +679,60 @@
          this.updateEntityTick = 0;
      }
  
@@ -494,7 +512,7 @@
              }
  
              this.theProfiler.startSection("cleaning");
-@@ -515,7 +742,8 @@
+@@ -515,7 +741,8 @@
              for (int j = 0; j < i; ++j)
              {
                  nextticklistentry = (NextTickListEntry)this.pendingTickListEntriesTreeSet.first();
@@ -504,7 +522,7 @@
                  if (!p_72955_1_ && nextticklistentry.scheduledTime > this.worldInfo.getWorldTotalTime())
                  {
                      break;
-@@ -523,6 +751,8 @@
+@@ -523,6 +750,8 @@
  
                  this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
                  this.pendingTickListEntriesHashSet.remove(nextticklistentry);
@@ -513,7 +531,7 @@
                  this.pendingTickListEntriesThisTick.add(nextticklistentry);
              }
  
-@@ -579,6 +809,7 @@
+@@ -579,6 +808,7 @@
              this.pendingTickListEntriesThisTick.clear();
              return !this.pendingTickListEntriesTreeSet.isEmpty();
          }
@@ -521,7 +539,7 @@
      }
  
      public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
-@@ -651,7 +882,37 @@
+@@ -651,7 +881,37 @@
      protected IChunkProvider createChunkProvider()
      {
          IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
@@ -560,7 +578,7 @@
          return this.theChunkProviderServer;
      }
  
-@@ -659,29 +920,31 @@
+@@ -659,29 +919,31 @@
      {
          ArrayList arraylist = new ArrayList();
  
@@ -607,7 +625,7 @@
          return arraylist;
      }
  
-@@ -704,7 +967,7 @@
+@@ -704,7 +966,7 @@
  
          if (this.pendingTickListEntriesHashSet == null)
          {
@@ -616,7 +634,7 @@
          }
  
          if (this.pendingTickListEntriesTreeSet == null)
-@@ -733,7 +996,28 @@
+@@ -733,7 +995,28 @@
              int i = 0;
              int j = this.provider.getAverageGroundLevel();
              int k = 0;
@@ -645,7 +663,7 @@
              if (chunkposition != null)
              {
                  i = chunkposition.chunkPosX;
-@@ -876,6 +1160,20 @@
+@@ -876,6 +1159,20 @@
  
      public boolean addWeatherEffect(Entity p_72942_1_)
      {
@@ -666,7 +684,7 @@
          if (super.addWeatherEffect(p_72942_1_))
          {
              this.mcServer.getConfigurationManager().sendToAllNear(p_72942_1_.posX, p_72942_1_.posY, p_72942_1_.posZ, 512.0D, this.provider.dimensionId, new S2CPacketSpawnGlobalEntity(p_72942_1_));
-@@ -894,13 +1192,24 @@
+@@ -894,13 +1191,24 @@
  
      public Explosion newExplosion(Entity p_72885_1_, double p_72885_2_, double p_72885_4_, double p_72885_6_, float p_72885_8_, boolean p_72885_9_, boolean p_72885_10_)
      {
@@ -692,7 +710,7 @@
          if (!p_72885_10_)
          {
              explosion.affectedBlockPositions.clear();
-@@ -977,7 +1286,7 @@
+@@ -977,7 +1285,7 @@
      {
          boolean flag = this.isRaining();
          super.updateWeather();
@@ -701,7 +719,7 @@
          if (this.prevRainingStrength != this.rainingStrength)
          {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
-@@ -988,10 +1297,6 @@
+@@ -988,10 +1296,6 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
  
@@ -712,7 +730,7 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1311,33 @@
+@@ -1006,6 +1310,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
@@ -746,7 +764,7 @@
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1401,66 @@
+@@ -1069,4 +1400,65 @@
                  this();
              }
          }
@@ -806,9 +824,8 @@
 +        nextticklistentry.setPriority(priority);
 +        if (block.getMaterial() != Material.air)
 +            nextticklistentry.setScheduledTime((long)time + this.worldInfo.getWorldTotalTime());
-+        if (!this.pendingTickListEntriesHashSet.contains(nextticklistentry)) {
-+            this.pendingTickListEntriesHashSet.add(nextticklistentry);
-+            this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++        if (this.pendingTickListEntriesHashSet.add(nextticklistentry)) {
++        	if (!this.pendingTickListEntriesTreeSet.add(nextticklistentry)) pendingTickListEntriesHashSet.remove(nextticklistentry);
 +        }
 +    return nextticklistentry;
 +    }    
