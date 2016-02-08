@@ -26,7 +26,7 @@ public class CraftChunk implements Chunk {
             this.weakChunk = new WeakReference<net.minecraft.world.chunk.Chunk>(chunk);
         }
 
-        worldServer = (net.minecraft.world.WorldServer) getHandle().worldObj;
+        worldServer = getHandle().worldObj instanceof net.minecraft.world.WorldServer ? (net.minecraft.world.WorldServer) getHandle().worldObj : null;
         x = getHandle().xPosition;
         z = getHandle().zPosition;
     }
