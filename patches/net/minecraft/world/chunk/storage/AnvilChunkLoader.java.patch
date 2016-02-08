@@ -234,7 +234,13 @@
          if (p_75823_2_.hasKey("TileTicks", 9))
          {
              NBTTagList nbttaglist3 = p_75823_2_.getTagList("TileTicks", 10);
-@@ -515,6 +569,7 @@
+@@ -511,10 +565,12 @@
+                 for (int j1 = 0; j1 < nbttaglist3.tagCount(); ++j1)
+                 {
+                     NBTTagCompound nbttagcompound5 = nbttaglist3.getCompoundTagAt(j1);
+-                    p_75823_1_.func_147446_b(nbttagcompound5.getInteger("x"), nbttagcompound5.getInteger("y"), nbttagcompound5.getInteger("z"), Block.getBlockById(nbttagcompound5.getInteger("i")), nbttagcompound5.getInteger("t"), nbttagcompound5.getInteger("p"));
++                    NextTickListEntry entry = ((net.minecraft.world.WorldServer) p_75823_1_).allocateEntry(nbttagcompound5.getInteger("x"), nbttagcompound5.getInteger("y"), nbttagcompound5.getInteger("z"), Block.getBlockById(nbttagcompound5.getInteger("i")), nbttagcompound5.getInteger("t"), nbttagcompound5.getInteger("p"));
++                    chunk.blockUpdates.add(entry);
                  }
              }
          }
