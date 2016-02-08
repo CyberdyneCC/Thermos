@@ -404,7 +404,21 @@
      }
  
      public boolean isBlockTickScheduledThisTick(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
-@@ -474,7 +658,7 @@
+@@ -451,6 +635,7 @@
+             {
+                 this.pendingTickListEntriesHashSet.add(nextticklistentry);
+                 this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++                getChunkFromBlockCoords(p_147454_1_, p_147454_3_).blockUpdates.add(nextticklistentry);
+             }
+         }
+     }
+@@ -469,12 +654,13 @@
+         {
+             this.pendingTickListEntriesHashSet.add(nextticklistentry);
+             this.pendingTickListEntriesTreeSet.add(nextticklistentry);
++            getChunkFromBlockCoords(p_147446_1_, p_147446_3_).blockUpdates.add(nextticklistentry);
+         }
+     }
  
      public void updateEntities()
      {
@@ -413,7 +427,7 @@
          {
              if (this.updateEntityTick++ >= 1200)
              {
-@@ -487,6 +671,7 @@
+@@ -487,6 +673,7 @@
          }
  
          super.updateEntities();
@@ -421,7 +435,7 @@
      }
  
      public void resetUpdateEntityTick()
-@@ -494,19 +679,60 @@
+@@ -494,19 +681,60 @@
          this.updateEntityTick = 0;
      }
  
@@ -486,7 +500,15 @@
              }
  
              this.theProfiler.startSection("cleaning");
-@@ -579,6 +805,7 @@
+@@ -523,6 +751,7 @@
+ 
+                 this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
+                 this.pendingTickListEntriesHashSet.remove(nextticklistentry);
++                getChunkFromBlockCoords(nextticklistentry.xCoord, nextticklistentry.zCoord).blockUpdates.remove(nextticklistentry); // KCauldron
+                 this.pendingTickListEntriesThisTick.add(nextticklistentry);
+             }
+ 
+@@ -579,6 +808,7 @@
              this.pendingTickListEntriesThisTick.clear();
              return !this.pendingTickListEntriesTreeSet.isEmpty();
          }
@@ -494,7 +516,7 @@
      }
  
      public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
-@@ -651,7 +878,37 @@
+@@ -651,7 +881,37 @@
      protected IChunkProvider createChunkProvider()
      {
          IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
@@ -533,7 +555,7 @@
          return this.theChunkProviderServer;
      }
  
-@@ -659,29 +916,31 @@
+@@ -659,29 +919,31 @@
      {
          ArrayList arraylist = new ArrayList();
  
@@ -580,7 +602,7 @@
          return arraylist;
      }
  
-@@ -704,7 +963,7 @@
+@@ -704,7 +966,7 @@
  
          if (this.pendingTickListEntriesHashSet == null)
          {
@@ -589,7 +611,7 @@
          }
  
          if (this.pendingTickListEntriesTreeSet == null)
-@@ -733,7 +992,28 @@
+@@ -733,7 +995,28 @@
              int i = 0;
              int j = this.provider.getAverageGroundLevel();
              int k = 0;
@@ -618,7 +640,7 @@
              if (chunkposition != null)
              {
                  i = chunkposition.chunkPosX;
-@@ -876,6 +1156,20 @@
+@@ -876,6 +1159,20 @@
  
      public boolean addWeatherEffect(Entity p_72942_1_)
      {
@@ -639,7 +661,7 @@
          if (super.addWeatherEffect(p_72942_1_))
          {
              this.mcServer.getConfigurationManager().sendToAllNear(p_72942_1_.posX, p_72942_1_.posY, p_72942_1_.posZ, 512.0D, this.provider.dimensionId, new S2CPacketSpawnGlobalEntity(p_72942_1_));
-@@ -894,13 +1188,24 @@
+@@ -894,13 +1191,24 @@
  
      public Explosion newExplosion(Entity p_72885_1_, double p_72885_2_, double p_72885_4_, double p_72885_6_, float p_72885_8_, boolean p_72885_9_, boolean p_72885_10_)
      {
@@ -665,7 +687,7 @@
          if (!p_72885_10_)
          {
              explosion.affectedBlockPositions.clear();
-@@ -977,7 +1282,7 @@
+@@ -977,7 +1285,7 @@
      {
          boolean flag = this.isRaining();
          super.updateWeather();
@@ -674,7 +696,7 @@
          if (this.prevRainingStrength != this.rainingStrength)
          {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
-@@ -988,10 +1293,6 @@
+@@ -988,10 +1296,6 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
  
@@ -685,7 +707,7 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1307,33 @@
+@@ -1006,6 +1310,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
@@ -719,7 +741,7 @@
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1397,51 @@
+@@ -1069,4 +1400,51 @@
                  this();
              }
          }

@@ -140,6 +140,15 @@
                  }
  
                  nbttaglist.appendTag(nbttagcompound1);
+@@ -379,7 +401,7 @@
+         }
+ 
+         p_75820_3_.setTag("TileEntities", nbttaglist3);
+-        List list = p_75820_2_.getPendingBlockUpdates(p_75820_1_, false);
++        Set list = p_75820_1_.blockUpdates;
+ 
+         if (list != null)
+         {
 @@ -455,6 +477,7 @@
  
      public void loadEntities(World p_75823_1_, NBTTagCompound p_75823_2_, Chunk chunk)
