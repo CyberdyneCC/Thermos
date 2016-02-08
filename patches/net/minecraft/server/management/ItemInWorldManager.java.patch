@@ -44,7 +44,7 @@
  public class ItemInWorldManager
  {
      /** Forge reach distance */
-@@ -135,15 +155,28 @@
+@@ -135,15 +155,27 @@
  
      public void onBlockClicked(int p_73074_1_, int p_73074_2_, int p_73074_3_, int p_73074_4_)
      {
@@ -54,8 +54,7 @@
 -            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(thisPlayerMP, Action.LEFT_CLICK_BLOCK, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_, theWorld);
 -            if (event.isCanceled())
 +            org.bukkit.event.player.PlayerInteractEvent cbEvent = CraftEventFactory.callPlayerInteractEvent(this.thisPlayerMP, Action.LEFT_CLICK_BLOCK, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_, this.thisPlayerMP.inventory.getCurrentItem());
-+            net.minecraftforge.event.entity.player.PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(this.thisPlayerMP, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_, theWorld); // Forge
-+            //org.bukkit.event.player.PlayerInteractEvent cbEvent = event.cb;
++            net.minecraftforge.event.entity.player.PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(this.thisPlayerMP, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_, theWorld, cbEvent); // Forge
 +           if (event.isCanceled())
              {
 -                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(p_73074_1_, p_73074_2_, p_73074_3_, theWorld));
@@ -76,7 +75,7 @@
              if (this.isCreative())
              {
                  if (!this.theWorld.extinguishFire((EntityPlayer)null, p_73074_1_, p_73074_2_, p_73074_3_, p_73074_4_))
-@@ -157,30 +190,56 @@
+@@ -157,30 +189,56 @@
                  float f = 1.0F;
                  Block block = this.theWorld.getBlock(p_73074_1_, p_73074_2_, p_73074_3_);
  
@@ -145,7 +144,7 @@
                  if (!block.isAir(theWorld, p_73074_1_, p_73074_2_, p_73074_3_) && f >= 1.0F)
                  {
                      this.tryHarvestBlock(p_73074_1_, p_73074_2_, p_73074_3_);
-@@ -197,6 +256,10 @@
+@@ -197,6 +255,10 @@
                  }
              }
          }
@@ -156,7 +155,7 @@
      }
  
      public void uncheckedTryHarvestBlock(int p_73082_1_, int p_73082_2_, int p_73082_3_)
-@@ -269,6 +332,12 @@
+@@ -269,6 +331,12 @@
                  return false;
              }
              Block block = this.theWorld.getBlock(p_73084_1_, p_73084_2_, p_73084_3_);
@@ -169,7 +168,7 @@
              int l = this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_);
              this.theWorld.playAuxSFXAtEntity(this.thisPlayerMP, 2001, p_73084_1_, p_73084_2_, p_73084_3_, Block.getIdFromBlock(block) + (this.theWorld.getBlockMetadata(p_73084_1_, p_73084_2_, p_73084_3_) << 12));
              boolean flag = false;
-@@ -312,6 +381,7 @@
+@@ -312,6 +380,7 @@
      public boolean tryUseItem(EntityPlayer p_73085_1_, World p_73085_2_, ItemStack p_73085_3_)
      {
          int i = p_73085_3_.stackSize;
@@ -177,7 +176,7 @@
          int j = p_73085_3_.getItemDamage();
          ItemStack itemstack1 = p_73085_3_.useItemRightClick(p_73085_2_, p_73085_1_);
  
-@@ -350,57 +420,106 @@
+@@ -350,57 +419,106 @@
  
      public boolean activateBlockOrUseItem(EntityPlayer p_73078_1_, World p_73078_2_, ItemStack p_73078_3_, int p_73078_4_, int p_73078_5_, int p_73078_6_, int p_73078_7_, float p_73078_8_, float p_73078_9_, float p_73078_10_)
      {
@@ -207,9 +206,9 @@
 +        if (!isAir)
          {
 -            if (event.useBlock != Event.Result.DENY)
-+            //org.bukkit.event.player.PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(p_73078_1_, org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_3_);
-+            net.minecraftforge.event.entity.player.PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerInteract(p_73078_1_, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_2_);
-+            org.bukkit.event.player.PlayerInteractEvent event = forgeEvent.cb;
++            org.bukkit.event.player.PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(p_73078_1_, org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_3_);
++            net.minecraftforge.event.entity.player.PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerInteract(p_73078_1_, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, p_73078_4_, p_73078_5_, p_73078_6_, p_73078_7_, p_73078_2_, event);
++            
 +            // Cauldron start
 +            // if forge event is explicitly cancelled, return
 +            if (forgeEvent.isCanceled())

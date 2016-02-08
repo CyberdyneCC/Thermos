@@ -35,7 +35,7 @@
          PlayerEvent.HarvestCheck event = new PlayerEvent.HarvestCheck(player, block, success);
          MinecraftForge.EVENT_BUS.post(event);
          return event.success;
-@@ -80,25 +94,140 @@
+@@ -80,25 +94,148 @@
      @Deprecated // Location version below
      public static float getBreakSpeed(EntityPlayer player, Block block, int metadata, float original)
      {
@@ -108,7 +108,8 @@
 +        }
 +
      @Deprecated
-     public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face)
+-    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face)
++    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, org.bukkit.event.player.PlayerInteractEvent ... eves)
      {
 -        return onPlayerInteract(player, action, x, y, z, face, null);
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, null);
@@ -127,11 +128,16 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                if(!(x==0 && y==0 && z == 0 && face==-1)) {
-+                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
++                org.bukkit.event.player.PlayerInteractEvent eve = null;
++                
++                if(eves == null || eves.length == 0)
++                	eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
++                else eve = eves[0];
++                
 +                event.cb = eve;
++                
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
-+                }
++                
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
 +                        event.setCanceled(true);
@@ -142,7 +148,8 @@
 +                return event;
 +
      }
-     public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world)
+-    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world)
++    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world, org.bukkit.event.player.PlayerInteractEvent ... eves)
      {
 -        PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 -        MinecraftForge.EVENT_BUS.post(event);
@@ -163,11 +170,14 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                if(!(x==0 && y==0 && z == 0)) {
-+                org.bukkit.event.player.PlayerInteractEvent eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
++                org.bukkit.event.player.PlayerInteractEvent eve = null;
++                if(eves == null || eves.length == 0)
++                	eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
++                else eve = eves[0];                
++
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
-+                }
++                
 +                if (isSpawn(player) && nonVanilla(player))
 +                {
 +                        event.setCanceled(true);
@@ -180,7 +190,7 @@
      }
  
      public static void onPlayerDestroyItem(EntityPlayer player, ItemStack stack)
-@@ -182,30 +311,64 @@
+@@ -182,30 +319,64 @@
          return MinecraftForge.EVENT_BUS.post(new EntityStruckByLightningEvent(entity, bolt));
      }
  

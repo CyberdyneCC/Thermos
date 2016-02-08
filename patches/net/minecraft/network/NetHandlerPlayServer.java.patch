@@ -471,19 +471,18 @@
          ItemStack itemstack = this.playerEntity.inventory.getCurrentItem();
          boolean flag = false;
          boolean placeResult = true;
-@@ -533,11 +815,22 @@
+@@ -532,12 +814,21 @@
+             {
                  return;
              }
++            org.bukkit.event.player.PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(this.playerEntity, Action.RIGHT_CLICK_AIR, itemstack);
++            PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerInteract(playerEntity, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1,
++                    worldserver, event); // Cauldron - rename event
++            // CraftBukkit start
++            int itemstackAmount = itemstack.stackSize;
  
 -            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(playerEntity, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, worldserver);
 -            if (event.useItem != Event.Result.DENY)
-+            PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerInteract(playerEntity, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1,
-+                    worldserver); // Cauldron - rename event
-+            // CraftBukkit start
-+            int itemstackAmount = itemstack.stackSize;
-+            org.bukkit.event.player.PlayerInteractEvent event = null;//forgeEvent.cb;
-+            event = CraftEventFactory.callPlayerInteractEvent(this.playerEntity, Action.RIGHT_CLICK_AIR, itemstack);
-+
 +            if (forgeEvent.useItem != cpw.mods.fml.common.eventhandler.Event.Result.DENY && event.useItemInHand() != Event.Result.DENY)
              {
                  this.playerEntity.theItemInWorldManager.tryUseItem(this.playerEntity, worldserver, itemstack);
@@ -496,7 +495,7 @@
          }
          else if (p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit() - 1 && (p_147346_1_.func_149568_f() == 1 || p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit()))
          {
-@@ -548,17 +841,24 @@
+@@ -548,17 +839,24 @@
          }
          else
          {
@@ -529,7 +528,7 @@
              flag = true;
          }
  
-@@ -615,7 +915,7 @@
+@@ -615,7 +913,7 @@
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.isChangingQuantityOnly = false;
  
@@ -538,7 +537,7 @@
              {
                  this.sendPacket(new S2FPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
              }
-@@ -624,14 +924,34 @@
+@@ -624,14 +922,34 @@
  
      public void onDisconnect(IChatComponent p_147231_1_)
      {
@@ -578,7 +577,7 @@
          if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
          {
              logger.info("Stopping singleplayer server as player logged out");
-@@ -657,6 +977,18 @@
+@@ -657,6 +975,18 @@
              }
          }
  
@@ -597,7 +596,7 @@
          try
          {
              this.netManager.scheduleOutboundPacket(p_147359_1_, new GenericFutureListener[0]);
-@@ -679,20 +1011,37 @@
+@@ -679,20 +1009,37 @@
  
      public void processHeldItemChange(C09PacketHeldItemChange p_147355_1_)
      {
@@ -636,7 +635,7 @@
          {
              ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
              chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.RED);
-@@ -708,51 +1057,385 @@
+@@ -708,51 +1055,385 @@
              {
                  if (!ChatAllowedCharacters.isAllowedCharacter(s.charAt(i)))
                  {
@@ -1034,7 +1033,7 @@
          if (p_147357_1_.func_149513_d() == 1)
          {
              this.playerEntity.setSneaking(true);
-@@ -772,7 +1455,7 @@
+@@ -772,7 +1453,7 @@
          else if (p_147357_1_.func_149513_d() == 3)
          {
              this.playerEntity.wakeUpPlayer(false, true, true);
@@ -1043,7 +1042,7 @@
          }
          else if (p_147357_1_.func_149513_d() == 6)
          {
-@@ -789,8 +1472,20 @@
+@@ -789,8 +1470,20 @@
  
      public void processUseEntity(C02PacketUseEntity p_147340_1_)
      {
@@ -1065,7 +1064,7 @@
          this.playerEntity.func_143004_u();
  
          if (entity != null)
-@@ -805,9 +1500,53 @@
+@@ -805,9 +1498,53 @@
  
              if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
              {
@@ -1119,7 +1118,7 @@
                  }
                  else if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.ATTACK)
                  {
-@@ -819,6 +1558,13 @@
+@@ -819,6 +1556,13 @@
                      }
  
                      this.playerEntity.attackTargetEntityWithCurrentItem(entity);
@@ -1133,7 +1132,7 @@
                  }
              }
          }
-@@ -834,8 +1580,19 @@
+@@ -834,8 +1578,19 @@
              case 1:
                  if (this.playerEntity.playerConqueredTheEnd)
                  {
@@ -1154,7 +1153,7 @@
                  else if (this.playerEntity.getServerForPlayer().getWorldInfo().isHardcoreModeEnabled())
                  {
                      if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
-@@ -871,17 +1628,461 @@
+@@ -871,17 +1626,461 @@
  
      public void processCloseWindow(C0DPacketCloseWindow p_147356_1_)
      {
@@ -1617,7 +1616,7 @@
              if (ItemStack.areItemStacksEqual(p_147351_1_.func_149546_g(), itemstack))
              {
                  this.playerEntity.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
-@@ -903,6 +2104,12 @@
+@@ -903,6 +2102,12 @@
                  }
  
                  this.playerEntity.sendContainerAndContentsToPlayer(this.playerEntity.openContainer, arraylist);
@@ -1630,7 +1629,7 @@
              }
          }
      }
-@@ -925,9 +2132,61 @@
+@@ -925,9 +2130,61 @@
              boolean flag = p_147344_1_.func_149627_c() < 0;
              ItemStack itemstack = p_147344_1_.func_149625_d();
              boolean flag1 = p_147344_1_.func_149627_c() >= 1 && p_147344_1_.func_149627_c() < 36 + InventoryPlayer.getHotbarSize();
@@ -1693,7 +1692,7 @@
              if (flag1 && flag2 && flag3)
              {
                  if (itemstack == null)
-@@ -956,6 +2215,11 @@
+@@ -956,6 +2213,11 @@
  
      public void processConfirmTransaction(C0FPacketConfirmTransaction p_147339_1_)
      {
@@ -1705,7 +1704,7 @@
          Short oshort = (Short)this.field_147372_n.lookup(this.playerEntity.openContainer.windowId);
  
          if (oshort != null && p_147339_1_.func_149533_d() == oshort.shortValue() && this.playerEntity.openContainer.windowId == p_147339_1_.func_149532_c() && !this.playerEntity.openContainer.isPlayerNotUsingContainer(this.playerEntity))
-@@ -966,6 +2230,11 @@
+@@ -966,6 +2228,11 @@
  
      public void processUpdateSign(C12PacketUpdateSign p_147343_1_)
      {
@@ -1717,7 +1716,7 @@
          this.playerEntity.func_143004_u();
          WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
  
-@@ -980,6 +2249,7 @@
+@@ -980,6 +2247,7 @@
                  if (!tileentitysign.func_145914_a() || tileentitysign.func_145911_b() != this.playerEntity)
                  {
                      this.serverController.logWarning("Player " + this.playerEntity.getCommandSenderName() + " just tried to change non-editable sign");
@@ -1725,7 +1724,7 @@
                      return;
                  }
              }
-@@ -990,6 +2260,7 @@
+@@ -990,6 +2258,7 @@
              for (j = 0; j < 4; ++j)
              {
                  boolean flag = true;
@@ -1733,7 +1732,7 @@
  
                  if (p_147343_1_.func_149589_f()[j].length() > 15)
                  {
-@@ -1018,7 +2289,29 @@
+@@ -1018,7 +2287,29 @@
                  int k = p_147343_1_.func_149586_d();
                  i = p_147343_1_.func_149585_e();
                  TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
@@ -1764,7 +1763,7 @@
                  tileentitysign1.markDirty();
                  worldserver.markBlockForUpdate(j, k, i);
              }
-@@ -1041,7 +2334,22 @@
+@@ -1041,7 +2332,22 @@
  
      public void processPlayerAbilities(C13PacketPlayerAbilities p_147348_1_)
      {
@@ -1788,7 +1787,7 @@
      }
  
      public void processTabComplete(C14PacketTabComplete p_147341_1_)
-@@ -1093,16 +2401,18 @@
+@@ -1093,16 +2399,18 @@
                  {
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
@@ -1811,7 +1810,7 @@
              }
              finally
              {
-@@ -1135,19 +2445,18 @@
+@@ -1135,19 +2443,18 @@
  
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
@@ -1837,7 +1836,7 @@
              }
              finally
              {
-@@ -1174,9 +2483,12 @@
+@@ -1174,9 +2481,12 @@
                          ((ContainerMerchant)container).setCurrentRecipeIndex(i);
                      }
                  }
@@ -1851,7 +1850,7 @@
                  }
              }
              else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
-@@ -1222,9 +2534,12 @@
+@@ -1222,9 +2532,12 @@
                              this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                          }
                      }
@@ -1866,7 +1865,7 @@
                      }
                      finally
                      {
-@@ -1257,9 +2572,12 @@
+@@ -1257,9 +2570,12 @@
                              tileentitybeacon.markDirty();
                          }
                      }
@@ -1881,7 +1880,7 @@
                      }
                  }
              }
-@@ -1281,6 +2599,13 @@
+@@ -1281,6 +2597,13 @@
                      containerrepair.updateItemName("");
                  }
              }
@@ -1895,7 +1894,7 @@
          }
      }
  
-@@ -1292,6 +2617,21 @@
+@@ -1292,6 +2615,21 @@
          }
      }
  
