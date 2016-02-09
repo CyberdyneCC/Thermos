@@ -35,7 +35,7 @@
          PlayerEvent.HarvestCheck event = new PlayerEvent.HarvestCheck(player, block, success);
          MinecraftForge.EVENT_BUS.post(event);
          return event.success;
-@@ -80,25 +94,148 @@
+@@ -80,27 +94,171 @@
      @Deprecated // Location version below
      public static float getBreakSpeed(EntityPlayer player, Block block, int metadata, float original)
      {
@@ -108,10 +108,30 @@
 +        }
 +
      @Deprecated
--    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face)
-+    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, org.bukkit.event.player.PlayerInteractEvent ... eves)
+     public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face)
      {
 -        return onPlayerInteract(player, action, x, y, z, face, null);
++        org.bukkit.event.block.Action aktor = null;
++        switch (action)
++        {
++            case RIGHT_CLICK_AIR:
++                aktor = org.bukkit.event.block.Action.RIGHT_CLICK_AIR;
++                break;
++            case RIGHT_CLICK_BLOCK:
++                aktor = org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
++                break;
++            case LEFT_CLICK_BLOCK:
++                aktor = org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
++            default:
++                aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
++                break;
++        }
++        
++    	return onPlayerInteract( player, action, x, y, z, face, org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem()));
+     }
++    @Deprecated
++    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, org.bukkit.event.player.PlayerInteractEvent eve)
++    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, null);
 +                org.bukkit.event.block.Action aktor = null;
 +                switch (action)
@@ -128,11 +148,9 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                org.bukkit.event.player.PlayerInteractEvent eve = null;
 +                
-+                if(eves == null || eves.length == 0)
++                if(eve == null)
 +                	eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
-+                else eve = eves[0];
 +                
 +                event.cb = eve;
 +                
@@ -147,13 +165,16 @@
 +                        MinecraftForge.EVENT_BUS.post(event);
 +                return event;
 +
-     }
--    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world)
-+    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world, org.bukkit.event.player.PlayerInteractEvent ... eves)
++    }
+     public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world)
      {
 -        PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 -        MinecraftForge.EVENT_BUS.post(event);
 -        return event;
++    	return onPlayerInteract( player, action, x, y, z, face, world, null);
+     }
++    public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world, org.bukkit.event.player.PlayerInteractEvent eve)
++    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 +                org.bukkit.event.block.Action aktor = null;
 +                switch (action)
@@ -170,11 +191,9 @@
 +                        aktor = org.bukkit.event.block.Action.LEFT_CLICK_AIR;
 +                        break;
 +                }
-+                org.bukkit.event.player.PlayerInteractEvent eve = null;
-+                if(eves == null || eves.length == 0)
-+                	eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());
-+                else eve = eves[0];                
-+
++                if(eve == null)
++                	eve = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem());                
+ 
 +                event.cb = eve;
 +                if(eve.isCancelled()) { event.setCanceled(true); return event; }
 +                
@@ -187,10 +206,12 @@
 +                        MinecraftForge.EVENT_BUS.post(event);
 +                return event;
 +
-     }
- 
++    }
++
      public static void onPlayerDestroyItem(EntityPlayer player, ItemStack stack)
-@@ -182,30 +319,64 @@
+     {
+         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack));
+@@ -182,30 +340,64 @@
          return MinecraftForge.EVENT_BUS.post(new EntityStruckByLightningEvent(entity, bolt));
      }
  
