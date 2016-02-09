@@ -48,18 +48,15 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     public Class<? extends net.minecraft.entity.EntityLivingBase> entityClass;
     public String entityName;
     // Cauldron end
-    
-    public void updateEntity(net.minecraft.entity.EntityLivingBase entity) {
-        super.entity = entity;
+
+    public CraftLivingEntity(final CraftServer server, final net.minecraft.entity.EntityLivingBase entity) {
+        super(server, entity);
+        // Cauldron start
         this.entityClass = entity.getClass();
         this.entityName = EntityRegistry.getCustomEntityTypeName(entityClass);
         if (entityName == null)
             entityName = entity.getCommandSenderName();
-    }
-
-    public CraftLivingEntity(final CraftServer server, final net.minecraft.entity.EntityLivingBase entity) {
-        super(server, entity);
-        updateEntity(entity); // KCauldron
+        // Cauldron end
 
         if (entity instanceof net.minecraft.entity.EntityLiving) {
             equipment = new CraftEntityEquipment(this);

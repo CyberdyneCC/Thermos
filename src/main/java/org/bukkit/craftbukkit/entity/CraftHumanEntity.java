@@ -27,8 +27,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import net.minecraft.entity.EntityLivingBase;
-
 public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     private CraftInventoryPlayer inventory;
     private CraftInventory enderChest;
@@ -39,13 +37,6 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     public CraftHumanEntity(final CraftServer server, final net.minecraft.entity.player.EntityPlayer entity) {
         super(server, entity);
         mode = server.getDefaultGameMode();        
-    }
-    
-    @Override
-    public void updateEntity(EntityLivingBase entity) {
-        super.updateEntity(entity);
-        if (inventory != null) inventory.updateInventory(((net.minecraft.entity.player.EntityPlayer) entity).inventory);
-        if (enderChest != null) enderChest.updateInventory(((net.minecraft.entity.player.EntityPlayer) entity).getInventoryEnderChest());
     }
 
     public String getName() {
