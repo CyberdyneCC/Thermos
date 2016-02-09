@@ -1,0 +1,238 @@
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+    compressDeobfData
+    createChangelog
+    createVersionPropertiesFML
+    downloadBaseInstaller
+    extractMcpData
+    genBinPatches
+    genSrgs
+    generateInstallJson
+    obfuscateJar
+    packageInstaller
+    packageUniversal
+:cauldron:assemble - Assembles the outputs of this project. [:cauldron:jar]
+:Clean:assemble - Assembles the outputs of this project. [:Clean:jar]
+build - Assembles and tests this project. [assemble, check]
+:cauldron:build - Assembles and tests this project. [:cauldron:assemble, :cauldron:check]
+:Clean:build - Assembles and tests this project. [:Clean:assemble, :Clean:check]
+:cauldron:buildDependents - Assembles and tests this project and all projects that depend on it. [:cauldron:build]
+:Clean:buildDependents - Assembles and tests this project and all projects that depend on it. [:Clean:build]
+:cauldron:buildNeeded - Assembles and tests this project and all projects it depends on. [:cauldron:build]
+:Clean:buildNeeded - Assembles and tests this project and all projects it depends on. [:Clean:build]
+:cauldron:classes - Assembles classes 'main'.
+    :cauldron:compileJava - Compiles Java source 'main:java'.
+    :cauldron:processResources - Processes JVM resources 'main:resources'.
+:Clean:classes - Assembles classes 'main'.
+    :Clean:compileJava - Compiles Java source 'main:java'.
+    :Clean:processResources - Processes JVM resources 'main:resources'.
+clean - Deletes the build directory. [cleanCauldron]
+:cauldron:clean - Deletes the build directory.
+:Clean:clean - Deletes the build directory.
+:cauldron:jar - Assembles a jar archive containing the main classes. [:cauldron:classes]
+:Clean:jar - Assembles a jar archive containing the main classes. [:Clean:classes]
+:cauldron:testClasses - Assembles classes 'test'. [:cauldron:classes]
+    :cauldron:compileTestJava - Compiles Java source 'test:java'.
+    :cauldron:processTestResources - Processes JVM resources 'test:resources'.
+:Clean:testClasses - Assembles classes 'test'. [:Clean:classes]
+    :Clean:compileTestJava - Compiles Java source 'test:java'.
+    :Clean:processTestResources - Processes JVM resources 'test:resources'.
+
+Build Setup tasks
+-----------------
+init - Initializes a new Gradle build. [incubating]
+wrapper - Generates Gradle wrapper files. [incubating]
+
+Cauldron tasks
+--------------
+buildPackages
+    cleanPackages
+    compressDeobfData
+    createChangelog
+    createVersionPropertiesFML
+    downloadBaseInstaller
+    extractMcpData
+    genBinPatches
+    genSrgs
+    generateInstallJson
+    obfuscateJar
+    packageInstaller
+    packageUniversal
+genPatches
+setupCauldron
+    cauldronPatchJar
+    compressDeobfData
+    copyAssets
+    createVersionPropertiesFML
+    decompile
+    deobfuscateJar
+    downloadClient
+    downloadMcpTools
+    downloadNatives-jinput-platform
+    downloadNatives-lwjgl-platform
+    downloadServer
+    eclipse
+    eclipseCauldron
+    eclipseClean
+    extractCauldronResources
+    extractCauldronSources
+    extractCleanResources
+    extractCleanSource
+    extractMcpData
+    extractNatives
+    extractNativesNew
+    extractRes
+    extractWorkspace
+    forgePatchJar
+    genSrgs
+    generateProjectCauldron
+    generateProjectClean
+    generateProjects
+    getAssets
+    getAssetsIndex
+    mergeJars
+    remapCauldronJar
+    remapCleanJar
+    updateJson
+
+Clean tasks
+-----------
+cleanCauldron
+
+Documentation tasks
+-------------------
+:cauldron:javadoc - Generates Javadoc API documentation for the main source code. [:cauldron:classes]
+:Clean:javadoc - Generates Javadoc API documentation for the main source code. [:Clean:classes]
+
+ForgeGradle tasks
+-----------------
+cleanCache - Cleares the ForgeGradle cache. DONT RUN THIS unless you want a fresh start, or the dev tells you to.
+
+Help tasks
+----------
+components - Displays the components produced by root project 'Thermos'. [incubating]
+:cauldron:components - Displays the components produced by project ':cauldron'. [incubating]
+:Clean:components - Displays the components produced by project ':Clean'. [incubating]
+dependencies - Displays all dependencies declared in root project 'Thermos'.
+:cauldron:dependencies - Displays all dependencies declared in project ':cauldron'.
+:Clean:dependencies - Displays all dependencies declared in project ':Clean'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'Thermos'.
+:cauldron:dependencyInsight - Displays the insight into a specific dependency in project ':cauldron'.
+:Clean:dependencyInsight - Displays the insight into a specific dependency in project ':Clean'.
+help - Displays a help message.
+:cauldron:help - Displays a help message.
+:Clean:help - Displays a help message.
+projects - Displays the sub-projects of root project 'Thermos'.
+:cauldron:projects - Displays the sub-projects of project ':cauldron'.
+:Clean:projects - Displays the sub-projects of project ':Clean'.
+properties - Displays the properties of root project 'Thermos'.
+:cauldron:properties - Displays the properties of project ':cauldron'.
+:Clean:properties - Displays the properties of project ':Clean'.
+tasks - Displays the tasks runnable from root project 'Thermos'.
+:cauldron:tasks - Displays the tasks runnable from project ':cauldron'.
+:Clean:tasks - Displays the tasks runnable from project ':Clean'.
+
+IDE tasks
+---------
+:cauldron:cleanEclipse - Cleans all Eclipse files.
+    :cauldron:cleanEclipseClasspath
+    :cauldron:cleanEclipseJdt
+    :cauldron:cleanEclipseProject
+:Clean:cleanEclipse - Cleans all Eclipse files.
+    :Clean:cleanEclipseClasspath
+    :Clean:cleanEclipseJdt
+    :Clean:cleanEclipseProject
+:cauldron:eclipse - Generates all Eclipse files.
+    :cauldron:eclipseClasspath - Generates the Eclipse classpath file.
+    :cauldron:eclipseJdt - Generates the Eclipse JDT settings file.
+    :cauldron:eclipseProject - Generates the Eclipse project file.
+:Clean:eclipse - Generates all Eclipse files.
+    :Clean:eclipseClasspath - Generates the Eclipse classpath file.
+    :Clean:eclipseJdt - Generates the Eclipse JDT settings file.
+    :Clean:eclipseProject - Generates the Eclipse project file.
+
+Launch4j tasks
+--------------
+copyL4jLib - Copies the project dependency jars in the lib directory.
+createExe - Runs launch4j to generate an .exe file [copyL4jLib, generateXmlConfig]
+generateXmlConfig - Creates XML configuration file used by launch4j to create an windows exe.
+    compressDeobfData
+    createChangelog
+    createVersionPropertiesFML
+    downloadBaseInstaller
+    downloadL4J
+    extractL4J
+    extractMcpData
+    genBinPatches
+    genSrgs
+    generateInstallJson
+    obfuscateJar
+    packageInstaller
+    packageUniversal
+launch4j - Placeholder task for tasks relating to creating .exe applications with launch4j [createExe]
+
+Publishing tasks
+----------------
+generatePomFileForMavenPublication - Generates the Maven POM file for publication 'maven'.
+publish - Publishes all publications produced by this project. [publishMavenPublicationToProKRepository]
+publishMavenPublicationToMavenLocal - Publishes Maven publication 'maven' to the local Maven repository.                                                                                                      [generatePomFileForMavenPublication]
+    bundleStub
+    compressDeobfData
+    createChangelog
+    createVersionPropertiesFML
+    extractMcpData
+    genBinPatches
+    genSrgs
+    installBundle
+    jar
+    obfuscateJar
+    packageBundle
+    packageChangelog
+    packageUniversal
+    preparePublication
+    signJars
+    signPom
+publishMavenPublicationToProKRepository - Publishes Maven publication 'maven' to Maven repository 'ProK'.                                                                                                     [generatePomFileForMavenPublication]
+    bundleStub
+    compressDeobfData
+    createChangelog
+    createVersionPropertiesFML
+    extractMcpData
+    genBinPatches
+    genSrgs
+    installBundle
+    jar
+    obfuscateJar
+    packageBundle
+    packageChangelog
+    packageUniversal
+    preparePublication
+    signJars
+    signPom
+publishToMavenLocal - Publishes all Maven publications produced by this project to the local Maven cache.                                                                                                     [publishMavenPublicationToMavenLocal]
+
+Upload tasks
+------------
+uploadArchives - Uploads all artifacts belonging to configuration ':archives' [launch4j]
+
+Verification tasks
+------------------
+check - Runs all checks.
+:cauldron:check - Runs all checks. [:cauldron:test]
+:Clean:check - Runs all checks. [:Clean:test]
+:cauldron:test - Runs the unit tests. [:cauldron:classes, :cauldron:testClasses]
+:Clean:test - Runs the unit tests. [:Clean:classes, :Clean:testClasses]
+
+Other tasks
+-----------
+getVersionJson
+resolveAllDependencies
+retroMapCauldron
+    extractMcpData
+    extractRangeCauldron
+    genSrgs
+retroMapClean
+    extractMcpData
+    extractRangeClean
+    genSrgs
