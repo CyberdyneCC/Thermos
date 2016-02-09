@@ -23,12 +23,8 @@
  public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
-@@ -99,10 +115,10 @@
-     private HashMap<Integer, Boolean> spawnForcedMap = new HashMap<Integer, Boolean>();
- 
-     public InventoryPlayer inventory = new InventoryPlayer(this);
--    private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
-+    public InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
+@@ -102,7 +118,7 @@
+     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      public Container inventoryContainer;
      public Container openContainer;
 -    protected FoodStats foodStats = new FoodStats();
@@ -288,16 +284,15 @@
          if (p_70037_1_.hasKey("SpawnX", 99) && p_70037_1_.hasKey("SpawnY", 99) && p_70037_1_.hasKey("SpawnZ", 99))
          {
              this.spawnChunk = new ChunkCoordinates(p_70037_1_.getInteger("SpawnX"), p_70037_1_.getInteger("SpawnY"), p_70037_1_.getInteger("SpawnZ"));
-@@ -903,7 +1021,7 @@
+@@ -903,7 +1021,6 @@
          if (p_70037_1_.hasKey("EnderItems", 9))
          {
              NBTTagList nbttaglist1 = p_70037_1_.getTagList("EnderItems", 10);
 -            this.theInventoryEnderChest.loadInventoryFromNBT(nbttaglist1);
-+            // this.theInventoryEnderChest.loadInventoryFromNBT(nbttaglist1); KCauldron - moved up
          }
      }
  
-@@ -925,6 +1043,7 @@
+@@ -925,6 +1042,7 @@
              p_70014_1_.setInteger("SpawnY", this.spawnChunk.posY);
              p_70014_1_.setInteger("SpawnZ", this.spawnChunk.posZ);
              p_70014_1_.setBoolean("SpawnForced", this.spawnForced);
@@ -305,7 +300,7 @@
          }
  
          NBTTagList spawnlist = new NBTTagList();
-@@ -1003,7 +1122,7 @@
+@@ -1003,7 +1121,7 @@
                  {
                      if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL)
                      {
@@ -314,7 +309,7 @@
                      }
  
                      if (this.worldObj.difficultySetting == EnumDifficulty.EASY)
-@@ -1017,7 +1136,7 @@
+@@ -1017,7 +1135,7 @@
                      }
                  }
  
@@ -323,7 +318,7 @@
                  {
                      return false;
                  }
-@@ -1039,9 +1158,40 @@
+@@ -1039,9 +1157,40 @@
  
      public boolean canAttackPlayer(EntityPlayer p_96122_1_)
      {
@@ -367,7 +362,7 @@
      }
  
      protected void damageArmor(float p_70675_1_)
-@@ -1073,19 +1223,34 @@
+@@ -1073,19 +1222,34 @@
          return (float)i / (float)this.inventory.armorInventory.length;
      }
  
@@ -404,7 +399,7 @@
              p_70665_2_ = this.applyPotionDamageCalculations(p_70665_1_, p_70665_2_);
              float f1 = p_70665_2_;
              p_70665_2_ = Math.max(p_70665_2_ - this.getAbsorptionAmount(), 0.0F);
-@@ -1099,6 +1264,7 @@
+@@ -1099,6 +1263,7 @@
                  this.func_110142_aN().func_94547_a(p_70665_1_, f2, p_70665_2_);
              }
          }
@@ -412,7 +407,7 @@
      }
  
      public void func_146101_a(TileEntityFurnace p_146101_1_) {}
-@@ -1134,7 +1300,8 @@
+@@ -1134,7 +1299,8 @@
  
                  if (itemstack.interactWithEntity(this, (EntityLivingBase)p_70998_1_))
                  {
@@ -422,7 +417,7 @@
                      {
                          this.destroyCurrentEquippedItem();
                      }
-@@ -1281,7 +1448,8 @@
+@@ -1281,7 +1447,8 @@
                          {
                              itemstack.hitEntity((EntityLivingBase)object, this);
  
@@ -432,7 +427,7 @@
                              {
                                  this.destroyCurrentEquippedItem();
                              }
-@@ -1293,7 +1461,17 @@
+@@ -1293,7 +1460,17 @@
  
                              if (j > 0)
                              {
@@ -451,7 +446,7 @@
                              }
                          }
  
-@@ -1322,6 +1500,10 @@
+@@ -1322,6 +1499,10 @@
  
          if (this.openContainer != null)
          {
@@ -462,7 +457,7 @@
              this.openContainer.onContainerClosed(this);
          }
      }
-@@ -1381,6 +1563,20 @@
+@@ -1381,6 +1562,20 @@
              this.mountEntity((Entity)null);
          }
  
@@ -483,7 +478,7 @@
          this.setSize(0.2F, 0.2F);
          this.yOffset = 0.2F;
  
-@@ -1476,6 +1672,26 @@
+@@ -1476,6 +1671,26 @@
              this.worldObj.updateAllPlayersSleepingFlag();
          }
  
@@ -510,7 +505,7 @@
          if (p_70999_1_)
          {
              this.sleepTimer = 0;
-@@ -1606,11 +1822,13 @@
+@@ -1606,11 +1821,13 @@
          {
              this.spawnChunk = new ChunkCoordinates(p_71063_1_);
              this.spawnForced = p_71063_2_;
@@ -524,3 +519,12 @@
          }
      }
  
+@@ -2035,7 +2252,7 @@
+         {
+             getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
+         }
+-        MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(this, p_71049_1_, !p_71049_2_));
++        // MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(this, p_71049_1_, !p_71049_2_)); // KCauldron - moved to ReverseClonner (thermos.ReverseCloner)
+     }
+ 
+     protected boolean canTriggerWalking()

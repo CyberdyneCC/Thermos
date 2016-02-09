@@ -1141,18 +1141,27 @@
 +                if (this.playerEntity.dimension == 1) // coming from end
 +                {
 +                    // We really should be calling transferPlayerToDimension since the player is coming in contact with a portal.
-+                    this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, true); // set flag to indicate player is leaving end.
++                	this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.END_PORTAL, null); // set flag to indicate player is leaving end.                }
                  }
 +                else
 +                // not coming from end
 +                {
-+                    this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, false);
++                	this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.NETHER_PORTAL, null);
 +                }
 +                // Cauldron end
 +                }
                  else if (this.playerEntity.getServerForPlayer().getWorldInfo().isHardcoreModeEnabled())
                  {
                      if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
+@@ -857,7 +1612,7 @@
+                         return;
+                     }
+ 
+-                    this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, playerEntity.dimension, false);
++                    this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, playerEntity.dimension, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.DEATH, null);
+                 }
+ 
+                 break;
 @@ -871,17 +1626,461 @@
  
      public void processCloseWindow(C0DPacketCloseWindow p_147356_1_)

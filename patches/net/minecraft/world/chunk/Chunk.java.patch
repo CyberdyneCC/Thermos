@@ -29,7 +29,7 @@
 +    // PaperSpigot end
 +    public int lastAccessedTick; // Cauldron track last time the chunk was accessed
 +    
-+    public final java.util.Set<net.minecraft.world.NextTickListEntry> blockUpdates = new java.util.TreeSet<net.minecraft.world.NextTickListEntry>(); // KCauldron hold block updates into each chunk individually
++    public final java.util.TreeSet<thermos.BlockUpdateEntry> blockUpdates = new java.util.TreeSet<thermos.BlockUpdateEntry>(); // KCauldron hold block updates into each chunk individually
 +    
      private static final String __OBFID = "CL_00000373";
  

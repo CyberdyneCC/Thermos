@@ -517,7 +517,7 @@
 +        this.setPassengerOf(p_70078_1_);
 +    }
 +
-+    protected CraftEntity bukkitEntity;
++    public CraftEntity bukkitEntity;
 +
 +    public CraftEntity getBukkitEntity()
 +    {
