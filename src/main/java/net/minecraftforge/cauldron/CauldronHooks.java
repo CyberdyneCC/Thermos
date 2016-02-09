@@ -35,6 +35,7 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkProviderServer;
 
+import org.bukkit.craftbukkit.util.LongHash;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import com.google.gson.stream.JsonWriter;
@@ -278,6 +279,12 @@ public class CauldronHooks
 
     public static boolean canTileEntityTick(TileEntity tileEntity, World world)
     {
+    	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick tiles that are trying to unload
+    	{
+    		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
+    		if(cps.chunksToUnload.contains(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4))
+    			return true;
+    	}
         if (tileEntity == null || world.tileentityConfig == null) return false;
         if (MinecraftServer.tileEntityConfig.skipTileEntityTicks.getValue())
         {
