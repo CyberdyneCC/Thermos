@@ -880,7 +880,7 @@
 -            entity = (Entity)this.loadedEntityList.get(i);
 +        int entitiesThisCycle = 0;
 +        if (tickPosition < 0) tickPosition = 0;
-+        for (entityLimiter.initTick(); entitiesThisCycle < loadedEntityList.size() && (entitiesThisCycle % 10 == 0 || entityLimiter.shouldContinue()); tickPosition++, entitiesThisCycle++) { 
++        for (; entitiesThisCycle < loadedEntityList.size() && (entitiesThisCycle % 10 == 0); tickPosition++, entitiesThisCycle++) { 
 +            tickPosition = (tickPosition < loadedEntityList.size()) ? tickPosition : 0;
 +            entity = (Entity)this.loadedEntityList.get(this.tickPosition);
  
@@ -947,7 +947,7 @@
  
 -            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
 +        int tilesThisCycle = 0;
-+        for (tileLimiter.initTick(); tilesThisCycle < loadedTileEntityList.size() && (tilesThisCycle % 10 == 0 || tileLimiter.shouldContinue()); tileTickPosition++, tilesThisCycle++) {
++        for (; tilesThisCycle < loadedTileEntityList.size() && (tilesThisCycle % 10 == 0); tileTickPosition++, tilesThisCycle++) {
 +            tileTickPosition = (tileTickPosition < loadedTileEntityList.size()) ? tileTickPosition : 0;
 +            TileEntity tileentity = (TileEntity) this.loadedTileEntityList.get(tileTickPosition);
 +
