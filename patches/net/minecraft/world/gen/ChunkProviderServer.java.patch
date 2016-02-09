@@ -580,7 +580,7 @@
 +         return Math.abs(index % 16);
 +     }
 +
-+     private Chunk chunk_get(int x, int z)
++     public Chunk chunk_get(int x, int z)
 +     {
 +         Chunk[][] bunch = chunkt_TH.get(chunk_hash(x >> 4, z >> 4));
 +         if(bunch == null) return null;
