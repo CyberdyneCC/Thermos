@@ -149,7 +149,7 @@
  
          if (list != null)
          {
-@@ -389,14 +411,13 @@
+@@ -389,13 +411,13 @@
  
              while (iterator.hasNext())
              {
@@ -161,16 +161,15 @@
 -                nbttagcompound2.setInteger("y", nextticklistentry.yCoord);
 -                nbttagcompound2.setInteger("z", nextticklistentry.zCoord);
 -                nbttagcompound2.setInteger("t", (int)(nextticklistentry.scheduledTime - k));
--                nbttagcompound2.setInteger("p", nextticklistentry.priority);
 +                nbttagcompound2.setInteger("i", Block.getIdFromBlock(nextticklistentry.block));
 +                nbttagcompound2.setInteger("x", nextticklistentry.x);
 +                nbttagcompound2.setInteger("y", nextticklistentry.y);
 +                nbttagcompound2.setInteger("z", nextticklistentry.z);
 +                nbttagcompound2.setInteger("t", (int)(nextticklistentry.time - k));
+                 nbttagcompound2.setInteger("p", nextticklistentry.priority);
                  nbttaglist1.appendTag(nbttagcompound2);
              }
- 
-@@ -455,6 +476,7 @@
+@@ -455,6 +477,7 @@
  
      public void loadEntities(World p_75823_1_, NBTTagCompound p_75823_2_, Chunk chunk)
      {
@@ -178,7 +177,7 @@
          NBTTagList nbttaglist1 = p_75823_2_.getTagList("Entities", 10);
  
          if (nbttaglist1 != null)
-@@ -468,24 +490,31 @@
+@@ -468,24 +491,31 @@
                  if (entity2 != null)
                  {
                      chunk.addEntity(entity2);
@@ -219,7 +218,7 @@
          NBTTagList nbttaglist2 = p_75823_2_.getTagList("TileEntities", 10);
  
          if (nbttaglist2 != null)
-@@ -497,11 +526,35 @@
+@@ -497,11 +527,35 @@
  
                  if (tileentity != null)
                  {
@@ -255,7 +254,7 @@
          if (p_75823_2_.hasKey("TileTicks", 9))
          {
              NBTTagList nbttaglist3 = p_75823_2_.getTagList("TileTicks", 10);
-@@ -511,10 +564,12 @@
+@@ -511,10 +565,12 @@
                  for (int j1 = 0; j1 < nbttaglist3.tagCount(); ++j1)
                  {
                      NBTTagCompound nbttagcompound5 = nbttaglist3.getCompoundTagAt(j1);
