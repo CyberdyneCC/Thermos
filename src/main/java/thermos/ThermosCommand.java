@@ -43,7 +43,7 @@ public class ThermosCommand extends Command {
         builder.append(String.format("/%s dump - Dump statistics into a thermos.dump file.\n", NAME));
         setUsage(builder.toString());
 
-        setPermission("th");
+        setPermission("thermos");
     }
 
     public boolean testPermission(CommandSender target, String permission) {
@@ -86,12 +86,13 @@ public class ThermosCommand extends Command {
             if (sender instanceof CraftPlayer) {
                 currentWorld = ((CraftPlayer) sender).getWorld();
             }
-            sender.sendMessage(ChatColor.DARK_BLUE + "---------------------------------------");
+            sender.sendMessage(ChatColor.DARK_RED + "---------------------------------------");
             final MinecraftServer server = MinecraftServer.getServer();
+            ChatColor colourTPS;
             for (World world : server.server.getWorlds()) {
                 if (world instanceof CraftWorld) {
                     boolean current = currentWorld != null && currentWorld == world;
-                    net.minecraft.world.World mcWorld = ((CraftWorld) world).getHandle();
+                    net.minecraft.world.WorldServer mcWorld = ((CraftWorld) world).getHandle();
                     String bukkitName = world.getName();
                     int dimensionId = mcWorld.provider.dimensionId;
                     String name = mcWorld.provider.getDimensionName();
@@ -100,15 +101,32 @@ public class ThermosCommand extends Command {
                     double worldTickTime = mean(server.worldTickTimes.get(dimensionId)) * 1.0E-6D;
                     double worldTPS = Math.min(1000.0 / worldTickTime, 20);
 
-                    sender.sendMessage(String.format("%s[%d] %s%s %s- %s%.2fms / %.2ftps", ChatColor.GOLD, dimensionId,
+                    if (worldTPS >= 18.0) {
+                        colourTPS = ChatColor.GREEN;
+                    } else if (worldTPS >= 15.0) {
+                        colourTPS = ChatColor.YELLOW;
+                    } else {
+                        colourTPS = ChatColor.RED;
+                    }
+
+                    sender.sendMessage(String.format("%s[%d] %s%s %s- %s%.2fms / %s%.2ftps", ChatColor.GOLD, dimensionId,
                             current ? ChatColor.GREEN : ChatColor.YELLOW, displayName, ChatColor.RESET,
-                            ChatColor.DARK_RED, worldTickTime, worldTPS));
+                            ChatColor.DARK_RED, worldTickTime, colourTPS, worldTPS));
                 }
             }
+
             double meanTickTime = mean(server.tickTimeArray) * 1.0E-6D;
             double meanTPS = Math.min(1000.0 / meanTickTime, 20);
-            sender.sendMessage(String.format("%sOverall - %s%s%.2fms / %.2ftps", ChatColor.BLUE, ChatColor.RESET,
-                    ChatColor.DARK_RED, meanTickTime, meanTPS));
+            if (meanTPS >= 18.0) {
+                colourTPS = ChatColor.GREEN;
+            } else if (meanTPS >= 15.0) {
+                colourTPS = ChatColor.YELLOW;
+            } else {
+                colourTPS = ChatColor.RED;
+            }
+            sender.sendMessage(String.format("%sOverall - %s%s%.2fms / %s%.2ftps", ChatColor.BLUE, ChatColor.RESET,
+                    ChatColor.DARK_RED, meanTickTime, colourTPS, meanTPS));
+            sender.sendMessage(ChatColor.DARK_RED + "---------------------------------------");
         } else if ("restart".equals(action)) {
             if (!testPermission(sender, RESTART))
                 return true;
