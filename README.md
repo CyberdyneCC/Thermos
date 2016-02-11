@@ -34,9 +34,9 @@ P.S. **PLEASE** look at the release notes before downloading! :smile:
 
 Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE2XaJ4m)
 
-## Patreon
+## Donate/Support
 
-You can pledge to support Robotia and his work [here](https://www.patreon.com/robotia).
+You can pledge to support Robotia and his work through a monthly [Patreon](https://www.patreon.com/robotia) donation or a one-time [PayPal](http://paypal.me/robotia) donation.
 
 ## Issues
 
