@@ -477,7 +477,7 @@
 +                // Spigot start
 +                Arrays.fill(recentTps, 20);
 +                long lastTick = 0, catchupTime = 0, curTime, wait;
-+                AffinityLock al = AffinityLock.acquireLock(true);
++                AffinityLock al = AffinityLock.acquireLock();
 +                if(al.isAllocated())
 +                	logger.log(org.apache.logging.log4j.Level.INFO, "[Thermos] We're locked in! " + AffinityLock.dumpLocks());
 +                else logger.log(org.apache.logging.log4j.Level.WARN, "[Thermos] Couldn't bind to a CPU core!");

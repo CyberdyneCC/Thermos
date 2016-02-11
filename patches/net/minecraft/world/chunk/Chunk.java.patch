@@ -264,7 +264,25 @@
              this.worldObj.unloadEntities(this.entityLists[i]);
          }
          MinecraftForge.EVENT_BUS.post(new ChunkEvent.Unload(this));
-@@ -1015,7 +1164,7 @@
+@@ -952,11 +1101,15 @@
+         int j = MathHelper.floor_double((p_76588_2_.maxY + World.MAX_ENTITY_RADIUS) / 16.0D);
+         i = MathHelper.clamp_int(i, 0, this.entityLists.length - 1);
+         j = MathHelper.clamp_int(j, 0, this.entityLists.length - 1);
+-
++        
++        if(p_76588_3_ instanceof ArrayList) // Thermos force ArrayList minimum size for faster entity adding
++        {
++        	((ArrayList)p_76588_3_).ensureCapacity(15);
++        }
++        
+         for (int k = i; k <= j; ++k)
+         {
+             List list1 = this.entityLists[k];
+-
+             for (int l = 0; l < list1.size(); ++l)
+             {
+                 Entity entity1 = (Entity)list1.get(l);
+@@ -1015,7 +1168,7 @@
                  return true;
              }
          }
@@ -273,7 +291,7 @@
          {
              return true;
          }
-@@ -1025,7 +1174,7 @@
+@@ -1025,7 +1178,7 @@
  
      public Random getRandomWithSeed(long p_76617_1_)
      {
@@ -282,7 +300,7 @@
      }
  
      public boolean isEmpty()
-@@ -1035,6 +1184,7 @@
+@@ -1035,6 +1188,7 @@
  
      public void populateChunk(IChunkProvider p_76624_1_, IChunkProvider p_76624_2_, int p_76624_3_, int p_76624_4_)
      {
@@ -290,7 +308,7 @@
          if (!this.isTerrainPopulated && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_, p_76624_4_ + 1) && p_76624_1_.chunkExists(p_76624_3_ + 1, p_76624_4_))
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_, p_76624_4_);
-@@ -1054,6 +1204,7 @@
+@@ -1054,6 +1208,7 @@
          {
              p_76624_1_.populate(p_76624_2_, p_76624_3_ - 1, p_76624_4_ - 1);
          }
@@ -298,7 +316,7 @@
      }
  
      public int getPrecipitationHeight(int p_76626_1_, int p_76626_2_)
-@@ -1091,7 +1242,7 @@
+@@ -1091,7 +1246,7 @@
      {
          if (this.isGapLightingUpdated && !this.worldObj.provider.hasNoSky && !p_150804_1_)
          {
@@ -307,7 +325,7 @@
          }
  
          this.field_150815_m = true;
-@@ -1104,7 +1255,8 @@
+@@ -1104,7 +1259,8 @@
  
      public boolean func_150802_k()
      {
@@ -317,7 +335,7 @@
      }
  
      public ChunkCoordIntPair getChunkCoordIntPair()
-@@ -1184,8 +1336,10 @@
+@@ -1184,8 +1340,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getMetadataArray();
@@ -330,7 +348,7 @@
              }
          }
  
-@@ -1194,8 +1348,10 @@
+@@ -1194,8 +1352,10 @@
              if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
              {
                  nibblearray = this.storageArrays[l].getBlocklightArray();
@@ -343,7 +361,7 @@
              }
          }
  
-@@ -1206,8 +1362,10 @@
+@@ -1206,8 +1366,10 @@
                  if ((p_76607_2_ & 1 << l) != 0 && this.storageArrays[l] != null)
                  {
                      nibblearray = this.storageArrays[l].getSkylightArray();
@@ -356,7 +374,7 @@
                  }
              }
          }
-@@ -1229,8 +1387,8 @@
+@@ -1229,8 +1391,8 @@
                          nibblearray = this.storageArrays[l].createBlockMSBArray();
                      }
  
@@ -367,7 +385,7 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1681,21 @@
+@@ -1523,4 +1685,21 @@
              }
          }
      }
