@@ -33,6 +33,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 
 import org.bukkit.craftbukkit.util.LongHash;
@@ -286,7 +287,16 @@ public class CauldronHooks
         	{
         		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
         		if(cps.chunksToUnload.contains(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4))
-        			return true;
+        		{
+        			Chunk c = cps.getChunkIfLoaded(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4);
+        			if(c != null)
+        			{
+        				if(c.lastAccessedTick < 2L)
+        				{
+        					return true;
+        				}
+        			}
+        		}
         	}
             TileEntityCache teCache = tileEntityCache.get(tileEntity.getClass());
             if (teCache == null)
