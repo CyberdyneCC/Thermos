@@ -5,12 +5,13 @@ import net.minecraft.util.LongHashMap;
 import net.minecraft.world.chunk.Chunk;
 
 import java.util.HashMap;
+import java.util.concurrent.*;
 
 import org.bukkit.craftbukkit.util.LongHash;
 
 public class VanillaChunkHashMap extends LongHashMap {
 	private final ChunkBlockHashMap chunkt_TH;
-	private final HashMap<Long,Chunk> vanilla = new HashMap<Long,Chunk>();
+	private final ConcurrentHashMap<Long,Chunk> vanilla = new ConcurrentHashMap<Long,Chunk>();
     public VanillaChunkHashMap(ChunkBlockHashMap chunkt_TH) {
         this.chunkt_TH = chunkt_TH;
     }
@@ -19,7 +20,7 @@ public class VanillaChunkHashMap extends LongHashMap {
         return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
     }
     
-    public HashMap<Long,Chunk> rawVanilla()
+    public ConcurrentHashMap<Long,Chunk> rawVanilla()
     {
     	return vanilla;
     }

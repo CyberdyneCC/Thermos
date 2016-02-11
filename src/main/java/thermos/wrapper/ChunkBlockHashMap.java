@@ -1,12 +1,13 @@
 package thermos.wrapper;
 
 import java.util.HashMap;
+import java.util.concurrent.*;
 
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkBlockHashMap {
 	
-	private final HashMap<Integer, Chunk[][]> map = new HashMap<Integer, Chunk[][]>();
+	private final ConcurrentHashMap<Integer, Chunk[][]> map = new ConcurrentHashMap<Integer, Chunk[][]>();
 	private int size = 0;
 	
     private static int chunk_hash(int x, int z)
@@ -30,7 +31,7 @@ public class ChunkBlockHashMap {
         return bunch;
     }
 
-    public HashMap<Integer,Chunk[][]> raw()
+    public ConcurrentHashMap<Integer,Chunk[][]> raw()
     {
     	return this.map;
     }
@@ -63,8 +64,8 @@ public class ChunkBlockHashMap {
                temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = chunk;
                this.map.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //Thermos - IntHash
            }
-    }	
-    
+    }
+
     public void remove(Chunk chunk)
     {
  	   int x = chunk.xPosition, z = chunk.zPosition;
@@ -76,8 +77,6 @@ public class ChunkBlockHashMap {
     		   size--;
     		   temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = null;
     	   }
-    		   
-    	   
-       }  	
+       }
     }
 }
