@@ -89,7 +89,7 @@ public class WatchdogThread extends Thread
                 {
                     log.log(Level.SEVERE, "  Dimension:" + world.provider.dimensionId);
                     log.log(Level.SEVERE,
-                            "  Loaded Chunks: " + world.theChunkProviderServer.loadedChunkHashMap_TH.size() + " Active Chunks: " + world.activeChunkSet.size()
+                            "  Loaded Chunks: " + world.theChunkProviderServer.loadedChunkHashMap.rawThermos().size() + " Active Chunks: " + world.activeChunkSet.size()
                                     + " Entities: " + world.loadedEntityList.size() + " Tile Entities: " + world.loadedTileEntityList.size());
                     log.log(Level.SEVERE, "  Entities Last Tick: " + world.entitiesTicked);
                     log.log(Level.SEVERE, "  Tiles Last Tick: " + world.tilesTicked);
@@ -153,7 +153,7 @@ public class WatchdogThread extends Thread
                 for (net.minecraft.world.WorldServer world : MinecraftServer.getServer().worlds)
                 {
                     log.log(Level.WARNING, "  Dimension:" + world.provider.dimensionId);
-                    log.log(Level.WARNING, "  Loaded Chunks: " + world.theChunkProviderServer.loadedChunkHashMap_TH.size() +
+                    log.log(Level.WARNING, "  Loaded Chunks: " + world.theChunkProviderServer.loadedChunkHashMap.rawThermos().size() +
                             " Active Chunks: " + world.activeChunkSet.size() +
                             " Entities: " + world.loadedEntityList.size() +
                             " Tile Entities: " + world.loadedTileEntityList.size());

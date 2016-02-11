@@ -138,7 +138,7 @@ public class CraftWorld implements World {
     }
 
     public Chunk[] getLoadedChunks() {
-        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap_TH.values();
+        Object[] chunks = world.theChunkProviderServer.loadedChunkHashMap.rawVanilla().values().toArray();
         org.bukkit.Chunk[] craftChunks = new CraftChunk[chunks.length];
 
         for (int i = 0; i < chunks.length; i++) {
@@ -263,7 +263,7 @@ public class CraftWorld implements World {
 
         world.theChunkProviderServer.chunksToUnload.remove(x, z);
         //net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_TH.get(LongHash.toLong(x, z));
-        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.chunk_get(x,z); //Thermos replacement for line above
+        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap.rawThermos().get(x,z); //Thermos replacement for line above
 
         if (chunk == null) {
             world.timings.syncChunkLoadTimer.startTiming(); // Spigot
@@ -277,9 +277,8 @@ public class CraftWorld implements World {
 
     private void chunkLoadPostProcess(net.minecraft.world.chunk.Chunk chunk, int x, int z) {
         if (chunk != null) {
-            world.theChunkProviderServer.loadedChunkHashMap_TH.put(LongHash.toLong(x, z), chunk);
+            world.theChunkProviderServer.loadedChunkHashMap.add(LongHash.toLong(x, z), chunk); // Passes to chunkt_TH
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
-            world.theChunkProviderServer.chunk_put(x,z,chunk);
             chunk.onChunkLoad();
 
             if (!chunk.isTerrainPopulated && world.theChunkProviderServer.chunkExists(x + 1, z + 1) && world.theChunkProviderServer.chunkExists(x, z + 1) && world.theChunkProviderServer.chunkExists(x + 1, z)) {
@@ -1395,24 +1394,22 @@ public class CraftWorld implements World {
         }
 
         final net.minecraft.world.gen.ChunkProviderServer cps = world.theChunkProviderServer;
-        cps.loadedChunkHashMap_TH.forEachValue(new TObjectProcedure<net.minecraft.world.chunk.Chunk>() {
-            @Override
-            public boolean execute(net.minecraft.world.chunk.Chunk chunk) {
-                // If in use, skip it
-                if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
-                    return true;
-                }
-
-                // Already unloading?
-                if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
-                    return true;
-                }
-
-                // Add unload request
-                cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
-                return true;
+        for(net.minecraft.world.chunk.Chunk chunk : world.theChunkProviderServer.loadedChunkHashMap.rawVanilla().values())
+        {
+            // If in use, skip it
+            if (isChunkInUse(chunk.xPosition, chunk.zPosition)) {
+                continue;
             }
-        });
+
+            // Already unloading?
+            if (cps.chunksToUnload.contains(chunk.xPosition, chunk.zPosition)) {
+                continue;
+            }
+
+            // Add unload request
+            cps.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
+            continue;        	
+        }
     }
 
     // Spigot start
