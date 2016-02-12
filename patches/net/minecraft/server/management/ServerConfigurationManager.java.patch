@@ -381,7 +381,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +620,214 @@
+@@ -410,80 +620,219 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -629,14 +629,19 @@
 +        {
 +            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(entityplayermp1, ((CraftWorld) fromWorld).getHandle().provider.dimensionId,
 +                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId, (CraftWorld) fromWorld); // Cauldron - fire forge changed dimension event
-+            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
++        }
++        else if(fromWorld != location.getWorld() && cause == TeleportCause.DEATH)
++        {
++            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(entityplayermp1, ((CraftWorld) fromWorld).getHandle().provider.dimensionId,
++                    ((CraftWorld) location.getWorld()).getHandle().provider.dimensionId, (CraftWorld) fromWorld); // Cauldron - fire forge changed dimension event
++            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);            
 +        }
 +        else
 +            FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp1);
          return entityplayermp1;
      }
  
-@@ -492,34 +836,112 @@
+@@ -492,34 +841,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -768,7 +773,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1027,109 @@
+@@ -605,6 +1032,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -878,7 +883,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1137,13 @@
+@@ -612,11 +1142,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -892,7 +897,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1404,24 @@
+@@ -877,13 +1409,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -919,7 +924,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1479,16 @@
+@@ -941,13 +1484,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -937,7 +942,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1502,17 @@
+@@ -961,9 +1507,17 @@
          return this.maxPlayers;
      }
  
@@ -956,7 +961,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1581,30 @@
+@@ -1032,12 +1586,30 @@
  
      public void removeAllPlayers()
      {
