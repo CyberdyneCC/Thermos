@@ -3,16 +3,21 @@ package thermos.wrapper;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
+import org.bukkit.craftbukkit.util.LongHash;
+
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkBlockHashMap {
 	
-	private final ConcurrentHashMap<Integer, Chunk[][]> map = new ConcurrentHashMap<Integer, Chunk[][]>();
+	//private final ConcurrentHashMap<Integer, Chunk[][]> map = new ConcurrentHashMap<Integer, Chunk[][]>();
+	private final org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> map = new org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]>();
 	private int size = 0;
 	
-    private static int chunk_hash(int x, int z)
+    private static long chunk_hash(int x, int z)
     {
-        return ((x & 0xFFFF) << 16) | (z & 0xFFFF);
+        //return ((x & 0xFFFF) << 16) | (z & 0xFFFF);
+        long key = LongHash.toLong(x, z);
+        return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
     }
 
     private static int chunk_array(int index)
@@ -31,7 +36,7 @@ public class ChunkBlockHashMap {
         return bunch;
     }
 
-    public ConcurrentHashMap<Integer,Chunk[][]> raw()
+    public org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> raw()
     {
     	return this.map;
     }

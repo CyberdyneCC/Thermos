@@ -476,7 +476,7 @@
                  return;
              }
 +            org.bukkit.event.player.PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(this.playerEntity, Action.RIGHT_CLICK_AIR, itemstack);
-+            PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerInteract(playerEntity, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, worldserver, null); // Cauldron - rename event
++            PlayerInteractEvent forgeEvent = ForgeEventFactory.onPlayerBukkitInteract(playerEntity, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, worldserver, null); // Cauldron - rename event
 +            // CraftBukkit start
 +            int itemstackAmount = itemstack.stackSize;
  
