@@ -272,7 +272,7 @@
 +        
 +        if(p_76588_3_ instanceof ArrayList) // Thermos force ArrayList minimum size for faster entity adding
 +        {
-+        	((ArrayList)p_76588_3_).ensureCapacity(15);
++        	((ArrayList)p_76588_3_).ensureCapacity(30);
 +        }
 +        
          for (int k = i; k <= j; ++k)
