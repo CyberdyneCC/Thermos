@@ -260,7 +260,7 @@
 +            double delta = Math.pow(this.lastPosX - to.getX(), 2) + Math.pow(this.lastPosY - to.getY(), 2) + Math.pow(this.lastPosZ - to.getZ(), 2);
 +            float deltaAngle = Math.abs(this.lastYaw - to.getYaw()) + Math.abs(this.lastPitch - to.getPitch());
 +
-+            if ((delta > 1f / 256 || deltaAngle > 10f) && (this.hasMoved && !this.playerEntity.isDead))
++            if ((delta > 2f / 256 || deltaAngle > 10f) && (this.hasMoved && !this.playerEntity.isDead))
 +            {
 +                this.lastPosX = to.getX();
 +                this.lastPosY = to.getY();
