@@ -125,7 +125,7 @@
      public Slot getSlot(int p_75139_1_)
      {
 +        // Cauldron start - vanilla compatibility. fixes NPE with ProjectRed's Item Stock Keeper
-+        if (p_75139_1_ < 0 || p_75139_1_ >= this.inventorySlots.size())
++        if (p_75139_1_ < 0 || p_75139_1_ > this.inventorySlots.size())
 +            return null;
 +        // Cauldron end
          return (Slot)this.inventorySlots.get(p_75139_1_);
