@@ -119,7 +119,7 @@ dependencies {
     libraries 'com.typesafe.akka:akka-actor_2.11:2.3.14'
     libraries 'com.typesafe:config:1.3.0'
     libraries 'javax.persistence:persistence-api:1.0.2'
-    libraries 'jline:jline:2.13'
+    libraries 'jline:jline:2.12.1'
     libraries 'lzma:lzma:0.0.1'
     libraries 'mysql:mysql-connector-java:5.1.38'
     libraries 'net.md-5:SpecialSource:1.7.3'
@@ -206,7 +206,7 @@ task packageChangelog(type: CreateChangelog) {
     onlyIf { project.hasProperty('officialBuild') }
     classifier = 'changelog'
     extension = 'txt'
-    oldChangelogUrl = "https://repo.prok.pw/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
+    oldChangelogUrl = "https://i.tcpr.ca/thermos/changelog.txt"
     hash = gitInfo('hash')
     message = gitInfo('message')
     version = project.version
