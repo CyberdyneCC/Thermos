@@ -8,8 +8,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public enum ReverseCloner {
-    ;
+public class ReverseCloner {
     public static EntityPlayerMP clone(EntityPlayerMP player, boolean wasDeath) {
         EntityPlayerMP shadowCopy = new EntityPlayerMP(player.mcServer, (WorldServer) player.worldObj,
                 player.getGameProfile(), new ItemInWorldManager(player.worldObj));
@@ -21,6 +20,6 @@ public enum ReverseCloner {
             player.inventoryContainer = new ContainerPlayer(player.inventory, !player.worldObj.isRemote, player);
         }
         MinecraftForge.EVENT_BUS.post(new PlayerEvent.Clone(player, shadowCopy, wasDeath));
-        return player;
+        return shadowCopy;
     }
 }
