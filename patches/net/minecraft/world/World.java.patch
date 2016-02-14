@@ -1413,7 +1413,7 @@
 +
 +    public boolean isActiveChunk(int x, int z)
 +    {
-+        return getPersistentChunks().containsKey(new ChunkCoordIntPair(x, z)) || activeChunkSet_CB.containsKey(chunkToKey(x, z));
++        return activeChunkSet_CB.containsKey(chunkToKey(x, z)) || getPersistentChunks().containsKey(new ChunkCoordIntPair(x, z));
 +    }
 +
 +    public boolean isActiveChunk(long key)
