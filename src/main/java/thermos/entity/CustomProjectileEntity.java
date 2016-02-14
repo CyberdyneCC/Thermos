@@ -1,24 +1,49 @@
 package thermos.entity;
 
+import java.util.UUID;
+
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.projectiles.*;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ItemInWorldManager;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.cauldron.entity.CraftCustomEntity;
 
 public class CustomProjectileEntity extends CraftCustomEntity implements Projectile {
-    private ProjectileSource shooter;
+    private ProjectileSource shooter = null;
     private boolean doesBounce;
 
     public CustomProjectileEntity(CraftServer server, Entity entity) {
         super(server, entity);
     }
-
+    public static final GameProfile dropper = new GameProfile(UUID.fromString("[Dropper]"),"[Dropper]");
     @Override
     public LivingEntity _INVALID_getShooter() {
-        throw new IllegalStateException("Not implemented!");
+        if (shooter instanceof LivingEntity) { return (LivingEntity)shooter; }
+        if (shooter instanceof BlockProjectileSource)
+        {
+            Block block = ((BlockProjectileSource)shooter).getBlock();
+            if(!(block.getWorld() instanceof WorldServer))return null;
+            int x = block.getX(), y = block.getY(), z = block.getZ();
+            WorldServer ws = (WorldServer)block.getWorld();
+            EntityPlayerMP fake_dropper = new EntityPlayerMP(MinecraftServer.getServer(), ws, dropper, new ItemInWorldManager(this.mcServer.worldServerForDimension(0)));
+            fake_dropper.posX = x; fake_dropper.posY = y; fake_dropper.posZ = z;
+            CraftEntity ce = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(MinecraftServer.getServer().server, fake_dropper);
+            if(ce instanceof LivingEntity) return (LivingEntity)ce;
+            return null;
+        } return null;
     }
 
     @Override
@@ -27,8 +52,8 @@ public class CustomProjectileEntity extends CraftCustomEntity implements Project
     }
 
     @Override
-    public void _INVALID_setShooter(LivingEntity shooter) {
-        throw new IllegalStateException("Not implemented!");
+    public void _INVALID_setShooter(LivingEntity living) {
+        if (living instanceof ProjectileSource) { this.shooter = (ProjectileSource) living; }
     }
 
     @Override
@@ -45,5 +70,10 @@ public class CustomProjectileEntity extends CraftCustomEntity implements Project
     public void setBounce(boolean doesBounce) {
         this.doesBounce = doesBounce;
     }
-}
 
+    @Override
+    public String toString()
+    {
+        return "CraftCustomProjectile";
+    }
+}
