@@ -14,12 +14,12 @@ public class ReverseCloner {
                 player.getGameProfile(), new ItemInWorldManager(player.worldObj));
         shadowCopy.bukkitEntity = player.bukkitEntity;
         shadowCopy.playerNetServerHandler = player.playerNetServerHandler;
-        shadowCopy.clonePlayer(player, true);
+        //shadowCopy.clonePlayer(player, true);
         if (wasDeath && !player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory"))  {
             player.inventory.clearInventory(null, -1);
             player.inventoryContainer = new ContainerPlayer(player.inventory, !player.worldObj.isRemote, player);
         }
-        MinecraftForge.EVENT_BUS.post(new PlayerEvent.Clone(player, shadowCopy, wasDeath));
-        return shadowCopy;
+        //MinecraftForge.EVENT_BUS.post(new PlayerEvent.Clone(player, shadowCopy, wasDeath)); -- Thermos don't tell mods to throw the properties to the shadowCopy
+        return player;
     }
 }
