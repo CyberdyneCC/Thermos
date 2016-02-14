@@ -144,7 +144,8 @@ dependencies {
     libraries 'net.minecraft:server:1.7.10'
     libraries 'pw.prok:KImagine:0.2.0@jar'
     libraries 'org.apache.httpcomponents:httpclient:4.4.1'
-	libraries 'net.openhft:affinity:3.0.1'
+    libraries 'net.openhft:affinity:3.0.1'
+    libraries 'org.fusesource.jansi:jansi:1.11'
 }
 
 packageUniversal {
