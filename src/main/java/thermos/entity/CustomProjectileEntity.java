@@ -77,3 +77,4 @@ public class CustomProjectileEntity extends CraftCustomEntity implements Project
         return "CraftCustomProjectile";
     }
 }
+
