@@ -55,7 +55,7 @@ minecraft {
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'pw.prok'
+group = 'ca.tcpr'
 
 ext.buildInfoCached = null;
 
@@ -103,7 +103,7 @@ version = "${mcVersion}-${forgeVersion}.${revision}"
 if (project.hasProperty('officialBuild')) println "Updated Thermos version: ${version}"
 
 launch4j {
-    jreMinVersion = '1.6.0'
+    jreMinVersion = '1.7.0'
 }
 
 configurations {
@@ -206,7 +206,7 @@ task packageChangelog(type: CreateChangelog) {
     onlyIf { project.hasProperty('officialBuild') }
     classifier = 'changelog'
     extension = 'txt'
-    oldChangelogUrl = "https://repo.prok.pw/${project.group.replace('.', '/')}/${project.name}/${buildInfo('version')}/${project.name}-${buildInfo('version')}-changelog.txt"
+    oldChangelogUrl = "https://i.tcpr.ca/thermos/changelog.txt"
     hash = gitInfo('hash')
     message = gitInfo('message')
     version = project.version
