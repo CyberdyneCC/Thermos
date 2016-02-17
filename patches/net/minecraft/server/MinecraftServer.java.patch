@@ -583,7 +583,19 @@
                  FMLCommonHandler.instance().handleServerStopped();
                  this.serverStopped = true;
                  this.systemExitNow();
-@@ -532,8 +799,11 @@
+@@ -497,6 +764,11 @@
+     {
+         File file1 = this.getFile("server-icon.png");
+ 
++        if (!file1.isFile())
++        {
++            try {thermos.SIGen.gen(this,file1);} catch(Exception e){}
++        }
++
+         if (file1.isFile())
+         {
+             ByteBuf bytebuf = Unpooled.buffer();
+@@ -532,8 +804,11 @@
  
      public void tick()
      {
@@ -595,7 +607,7 @@
          ++this.tickCounter;
  
          if (this.startProfiling)
-@@ -562,12 +832,21 @@
+@@ -562,12 +837,21 @@
              this.field_147147_p.func_151318_b().func_151330_a(agameprofile);
          }
  
@@ -619,7 +631,7 @@
          }
  
          this.theProfiler.startSection("tallying");
-@@ -575,25 +854,57 @@
+@@ -575,25 +859,57 @@
          this.theProfiler.endSection();
          this.theProfiler.startSection("snooper");
  
@@ -679,7 +691,7 @@
          int i;
  
          Integer[] ids = DimensionManager.getIDs(this.tickCounter % 200 == 0);
-@@ -602,19 +913,21 @@
+@@ -602,19 +918,21 @@
              int id = ids[x];
              long j = System.nanoTime();
  
@@ -704,7 +716,7 @@
  
                  this.theProfiler.startSection("tick");
                  FMLCommonHandler.instance().onPreWorldTick(worldserver);
-@@ -622,22 +935,46 @@
+@@ -622,22 +940,46 @@
  
                  try
                  {
@@ -753,7 +765,7 @@
                      worldserver.addWorldInfoToCrashReport(crashreport);
                      throw new ReportedException(crashreport);
                  }
-@@ -645,10 +982,12 @@
+@@ -645,10 +987,12 @@
                  FMLCommonHandler.instance().onPostWorldTick(worldserver);
                  this.theProfiler.endSection();
                  this.theProfiler.startSection("tracker");
@@ -767,7 +779,7 @@
  
              worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - j;
          }
-@@ -656,15 +995,21 @@
+@@ -656,15 +1000,21 @@
          this.theProfiler.endStartSection("dim_unloading");
          DimensionManager.unloadWorlds(worldTickTimes);
          this.theProfiler.endStartSection("connection");
@@ -789,7 +801,7 @@
  
          this.theProfiler.endSection();
      }
-@@ -699,6 +1044,13 @@
+@@ -699,6 +1049,13 @@
  
      public WorldServer worldServerForDimension(int p_71218_1_)
      {
@@ -803,7 +815,7 @@
          WorldServer ret = DimensionManager.getWorld(p_71218_1_);
          if (ret == null)
          {
-@@ -784,13 +1136,14 @@
+@@ -784,13 +1141,14 @@
  
      public List getPossibleCompletions(ICommandSender p_71248_1_, String p_71248_2_)
      {
@@ -822,7 +834,7 @@
  
              if (list != null)
              {
-@@ -798,40 +1151,25 @@
+@@ -798,40 +1156,25 @@
  
                  while (iterator.hasNext())
                  {
@@ -871,7 +883,7 @@
      }
  
      public static MinecraftServer getServer()
-@@ -1034,7 +1372,7 @@
+@@ -1034,7 +1377,7 @@
  
      public boolean isServerInOnlineMode()
      {
@@ -880,7 +892,7 @@
      }
  
      public void setOnlineMode(boolean p_71229_1_)
-@@ -1124,7 +1462,7 @@
+@@ -1124,7 +1467,7 @@
  
      public NetworkSystem func_147137_ag()
      {
@@ -889,7 +901,7 @@
      }
  
      @SideOnly(Side.CLIENT)
-@@ -1259,8 +1597,11 @@
+@@ -1259,8 +1602,11 @@
      {
          Bootstrap.func_151354_b();
  
@@ -901,7 +913,7 @@
              boolean flag = true;
              String s = null;
              String s1 = ".";
-@@ -1356,16 +1697,34 @@
+@@ -1356,16 +1702,34 @@
              {
                  dedicatedserver.setGuiEnabled();
              }
@@ -942,7 +954,7 @@
          }
          catch (Exception exception)
          {
-@@ -1400,15 +1759,70 @@
+@@ -1400,15 +1764,70 @@
      @SideOnly(Side.SERVER)
      public String getPlugins()
      {
@@ -1018,7 +1030,7 @@
      }
  
      @SideOnly(Side.SERVER)
-@@ -1455,9 +1869,213 @@
+@@ -1455,9 +1874,213 @@
          return this.serverStopped;
      }
  
