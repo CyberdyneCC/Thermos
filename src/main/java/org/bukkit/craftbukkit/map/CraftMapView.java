@@ -23,7 +23,7 @@ public final class CraftMapView implements MapView {
     public MapRenderer defaultRenderer;
     public CraftMapView(net.minecraft.world.storage.MapData worldMap) {
         this.worldMap = worldMap;
-        addRenderer(new CraftMapRenderer(this, worldMap));
+        //addRenderer(new CraftMapRenderer(this, worldMap));
     }
 
     public short getId() {

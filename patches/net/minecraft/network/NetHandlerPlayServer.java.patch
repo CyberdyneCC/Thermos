@@ -354,12 +354,12 @@
 +        f1 = dest.getPitch();
 +
 +        // TODO: make sure this is the best way to address this.
-+        if (Float.isNaN(f))
++        if (Float.isNaN(f) || Float.isInfinite(f))
 +        {
 +            f = 0;
 +        }
 +
-+        if (Float.isNaN(f1))
++        if (Float.isNaN(f1) || Float.isInfinite(f1))
 +        {
 +            f1 = 0;
 +        }
