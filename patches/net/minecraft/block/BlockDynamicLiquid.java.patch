@@ -69,12 +69,13 @@
              }
              else
              {
-@@ -113,21 +136,35 @@
+@@ -113,21 +136,36 @@
  
          if (this.func_149809_q(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_))
          {
 -            if (this.blockMaterial == Material.lava && p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_).getMaterial() == Material.water)
-+            if (p_149674_1_.getType(p_149674_2_, p_149674_3_, p_149674_4_).getMaterial() != this.blockMaterial) { return; } // PaperSpigot - Stop updating flowing block if material has changed
++            //if (p_149674_1_.getType(p_149674_2_, p_149674_3_, p_149674_4_).getMaterial() != this.blockMaterial) { return; } // PaperSpigot - Stop updating flowing block if material has changed
++
 +            // CraftBukkit start - Send "down" to the server
 +            BlockFromToEvent event = new BlockFromToEvent(source, BlockFace.DOWN);
 +
@@ -115,7 +116,7 @@
          }
          else if (l >= 0 && (l == 0 || this.func_149807_p(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_)))
          {
-@@ -144,25 +181,31 @@
+@@ -144,25 +182,31 @@
                  return;
              }
  
