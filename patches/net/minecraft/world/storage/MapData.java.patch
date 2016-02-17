@@ -124,13 +124,14 @@
              this.entityplayerObj = p_i2138_2_;
  
              for (int i = 0; i < this.field_76209_b.length; ++i)
-@@ -328,20 +348,37 @@
+@@ -328,20 +348,38 @@
                  int i;
                  int i1;
  
 +                // Spigot start
 +                boolean custom = this.mapDataObj.mapView.renderers.size() > 1 || !(this.mapDataObj.mapView.renderers.get(0) instanceof org.bukkit.craftbukkit.map.CraftMapRenderer);
-+                org.bukkit.craftbukkit.map.RenderData render = (!custom) ? this.mapDataObj.mapView.render((org.bukkit.craftbukkit.entity.CraftPlayer) entityplayerObj.getBukkitEntity()) : null; // CraftBukkit
++                if (!custom) return new byte[] {(byte)2, MapData.this.scale};
++                org.bukkit.craftbukkit.map.RenderData render = this.mapDataObj.mapView.render((org.bukkit.craftbukkit.entity.CraftPlayer) entityplayerObj.getBukkitEntity()); // CraftBukkit
 +    
                  if (--this.ticksUntilPlayerLocationMapUpdate < 0)
                  {
