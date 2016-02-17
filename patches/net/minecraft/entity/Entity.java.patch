@@ -387,12 +387,12 @@
 +
 +            // CraftBukkit start - Checking for NaN pitch/yaw and resetting to zero
 +            // TODO: make sure this is the best way to address this.
-+            if (Float.isNaN(this.rotationYaw))
++            if (Float.isNaN(this.rotationYaw) || Float.isInfinite(this.rotationYaw))
 +            {
 +                this.rotationYaw = 0;
 +            }
 +
-+            if (Float.isNaN(this.rotationPitch))
++            if (Float.isNaN(this.rotationPitch) || Float.isInfinite(this.rotationPitch))
 +            {
 +                this.rotationPitch = 0;
 +            }
@@ -638,10 +638,10 @@
 -        this.dealFireDamage(5);
 +        // CraftBukkit start
 +        final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
-+        if (thisBukkitEntity == null) return; // Cauldron - skip mod entities with no wrapper (TODO: create a wrapper)
++        if (thisBukkitEntity == null) { System.out.println("[Thermos] thisBukkitEntity has no wrapper to handle lightning! Report this to Thermos maintainers!"); return; } // Cauldron - skip mod entities with no wrapper (TODO: create a wrapper)
 +        if (p_70077_1_ == null) return; // Cauldron - skip null entities, see #392
 +        final org.bukkit.entity.Entity stormBukkitEntity = p_70077_1_.getBukkitEntity();
-+        if (stormBukkitEntity == null) return; // Cauldron - skip mod entities with no wrapper (TODO: create a wrapper)
++        if (stormBukkitEntity == null) { System.out.println("[Thermos] There's a stormBukkitEntity with no wrapper for lightning! Report this to Thermos maintainers!"); return; } // Cauldron - skip mod entities with no wrapper (TODO: create a wrapper)
 +        final PluginManager pluginManager = Bukkit.getPluginManager();
 +
 +        if (thisBukkitEntity instanceof Hanging)
