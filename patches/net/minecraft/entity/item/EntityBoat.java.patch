@@ -74,7 +74,7 @@
 +            }
 +
 +            // f = event.getDamage(); // TODO Why don't we do this?
-+            if((float)event.getDamage() != p_70097_2_ ) p_70097_2_ = event.getDamage(); // Thermos - wow that's sad, maybe we should implement instead of leaving it at "TODO"
++            if((float)event.getDamage() != p_70097_2_ ) p_70097_2_ = (float)event.getDamage(); // Thermos - wow that's sad, maybe we should implement instead of leaving it at "TODO"
 +            // CraftBukkit end
              this.setForwardDirection(-this.getForwardDirection());
              this.setTimeSinceHit(10);
