@@ -20,10 +20,9 @@ public final class CraftMapView implements MapView {
     public final List<MapRenderer> renderers = new ArrayList<MapRenderer>(); // Spigot
     private final Map<MapRenderer, Map<CraftPlayer, CraftMapCanvas>> canvases = new HashMap<MapRenderer, Map<CraftPlayer, CraftMapCanvas>>();
     protected final net.minecraft.world.storage.MapData worldMap;
-
+    public final MapRenderer defaultRender = new CraftMapRenderer(this, worldMap);
     public CraftMapView(net.minecraft.world.storage.MapData worldMap) {
         this.worldMap = worldMap;
-        addRenderer(new CraftMapRenderer(this, worldMap));
     }
 
     public short getId() {
@@ -119,6 +118,7 @@ public final class CraftMapView implements MapView {
     }
 
     public RenderData render(CraftPlayer player) {
+        if (renderers.size() == 0) { renderers.add(defaultRenderer); } // Thermos - don't install the default renderer **unless** there is no other option specified by some Bukkit plugin
         boolean context = isContextual();
         RenderData render = renderCache.get(context ? player : null);
 
