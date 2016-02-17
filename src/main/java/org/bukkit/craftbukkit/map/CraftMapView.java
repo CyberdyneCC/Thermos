@@ -20,10 +20,10 @@ public final class CraftMapView implements MapView {
     public final List<MapRenderer> renderers = new ArrayList<MapRenderer>(); // Spigot
     private final Map<MapRenderer, Map<CraftPlayer, CraftMapCanvas>> canvases = new HashMap<MapRenderer, Map<CraftPlayer, CraftMapCanvas>>();
     protected final net.minecraft.world.storage.MapData worldMap;
-    public final MapRenderer defaultRenderer;
+    public MapRenderer defaultRenderer;
     public CraftMapView(net.minecraft.world.storage.MapData worldMap) {
         this.worldMap = worldMap;
-        defaultRenderer = new CraftMapRenderer(this, worldMap);
+        addRenderer(new CraftMapRenderer(this, worldMap));
     }
 
     public short getId() {
