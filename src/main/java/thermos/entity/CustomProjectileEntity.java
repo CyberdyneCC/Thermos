@@ -28,7 +28,7 @@ public class CustomProjectileEntity extends CraftCustomEntity implements Project
     public CustomProjectileEntity(CraftServer server, Entity entity) {
         super(server, entity);
     }
-    public static final GameProfile dropper = new GameProfile(UUID.fromString("[Dropper]"),"[Dropper]");
+    public static final GameProfile dropper =  new GameProfile(UUID.nameUUIDFromBytes("[Dropper]".getBytes()), "[Dropper]");
     @Override
     public LivingEntity _INVALID_getShooter() {
         if (shooter instanceof LivingEntity) { return (LivingEntity)shooter; }
