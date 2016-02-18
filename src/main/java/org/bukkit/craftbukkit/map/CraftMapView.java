@@ -23,7 +23,7 @@ public final class CraftMapView implements MapView {
     public MapRenderer defaultRenderer;
     public CraftMapView(net.minecraft.world.storage.MapData worldMap) {
         this.worldMap = worldMap;
-        //addRenderer(new CraftMapRenderer(this, worldMap));
+        addRenderer(new CraftMapRenderer(this, worldMap));
     }
 
     public short getId() {
@@ -119,7 +119,6 @@ public final class CraftMapView implements MapView {
     }
 
     public RenderData render(CraftPlayer player) {
-        if (renderers.size() == 0) { renderers.add(defaultRenderer); } // Thermos - don't install the default renderer **unless** there is no other option specified by some Bukkit plugin
         boolean context = isContextual();
         RenderData render = renderCache.get(context ? player : null);
 
@@ -141,7 +140,6 @@ public final class CraftMapView implements MapView {
                 canvas = new CraftMapCanvas(this);
                 canvases.get(renderer).put(renderer.isContextual() ? player : null, canvas);
             }
-
             canvas.setBase(render.buffer);
             renderer.render(this, canvas, player);
 

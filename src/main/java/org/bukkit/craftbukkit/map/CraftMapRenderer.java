@@ -8,6 +8,7 @@ import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import net.minecraftforge.cauldron.command.*;
 
 public class CraftMapRenderer extends MapRenderer {
 
@@ -20,6 +21,13 @@ public class CraftMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
+        if(CauldronCommand.debug) {
+        System.out.println("Default Map Render called!");
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            System.out.println(ste);
+        } }
+
+
         // Map
         for (int x = 0; x < 128; ++x) {
             for (int y = 0; y < 128; ++y) {
