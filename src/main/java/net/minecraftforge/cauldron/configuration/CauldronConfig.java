@@ -61,6 +61,9 @@ public class CauldronConfig extends ConfigBase
     public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "how many milliseconds the server must ignore before trying repeater updates");
     public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "how many milliseconds the server must ignore before trying redstoneTorch updates");
 
+    // World Protection options
+    public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
+
     // Plug-in options
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");
 
@@ -109,6 +112,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(chunkGCGracePeriod.path, chunkGCGracePeriod);
         settings.put(repeaterL.path, repeaterL);
         settings.put(redstoneTorchL.path, redstoneTorchL);
+        settings.put(protectSP.path, protectSP);
         load();
     }
 
