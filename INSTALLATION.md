@@ -26,6 +26,7 @@ Use this script to install the latest version of Thermos!
 
 ```bash
 wget https://github.com/TCPR/ThermosServer/archive/master.zip
+unzip master.zip
 mv ThermosServer-master Thermos
 cd Thermos
 wget $(curl -s https://api.github.com/repos/TCPR/Thermos/releases/latest | grep 'jar' | cut -d\" -f4) 
