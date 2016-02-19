@@ -1,6 +1,6 @@
 [submodule "bukkit"]
 	path = bukkit
-	url = https://github.com/TCPR/KCauldron-Bukkit.git
+	url = https://github.com/TCPR/Thermos-Bukkit.git
 [submodule "forge"]
 	path = forge
 	url = https://github.com/MinecraftForge/MinecraftForge.git
