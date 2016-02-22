@@ -13,7 +13,7 @@ public class ChunkBlockHashMap {
 	private final org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> map = new org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]>();
 	private int size = 0;
 	
-    private static long chunk_hash(int x, int z)
+    public static long chunk_hash(int x, int z)
     {
         //return ((x & 0xFFFF) << 16) | (z & 0xFFFF);
         long key = LongHash.toLong(x, z);
