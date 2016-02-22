@@ -65,6 +65,8 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
 
     // Plug-in options
+    public final BoolSetting reloadPlugins = new BoolSetting(this, "plugin-settings.allow-reload", false, "Allow plugins to be reloaded. WARNING - breaks with some mods. We *will not* support this!");
+
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");
 
     /* ======================================================================== */
@@ -106,6 +108,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(flowingLavaDecay.path, flowingLavaDecay);
         settings.put(fakePlayerLogin.path, fakePlayerLogin);
         settings.put(remapPluginFile.path, remapPluginFile);
+        settings.put(reloadPlugins.path, reloadPlugins);
         settings.put(userLogin.path, userLogin);
         settings.put(allowTntPunishment.path, allowTntPunishment);
         settings.put(maxPlayersVisible.path, maxPlayersVisible);
