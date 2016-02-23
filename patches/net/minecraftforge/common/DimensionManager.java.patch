@@ -146,7 +146,7 @@
              DimensionManager.getProviderType(dim);
          }
          catch (Exception e)
-@@ -242,9 +295,62 @@
+@@ -242,9 +295,63 @@
          ISaveHandler savehandler = overworld.getSaveHandler();
          WorldSettings worldSettings = new WorldSettings(overworld.getWorldInfo());
  
@@ -163,6 +163,7 @@
 +                return;
 +            worldType = env.toString().toLowerCase();
 +            name = "DIM" + dim;
++            realName = name;
 +        }
 +        else
 +        {
@@ -180,7 +181,7 @@
 +
 +            if (net.minecraftforge.cauldron.configuration.CauldronConfig.instance.realNames.getValue()) // Thermos - allow server owners to use real names for worlds, but remember to keep the SaveHandler directory..
 +            {
-+                realName = provider.worldObj.getWorldInfo().getWorldName();
++                realName = provider.getDimensionName();
 +            }
 +            else { realName = name; }
 +
@@ -210,7 +211,7 @@
          if (!mcServer.isSinglePlayer())
          {
              world.getWorldInfo().setGameType(mcServer.getGameType());
-@@ -253,6 +359,79 @@
+@@ -253,6 +360,79 @@
          mcServer.func_147139_a(mcServer.func_147135_j());
      }
  
@@ -290,7 +291,7 @@
      public static WorldServer getWorld(int id)
      {
          return worlds.get(id);
-@@ -266,7 +445,7 @@
+@@ -266,7 +446,7 @@
      public static boolean shouldLoadSpawn(int dim)
      {
          int id = getProviderType(dim);
@@ -299,7 +300,7 @@
      }
  
      static
-@@ -306,7 +485,8 @@
+@@ -306,7 +486,8 @@
      }
  
      public static void unloadWorld(int id) {
@@ -309,7 +310,7 @@
      }
  
      /*
-@@ -315,26 +495,9 @@
+@@ -315,26 +496,9 @@
      public static void unloadWorlds(Hashtable<Integer, long[]> worldTickTimes) {
          for (int id : unloadQueue) {
              WorldServer w = worlds.get(id);
@@ -338,7 +339,7 @@
              }
          }
          unloadQueue.clear();
-@@ -425,4 +588,45 @@
+@@ -425,4 +589,45 @@
              return null;
          }
      }
