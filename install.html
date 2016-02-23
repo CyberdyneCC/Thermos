@@ -57,6 +57,7 @@
          <p>Use this script to install the latest version of Thermos!</p>
          <div class="highlight highlight-source-shell">
             <pre>wget https://github.com/TCPR/ThermosServer/archive/master.zip
+unzip master.zip
 mv ThermosServer-master Thermos
 <span class="pl-c1">cd</span> Thermos
 wget <span class="pl-s"><span class="pl-pds">$(</span>curl -s https://api.github.com/repos/TCPR/Thermos/releases/latest <span class="pl-k">|</span> grep <span class="pl-s"><span class="pl-pds">'</span>jar<span class="pl-pds">'</span></span> <span class="pl-k">|</span> cut -d<span class="pl-cce">\"</span> -f4<span class="pl-pds">)</span></span> 
