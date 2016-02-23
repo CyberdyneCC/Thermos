@@ -146,7 +146,7 @@
              DimensionManager.getProviderType(dim);
          }
          catch (Exception e)
-@@ -242,9 +295,52 @@
+@@ -242,9 +295,60 @@
          ISaveHandler savehandler = overworld.getSaveHandler();
          WorldSettings worldSettings = new WorldSettings(overworld.getWorldInfo());
  
@@ -155,6 +155,7 @@
 +        String worldType;
 +        String name;
 +        String oldName = "";
++        String realName = "";
 +        Environment env = Environment.getEnvironment(getProviderType(dim));
 +        if (dim >= -1 && dim <= 1)
 +        {
@@ -186,7 +187,14 @@
 +        if (mcServer instanceof DedicatedServer) {
 +            worldSettings.func_82750_a(((DedicatedServer) mcServer).getStringProperty("generator-settings", ""));
 +        }
-+        WorldServer world = new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true), name, dim, worldSettings, overworld, mcServer.theProfiler, env, gen);
++
++        if (net.minecraftforge.cauldron.configuration.CauldronConfig.forgeNames.getValue()) // Thermos - allow server owners to use real names for worlds, but remember to keep the SaveHandler directory..
++        {
++            realName = world.worldObj.getWorldInfo().getWorldName();
++        }
++        else { realName = name; }
++
++        WorldServer world = new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true), realName, dim, worldSettings, overworld, mcServer.theProfiler, env, gen); // Thermos - real world names, heyo!
 +
 +        if (gen != null)
 +        {
@@ -200,7 +208,7 @@
          if (!mcServer.isSinglePlayer())
          {
              world.getWorldInfo().setGameType(mcServer.getGameType());
-@@ -253,6 +349,79 @@
+@@ -253,6 +357,79 @@
          mcServer.func_147139_a(mcServer.func_147135_j());
      }
  
@@ -280,7 +288,7 @@
      public static WorldServer getWorld(int id)
      {
          return worlds.get(id);
-@@ -266,7 +435,7 @@
+@@ -266,7 +443,7 @@
      public static boolean shouldLoadSpawn(int dim)
      {
          int id = getProviderType(dim);
@@ -289,7 +297,7 @@
      }
  
      static
-@@ -306,7 +475,8 @@
+@@ -306,7 +483,8 @@
      }
  
      public static void unloadWorld(int id) {
@@ -299,7 +307,7 @@
      }
  
      /*
-@@ -315,26 +485,9 @@
+@@ -315,26 +493,9 @@
      public static void unloadWorlds(Hashtable<Integer, long[]> worldTickTimes) {
          for (int id : unloadQueue) {
              WorldServer w = worlds.get(id);
@@ -328,7 +336,7 @@
              }
          }
          unloadQueue.clear();
-@@ -425,4 +578,45 @@
+@@ -425,4 +586,45 @@
              return null;
          }
      }
