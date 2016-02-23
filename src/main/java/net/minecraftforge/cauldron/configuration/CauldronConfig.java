@@ -119,6 +119,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(repeaterL.path, repeaterL);
         settings.put(redstoneTorchL.path, redstoneTorchL);
         settings.put(protectSP.path, protectSP);
+        settings.put(realNames.path, realNames);
         load();
     }
 
