@@ -426,7 +426,7 @@
 +            if (p_147454_4_.func_149698_L()) {
 +                if (checkChunksExist(p_147454_1_ - 8, p_147454_2_ - 8, p_147454_3_ - 8, p_147454_1_ + 8, p_147454_2_ + 8, p_147454_3_ + 8)) {
 +                    Block block = getBlock(p_147454_1_, p_147454_2_, p_147454_3_);
-+                    if (block.getMaterial() != Material.air && block == p_147454_4_)
++                    if (block.getMaterial() != Material.air && block == p_147454_4_ && p_147454_6_ != 0)
 +                        block.updateTick(this, p_147454_1_, p_147454_2_, p_147454_3_, rand);
  
 -        if (this.scheduledUpdatesAreImmediate && p_147454_4_.getMaterial() != Material.air)
