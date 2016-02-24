@@ -16,6 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath files('FGS.jar')
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
