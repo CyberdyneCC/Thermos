@@ -11,4 +11,4 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-script: ./gradlew --parallel clean setupCauldron jar packageBundle
+script: ./gradlew clean setupCauldron jar
