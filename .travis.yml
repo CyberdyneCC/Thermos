@@ -1,3 +1,8 @@
 language: java
+sudo: required
+jdk:
+  - oraclejdk8
+git:
+    submodules: true
 before_install: git submodule update --init --recursive
 script: ./gradlew clean setupCauldron jar packageBundle
