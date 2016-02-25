@@ -62,7 +62,7 @@
                  rejects.add(networkMod.getKey());
              }
 +            String name = networkMod.getKey().getName().toLowerCase();
-+            if(rejects.isEmpty() && (name.contains("cjb") || name.contains("kradxns") || name.contains("chestfinder") || name.contains("cheating") || name.contains("xray") || name.contains("radarbro"))) hackpacks.add(networkMod.getKey());
++            if(rejects.isEmpty() && (name.contains("cjb") || name.contains("kradxns") || name.contains("chestfinder") || name.contains("cheating") || name.contains("xray") || name.contains("radarbro") || name.contains("zyin"))) hackpacks.add(networkMod.getKey());
          }
          if (rejects.isEmpty())
          {
