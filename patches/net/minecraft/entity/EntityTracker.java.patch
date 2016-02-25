@@ -14,7 +14,7 @@
      private final WorldServer theWorld;
 -    private Set trackedEntities = new HashSet();
 -    private IntHashMap trackedEntityIDs = new IntHashMap();
-+    private Set<EntityTrackerEntry> trackedEntities = new pw.prok.imagine.collections.IndirectSet<EntityTrackerEntry>();
++    private Set<EntityTrackerEntry> trackedEntities = new HashSet<EntityTrackerEntry>();
 +    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
@@ -80,7 +80,7 @@
                  }
              }
          }
-+        ((pw.prok.imagine.collections.Indirect) trackedEntities).compat(theWorld.getTotalWorldTime() % 100 == 0);
++        //((pw.prok.imagine.collections.Indirect) trackedEntities).compat(theWorld.getTotalWorldTime() % 100 == 0);
      }
  
      public void func_151247_a(Entity p_151247_1_, Packet p_151247_2_)
