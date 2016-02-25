@@ -1399,7 +1399,7 @@
          {
              dest.add(entity);
          }
-@@ -4029,4 +4754,137 @@
+@@ -4029,4 +4754,128 @@
          }
          return count;
      }
@@ -1415,9 +1415,13 @@
 +        return getBlock(x, y, z);
 +    }
 +
++    ImmutableSetMultimap<ChunkCoordIntPair, Ticket> activity = null;
++    long actin = 0L;
 +    public boolean isActiveChunk(int x, int z)
 +    {
-+        return activeChunkSet_CB.containsKey(chunkToKey(x, z)) || getPersistentChunks().containsKey(new ChunkCoordIntPair(x, z));
++        long now = System.currentTimeMillis();
++        if(activity == null || now - actin > 50L) activity = getPersistentChunks();
++        return activeChunkSet_CB.containsKey(chunkToKey(x, z)) || activity.containsKey(new ChunkCoordIntPair(x, z));
 +    }
 +
 +    public boolean isActiveChunk(long key)
@@ -1429,20 +1433,7 @@
 +
 +    public boolean isActiveBlockCoord(int x, int z)
 +    {
-+        int key = (int)thermos.wrapper.ChunkBlockHashMap.chunk_hash(x >> 4, z >> 4);
-+        Object[] set = access_cache.get(key);
-+        if(set == null)
-+        {
-+            set = new Object[] { isActiveChunk(x >> 4, z>> 4), System.currentTimeMillis() };
-+            access_cache.put(key, set);
-+        }
-+        else if(System.currentTimeMillis() - (Long)set[1] >= 1000L)
-+        {
-+            set = new Object[] { isActiveChunk(x >> 4, z>> 4), System.currentTimeMillis() };
-+            access_cache.put(key, set);
-+        }
-+
-+        return (Boolean)set[0];
++        return isActiveChunk(x >> 4, z >> 4);
 +    }
 +
 +    public boolean inActiveChunk(Entity entity)
