@@ -349,7 +349,7 @@ public class CauldronHooks
                 writer.name("name").value(world.getWorld().getName());
                 writer.name("dimensionId").value(world.provider.dimensionId);
                 writer.name("players").value(world.playerEntities.size());
-                writer.name("loadedChunks").value(world.theChunkProviderServer.loadedChunkHashMap.size());
+                writer.name("loadedChunks").value(world.theChunkProviderServer.loadedChunkHashMap_KC.size());
                 writer.name("activeChunks").value(world.activeChunkSet.size());
                 writer.name("entities").value(world.loadedEntityList.size());
                 writer.name("tiles").value(world.loadedTileEntityList.size());
