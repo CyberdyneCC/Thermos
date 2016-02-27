@@ -20,7 +20,7 @@ Advantages over KCauldron:
 
 
 ## Installation
-Click [here](INSTALLATION.md)
+Click [here](https://tcpr.github.io/Thermos/install)
 
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
