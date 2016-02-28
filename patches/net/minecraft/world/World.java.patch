@@ -1039,6 +1039,23 @@
  
          this.field_147481_N = false;
  
+@@ -1992,14 +2577,14 @@
+             {
+                 TileEntity tileentity1 = (TileEntity)this.addedTileEntityList.get(k);
+ 
+-                if (!tileentity1.isInvalid())
++                if (!tileentity1.isInvalid() && !tileentity1.gc)
+                 {
+                     if (!this.loadedTileEntityList.contains(tileentity1))
+                     {
+                         this.loadedTileEntityList.add(tileentity1);
+                     }
+                 }
+-                else
++                else if(tileentity1.isInvalid())
+                 {
+                     if (this.chunkExists(tileentity1.xCoord >> 4, tileentity1.zCoord >> 4))
+                     {
 @@ -2016,17 +2601,25 @@
              this.addedTileEntityList.clear();
          }
@@ -1428,7 +1445,7 @@
 +    public boolean isActiveChunk(int x, int z)
 +    {
 +        long now = System.currentTimeMillis();
-+        if(activity == null || now - actin > 50L) activity = getPersistentChunks();
++        if(activity == null || now - actin > 2000L) activity = getPersistentChunks();
 +        return activeChunkSet_CB.containsKey(chunkToKey(x, z)) || activity.containsKey(new ChunkCoordIntPair(x, z));
 +    }
 +

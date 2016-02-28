@@ -80,7 +80,7 @@ public class ThermiteMap implements Map
         int[] coords = getCoords(key);
 
         Object instance = original.put(key,value);
-        map.get(coords[1])[coords[0]][coords[2]] = value;
+        map.get(coords[1])[coords[0]][coords[2]] = value; size++;
         return instance;
     }
 
@@ -91,8 +91,8 @@ public class ThermiteMap implements Map
         int[] coords = getCoords(key);
       
         Object instance = original.remove(key);
-        map.get(coords[1])[coords[0]][coords[2]] = null;
-        return instance;        
+        map.get(coords[1])[coords[0]][coords[2]] = null; size--;
+        return instance;
     }
 
     @Override

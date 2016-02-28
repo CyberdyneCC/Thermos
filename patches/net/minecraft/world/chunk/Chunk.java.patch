@@ -68,7 +68,7 @@
          this.precipitationHeightMap = new int[256];
          this.updateSkylightColumns = new boolean[256];
 -        this.chunkTileEntityMap = new HashMap();
-+        this.chunkTileEntityMap = new thermos.wrapper.ThermiteMap();
++        this.chunkTileEntityMap = new HashMap(512,0.90F);
          this.queuedLightChecks = 4096;
          this.entityLists = new List[16];
          this.worldObj = p_i1995_1_;
