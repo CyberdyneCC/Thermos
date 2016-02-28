@@ -1,5 +1,3 @@
-package thermos.wrapper;
-
 /*
  * Copyright (C) 2016 Robotia.
  *
@@ -18,10 +16,10 @@ package thermos.wrapper;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+package thermos.wrapper;
 
 import java.util.*;
 import net.minecraft.world.ChunkPosition;
-
 /**
  *
  * @author Robotia
@@ -31,16 +29,24 @@ public class ThermiteMap implements Map
     private HashMap<Integer,Object[][]> map = new HashMap<Integer,Object[][]>();
     private HashMap<Object,Object> original = new HashMap<Object,Object>();
     private int size = 0;
+    
+    public ThermiteMap()
+    {
+        for(int i = 0; i <= 256; i++)
+        {
+            map.put(i, new Object[16][16]);
+        }
+    }
     @Override
     public int size()
     {
-        return size;
+        return original.size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return size == 0;
+        return original.isEmpty();
     }
     
     public static boolean isValid(Object o) { return o instanceof ChunkPosition; }
@@ -50,8 +56,7 @@ public class ThermiteMap implements Map
     {
         if(!isValid(key)) return false;
         int[] coords = getCoords(key);
-        if(!map.containsKey(coords[1]))return false;
-        else return map.get(coords[1])[coords[0]][coords[2]] != null;
+        return map.get(coords[1])[coords[0]][coords[2]] != null;
     }
 
     @Override
@@ -65,8 +70,7 @@ public class ThermiteMap implements Map
     {
         if(!isValid(key)) return null;
         int[] coords = getCoords(key);
-        if(!map.containsKey(coords[1])) return false;
-        return map.get(key)[coords[0]][coords[2]];
+        return map.get(coords[1])[coords[0]][coords[2]];
     }
 
     @Override
@@ -75,9 +79,8 @@ public class ThermiteMap implements Map
         if(!isValid(key))return null;
         int[] coords = getCoords(key);
 
-        if(!map.containsKey(coords[1])) map.put(coords[1], new Object[16][16]);
         Object instance = original.put(key,value);
-        map.get(key)[coords[0]][coords[2]] = value;
+        map.get(coords[1])[coords[0]][coords[2]] = value;
         return instance;
     }
 
@@ -86,17 +89,16 @@ public class ThermiteMap implements Map
     {
         if(!isValid(key))return null;
         int[] coords = getCoords(key);
-        if(!map.containsKey(coords[1])) return null;
       
         Object instance = original.remove(key);
-        map.get(key)[coords[0]][coords[2]] = null;
+        map.get(coords[1])[coords[0]][coords[2]] = null;
         return instance;        
     }
 
     @Override
     public void putAll(Map m)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.original.putAll(m);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class ThermiteMap implements Map
     @Override
     public Set keySet()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.original.keySet();
     }
 
     @Override
@@ -121,7 +123,7 @@ public class ThermiteMap implements Map
     @Override
     public Set entrySet()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.original.entrySet();
     }
 
 }
