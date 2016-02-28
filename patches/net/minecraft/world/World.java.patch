@@ -1044,7 +1044,7 @@
                  TileEntity tileentity1 = (TileEntity)this.addedTileEntityList.get(k);
  
 -                if (!tileentity1.isInvalid())
-+                if (!tileentity1.isInvalid() && !tileentity1.gc)
++                if (!tileentity1.isInvalid() && !tileentity1.isGC())
                  {
                      if (!this.loadedTileEntityList.contains(tileentity1))
                      {
