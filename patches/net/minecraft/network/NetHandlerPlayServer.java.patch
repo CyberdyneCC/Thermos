@@ -1141,12 +1141,12 @@
 +                if (this.playerEntity.dimension == 1) // coming from end
 +                {
 +                    // We really should be calling transferPlayerToDimension since the player is coming in contact with a portal.
-+                	this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.END_PORTAL, null); // set flag to indicate player is leaving end.                }
++                    this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, true); // set flag to indicate player is leaving end.
                  }
 +                else
 +                // not coming from end
 +                {
-+                	this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.NETHER_PORTAL, null);
++                	this.playerEntity = this.serverController.getConfigurationManager().respawnPlayer(this.playerEntity, 0, false);
 +                }
 +                // Cauldron end
 +                }

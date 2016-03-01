@@ -516,7 +516,7 @@
              getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
          }
 -        MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(this, p_71049_1_, !p_71049_2_));
-+        // MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(this, p_71049_1_, !p_71049_2_)); // KCauldron - moved to ReverseClonner (thermos.ReverseCloner)
++        MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(this, p_71049_1_, !p_71049_2_)); // Thermos - returned to EntityPlayer. Should never have been removed here.
      }
  
      protected boolean canTriggerWalking()
