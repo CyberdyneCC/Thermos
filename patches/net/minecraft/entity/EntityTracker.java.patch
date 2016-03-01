@@ -1,6 +1,14 @@
 --- ../src-base/minecraft/net/minecraft/entity/EntityTracker.java
 +++ ../src-work/minecraft/net/minecraft/entity/EntityTracker.java
-@@ -38,6 +38,7 @@
+@@ -3,6 +3,7 @@
+ import java.util.ArrayList;
+ import java.util.HashSet;
+ import java.util.Iterator;
++import java.util.Colections;
+ import java.util.Set;
+ import java.util.concurrent.Callable;
+ import net.minecraft.crash.CrashReport;
+@@ -38,6 +39,7 @@
  import net.minecraft.world.chunk.Chunk;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -8,18 +16,18 @@
  
  import cpw.mods.fml.common.registry.EntityRegistry;
  
-@@ -45,8 +46,8 @@
+@@ -45,8 +47,8 @@
  {
      private static final Logger logger = LogManager.getLogger();
      private final WorldServer theWorld;
 -    private Set trackedEntities = new HashSet();
 -    private IntHashMap trackedEntityIDs = new IntHashMap();
-+    private Set<EntityTrackerEntry> trackedEntities = new HashSet<EntityTrackerEntry>();
++    private Set<EntityTrackerEntry> trackedEntities = Collections.synchronizeSet(new HashSet<EntityTrackerEntry>());
 +    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
  
-@@ -73,7 +74,7 @@
+@@ -73,7 +75,7 @@
              {
                  EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
  
@@ -28,7 +36,7 @@
                  {
                      entitytrackerentry.tryStartWachingThis(entityplayermp);
                  }
-@@ -184,6 +185,7 @@
+@@ -184,6 +186,7 @@
  
      public void addEntityToTracker(Entity p_72785_1_, int p_72785_2_, final int p_72785_3_, boolean p_72785_4_)
      {
@@ -36,7 +44,7 @@
          if (p_72785_2_ > this.entityViewDistance)
          {
              p_72785_2_ = this.entityViewDistance;
-@@ -223,7 +225,9 @@
+@@ -223,7 +226,9 @@
              });
              p_72785_1_.addEntityCrashInfo(crashreportcategory);
              CrashReportCategory crashreportcategory1 = crashreport.makeCategory("Entity That Is Already Tracked");
@@ -46,7 +54,7 @@
  
              try
              {
-@@ -246,6 +250,7 @@
+@@ -246,6 +251,7 @@
              while (iterator.hasNext())
              {
                  EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -54,7 +62,7 @@
                  entitytrackerentry.removeFromWatchingList(entityplayermp);
              }
          }
-@@ -267,12 +272,14 @@
+@@ -267,12 +273,14 @@
          while (iterator.hasNext())
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -69,7 +77,7 @@
          }
  
          for (int i = 0; i < arraylist.size(); ++i)
-@@ -284,12 +291,13 @@
+@@ -284,12 +292,13 @@
              {
                  EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)iterator1.next();
  
@@ -84,7 +92,7 @@
      }
  
      public void func_151247_a(Entity p_151247_1_, Packet p_151247_2_)
-@@ -319,6 +327,7 @@
+@@ -319,6 +328,7 @@
          while (iterator.hasNext())
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -92,7 +100,7 @@
              entitytrackerentry.removePlayerFromTracker(p_72787_1_);
          }
      }
-@@ -331,7 +340,7 @@
+@@ -331,7 +341,7 @@
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
  
