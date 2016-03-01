@@ -504,7 +504,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (fromWorld == toWorld) {
             entity.playerNetServerHandler.teleport(to);
         } else {
-            server.getHandle().respawnPlayer(entity, toWorld.dimension, cause, to); // Cauldron
+        	server.getHandle().respawnPlayer(entity, toWorld.dimension, false, to); // Cauldron
         }
         return true;
     }
@@ -1325,7 +1325,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         {
             if ( getHealth() <= 0 && isOnline() )
             {
-                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0, TeleportCause.DEATH, null );
+                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0, false );
             }
         }
 

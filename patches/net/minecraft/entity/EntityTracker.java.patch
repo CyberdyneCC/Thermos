@@ -22,7 +22,7 @@
      private final WorldServer theWorld;
 -    private Set trackedEntities = new HashSet();
 -    private IntHashMap trackedEntityIDs = new IntHashMap();
-+    private Set<EntityTrackerEntry> trackedEntities = Collections.synchronizeSet(new HashSet<EntityTrackerEntry>());
++    private Set<EntityTrackerEntry> trackedEntities = Collections.synchronizedSet(new HashSet<EntityTrackerEntry>());
 +    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
