@@ -11,7 +11,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 script: "./gradlew clean setupCauldron jar"
-before_deploy: cp `find ~/ | grep Thermos-1.7.10-1614.UNOFFICIAL-server.jar` ~/
+before_deploy: cp `find ~/ | grep Thermos-1.7.10-1614.UNOFFICIAL-server.jar` ~/Thermos-1.7.10-1614.UNOFFICIAL-server.jar
 deploy:
   provider: releases
   api_key:
