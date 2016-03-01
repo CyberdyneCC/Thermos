@@ -19,4 +19,3 @@ deploy:
   file: build/distributions/Thermos*server*jar
   on:
     repo: TCPR/Thermos
-    tags: true
