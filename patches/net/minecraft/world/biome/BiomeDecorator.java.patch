@@ -38,7 +38,7 @@
 +      while(decorateLock.isLocked())
 +      {
 +          try { Thread.sleep(100L); } catch(Exception e) {} finally { ct++; }
-+          if(ct > 15 ) { throw new RuntimeException("Decoration took too long!"); } // Thermos - Decoration took too long, we'll have to crash the server at this point so it doesn't hang.
++          if(ct > 100 ) { throw new RuntimeException("Decoration took longer than 10 seconds!"); } // Thermos - Decoration took too long, we'll have to crash the server at this point so it doesn't hang.
 +      }
 +      decorateLock.lock();
 +      try {
