@@ -140,35 +140,6 @@
                  }
  
                  nbttaglist.appendTag(nbttagcompound1);
-@@ -379,7 +401,7 @@
-         }
- 
-         p_75820_3_.setTag("TileEntities", nbttaglist3);
--        List list = p_75820_2_.getPendingBlockUpdates(p_75820_1_, false);
-+        Set list = p_75820_1_.blockUpdates;
- 
-         if (list != null)
-         {
-@@ -389,13 +411,13 @@
- 
-             while (iterator.hasNext())
-             {
--                NextTickListEntry nextticklistentry = (NextTickListEntry)iterator.next();
-+            	thermos.BlockUpdateEntry nextticklistentry = (thermos.BlockUpdateEntry)iterator.next();
-                 NBTTagCompound nbttagcompound2 = new NBTTagCompound();
--                nbttagcompound2.setInteger("i", Block.getIdFromBlock(nextticklistentry.func_151351_a()));
--                nbttagcompound2.setInteger("x", nextticklistentry.xCoord);
--                nbttagcompound2.setInteger("y", nextticklistentry.yCoord);
--                nbttagcompound2.setInteger("z", nextticklistentry.zCoord);
--                nbttagcompound2.setInteger("t", (int)(nextticklistentry.scheduledTime - k));
-+                nbttagcompound2.setInteger("i", Block.getIdFromBlock(nextticklistentry.block));
-+                nbttagcompound2.setInteger("x", nextticklistentry.x);
-+                nbttagcompound2.setInteger("y", nextticklistentry.y);
-+                nbttagcompound2.setInteger("z", nextticklistentry.z);
-+                nbttagcompound2.setInteger("t", (int)(nextticklistentry.time - k));
-                 nbttagcompound2.setInteger("p", nextticklistentry.priority);
-                 nbttaglist1.appendTag(nbttagcompound2);
-             }
 @@ -455,6 +477,7 @@
  
      public void loadEntities(World p_75823_1_, NBTTagCompound p_75823_2_, Chunk chunk)
@@ -254,13 +225,7 @@
          if (p_75823_2_.hasKey("TileTicks", 9))
          {
              NBTTagList nbttaglist3 = p_75823_2_.getTagList("TileTicks", 10);
-@@ -511,10 +565,12 @@
-                 for (int j1 = 0; j1 < nbttaglist3.tagCount(); ++j1)
-                 {
-                     NBTTagCompound nbttagcompound5 = nbttaglist3.getCompoundTagAt(j1);
--                    p_75823_1_.func_147446_b(nbttagcompound5.getInteger("x"), nbttagcompound5.getInteger("y"), nbttagcompound5.getInteger("z"), Block.getBlockById(nbttagcompound5.getInteger("i")), nbttagcompound5.getInteger("t"), nbttagcompound5.getInteger("p"));
-+                    thermos.BlockUpdateEntry entry = ((net.minecraft.world.WorldServer) p_75823_1_).blockUpdatesTracker.allocateEntry(nbttagcompound5.getInteger("x"), nbttagcompound5.getInteger("y"), nbttagcompound5.getInteger("z"), nbttagcompound5.getInteger("p"), nbttagcompound5.getInteger("t"), Block.getBlockById(nbttagcompound5.getInteger("i")));
-+                    chunk.blockUpdates.add(entry);
+@@ -515,6 +569,7 @@
                  }
              }
          }
