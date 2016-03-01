@@ -11,6 +11,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 script: "./gradlew clean setupCauldron jar"
+before_deploy: find .
 deploy:
   provider: releases
   api_key:
