@@ -66,8 +66,8 @@ def buildInfo(String key) {
             buildInfoCached = new JsonSlurper().parse(new URL("http://i.yive.pw/thermos/version"))
         } else {
             buildInfoCached = [
-                    nextBuildNumber: '33',
-                    version        : '32'
+                    nextBuildNumber: 'UNOFFICIAL',
+                    version        : 'NONE'
             ]
         }
     }
