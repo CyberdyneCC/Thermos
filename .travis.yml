@@ -21,3 +21,4 @@ deploy:
   file: build/distributions/Thermos-1.7.10-1614.UNOFFICIAL-server.jar
   on:
     repo: TCPR/Thermos
+    tags: true
