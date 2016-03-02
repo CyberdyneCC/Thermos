@@ -389,7 +389,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +621,250 @@
+@@ -410,80 +621,260 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -459,10 +459,12 @@
 +    // Cauldron start - refactor entire method for sanity.
 +    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3)
 +    {
-+    	return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null);
++    	boolean isdeath = true;
++    	if(par3) isdeath = false;
++    	return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null, isdeath);
 +    }
 +
-+    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location)
++    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location, boolean isdeath)
 +    {
 +    	EntityPlayerMP p_72368_1_ = par1EntityPlayerMP; // Thermos - keep the Forge name for later use
 +        // Phase 1 - check if the player is allowed to respawn in same dimension
@@ -526,9 +528,17 @@
 +            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension));        	
 +        }
 +        
-+        EntityPlayerMP entityplayermp1 =  new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);;
++        EntityPlayerMP entityplayermp1 =  new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);
 +        entityplayermp1.playerNetServerHandler = par1EntityPlayerMP.playerNetServerHandler;
 +        entityplayermp1.playerNetServerHandler.playerEntity = entityplayermp1;
++        if(!isdeath)
++        {
++        	entityplayermp1.inventory.copyInventory(par1EntityPlayerMP.inventory);
++        	entityplayermp1.experienceLevel = par1EntityPlayerMP.experienceLevel;
++        	entityplayermp1.experienceTotal = par1EntityPlayerMP.experienceTotal;
++        	entityplayermp1.experience = par1EntityPlayerMP.experience;
++        	entityplayermp1.setScore(par1EntityPlayerMP.getScore());        	
++        }
 +        entityplayermp1.clonePlayer(par1EntityPlayerMP, returnFromEnd);
 +        // entityplayermp1.dimension = targetDimension; Thermos move this call to later when actualDimension is found
 +        // HEY don't setWorld here either, that has to down to the bottom
@@ -678,7 +688,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +873,112 @@
+@@ -492,34 +883,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -810,7 +820,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1064,109 @@
+@@ -605,6 +1074,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -920,7 +930,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1174,13 @@
+@@ -612,11 +1184,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -934,7 +944,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1441,24 @@
+@@ -877,13 +1451,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -961,7 +971,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1516,16 @@
+@@ -941,13 +1526,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -979,7 +989,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1539,17 @@
+@@ -961,9 +1549,17 @@
          return this.maxPlayers;
      }
  
@@ -998,7 +1008,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1618,30 @@
+@@ -1032,12 +1628,30 @@
  
      public void removeAllPlayers()
      {
