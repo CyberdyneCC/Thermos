@@ -11,7 +11,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/build/distributions/"
-script: "./gradlew clean setupCauldron jar"
+script: "./gradlew clean setupCauldron jar -PofficialBuild"
 before_deploy: mv build/distributions/Thermos*server*jar build/distributions/Thermos-1.7.10-1614.UNOFFICIAL-server.jar
 deploy:
   provider: releases
