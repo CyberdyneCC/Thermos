@@ -2,7 +2,7 @@ language: java
 jdk:
 - oraclejdk8
 before_install: git submodule update --init --recursive
-install: echo ""
+install: echo "WOO"
 before_script: find .
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
