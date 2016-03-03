@@ -84,6 +84,7 @@
      public ArrayList<EntityItem> capturedDrops = new ArrayList<EntityItem>();
      private UUID persistentID;
  
+-    protected HashMap<String, IExtendedEntityProperties> extendedProperties;
 +    // Spigot start
 +    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getEntityTimings(this); // Spigot
 +    public final byte activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
@@ -92,7 +93,7 @@
 +    public boolean fromMobSpawner;
 +    public void inactiveTick() { }
 +    // Spigot end
-     protected HashMap<String, IExtendedEntityProperties> extendedProperties;
++    public HashMap<String, IExtendedEntityProperties> extendedProperties;
 +    public String spawnReason; // Cauldron - used to handle CraftBukkit's SpawnReason with CustomSpawners
  
      public int getEntityId()
