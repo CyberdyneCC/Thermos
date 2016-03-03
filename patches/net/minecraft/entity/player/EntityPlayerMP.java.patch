@@ -732,7 +732,7 @@
 +        this.keepLevel = m.keepLevel;
 +        this.maxHealthCache = m.maxHealthCache;
 +        this.lastFoodLevel = m.lastFoodLevel;
-+        
++        this.xpCooldown = m.xpCooldown;
      }
  
      protected void onNewPotionEffect(PotionEffect p_70670_1_)
