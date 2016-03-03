@@ -704,7 +704,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +899,112 @@
+@@ -492,34 +899,165 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -824,7 +824,60 @@
 +
 +        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(par1EntityPlayerMP, fromWorld.dimension, targetDimension);
      }
++    
++    
++    public void transferPlayerToDimension_CB(EntityPlayerMP player, int dimension, Teleporter teleporter)
++    {
++        int oldDim = player.dimension;
++        MinecraftServer mcServer = MinecraftServer.getServer();
  
++        WorldServer oldWorld = mcServer.worldServerForDimension(player.dimension);
++        player.dimension = dimension;
++        WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
++        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, newWorld.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
++        oldWorld.removePlayerEntityDangerously(player);
++        player.isDead = false;
++
++        transferEntityToWorld_CB(player, oldDim, oldWorld, newWorld, teleporter);
++
++        mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
++        player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
++                player.rotationPitch);
++        player.theItemInWorldManager.setWorld(newWorld);
++        mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
++        mcServer.getConfigurationManager().syncPlayerInventory(player);
++        Iterator<?> iterator = player.getActivePotionEffects().iterator();
++        while (iterator.hasNext())
++        {
++            PotionEffect potioneffect = (PotionEffect) iterator.next();
++            player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
++        }
++        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
++    }
++
++    public static void transferEntityToWorld_CB(Entity entity, int oldDim, WorldServer oldWorld, WorldServer newWorld, Teleporter teleporter)
++    {
++        WorldProvider pOld = oldWorld.provider;
++        WorldProvider pNew = newWorld.provider;
++        double moveFactor = pOld.getMovementFactor() / pNew.getMovementFactor();
++        double d0 = entity.posX * moveFactor;
++        double d1 = entity.posZ * moveFactor;
++        double d3 = entity.posX;
++        double d4 = entity.posY;
++        double d5 = entity.posZ;
++        float f = entity.rotationYaw;
++        d0 = MathHelper.clamp_int((int) d0, -29999872, 29999872);
++        d1 = MathHelper.clamp_int((int) d1, -29999872, 29999872);
++        if (entity.isEntityAlive())
++        {
++            entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
++            teleporter.placeInPortal(entity, d3, d4, d5, f);
++            newWorld.spawnEntityInWorld(entity);
++            newWorld.updateEntityWithOptionalForce(entity, false);
++        }
++        entity.setWorld(newWorld);
++    }
++    
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_)
      {
 -        transferEntityToWorld(p_82448_1_, p_82448_2_, p_82448_3_, p_82448_4_, p_82448_4_.getDefaultTeleporter());
@@ -836,7 +889,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1090,109 @@
+@@ -605,6 +1143,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -946,7 +999,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1200,13 @@
+@@ -612,11 +1253,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -960,7 +1013,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1467,24 @@
+@@ -877,13 +1520,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -987,7 +1040,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1542,16 @@
+@@ -941,13 +1595,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -1005,7 +1058,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1565,17 @@
+@@ -961,9 +1618,17 @@
          return this.maxPlayers;
      }
  
@@ -1024,7 +1077,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1644,30 @@
+@@ -1032,12 +1697,30 @@
  
      public void removeAllPlayers()
      {

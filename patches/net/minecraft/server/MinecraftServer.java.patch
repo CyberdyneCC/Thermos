@@ -469,7 +469,7 @@
      public void run()
      {
          try
-@@ -392,45 +638,48 @@
+@@ -392,45 +638,47 @@
                  this.field_147147_p.func_151315_a(new ChatComponentText(this.motd));
                  this.field_147147_p.func_151321_a(new ServerStatusResponse.MinecraftProtocolVersionIdentifier("1.7.10", 5));
                  this.func_147138_a(this.field_147147_p);
@@ -534,7 +534,6 @@
 -                    Thread.sleep(Math.max(1L, 50L - l));
 +                    lastTick = curTime;
 +                    this.tick();
-+                    WatchdogThread.tick(); // Thermos - be a good little WatchDog and actually restart if there's a problem!
                      this.serverIsRunning = true;
                  }
 +                }
@@ -544,7 +543,7 @@
                  FMLCommonHandler.instance().handleServerStopping();
                  FMLCommonHandler.instance().expectServerStopped(); // has to come before finalTick to avoid race conditions
              }
-@@ -448,6 +697,14 @@
+@@ -448,6 +696,14 @@
          catch (Throwable throwable1)
          {
              logger.error("Encountered an unexpected exception", throwable1);
@@ -559,7 +558,7 @@
              CrashReport crashreport = null;
  
              if (throwable1 instanceof ReportedException)
-@@ -477,6 +734,7 @@
+@@ -477,6 +733,7 @@
          {
              try
              {
@@ -567,7 +566,7 @@
                  this.stopServer();
                  this.serverStopped = true;
              }
-@@ -486,6 +744,16 @@
+@@ -486,6 +743,16 @@
              }
              finally
              {
@@ -584,7 +583,7 @@
                  FMLCommonHandler.instance().handleServerStopped();
                  this.serverStopped = true;
                  this.systemExitNow();
-@@ -497,6 +765,11 @@
+@@ -497,6 +764,11 @@
      {
          File file1 = this.getFile("server-icon.png");
  
@@ -596,11 +595,12 @@
          if (file1.isFile())
          {
              ByteBuf bytebuf = Unpooled.buffer();
-@@ -532,8 +805,11 @@
+@@ -532,8 +804,12 @@
  
      public void tick()
      {
 +        SpigotTimings.serverTickTimer.startTiming(); // Spigot
++        WatchdogThread.tick(); // Thermos - be a good little WatchDog and actually restart if there's a problem!
          long i = System.nanoTime();
 +        callingForgeTick = true; // Cauldron start - handle loadOnProviderRequests during forge tick event
          FMLCommonHandler.instance().onPreServerTick();
