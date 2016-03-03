@@ -1,4 +1,4 @@
-package thermos;
+package thermos.thermite;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.Teleporter;
