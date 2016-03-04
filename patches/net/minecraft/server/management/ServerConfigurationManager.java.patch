@@ -389,7 +389,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +621,276 @@
+@@ -410,80 +621,274 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -516,7 +516,7 @@
 +        ChunkCoordinates bedSpawnChunkCoords = par1EntityPlayerMP.getBedLocation(targetDimension); // Forge calls this chunk coordinates
 +        boolean spawnForced = par1EntityPlayerMP.isSpawnForced(targetDimension);
 +        par1EntityPlayerMP.dimension = targetDimension;
-+        Object object;
++        ItemInWorldManager object;
 +        // CraftBukkit start
 +        
 +        if(this.mcServer.isDemo())
@@ -525,7 +525,7 @@
 +        }
 +        else
 +        {
-+            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension));        	
++            object = new ItemInWorldManager(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension));
 +        }
 +        
 +        EntityPlayerMP entityplayermp1 =  new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(p_72368_1_.dimension), p_72368_1_.getGameProfile(), (ItemInWorldManager)object);
@@ -534,11 +534,9 @@
 +        // entityplayermp1.dimension = targetDimension; Thermos move this call to later when actualDimension is found
 +        // HEY don't setWorld here either, that has to down to the bottom
 +        entityplayermp1.setEntityId(par1EntityPlayerMP.getEntityId());
-+        entityplayermp1.bukkitEntity = par1EntityPlayerMP.bukkitEntity;
-+        entityplayermp1.bukkitEntity.setHandle(entityplayermp1);
++        entityplayermp1.bukkitEntity = org.bukkit.craftbukkit.entity.CraftEntity.getEntity(MinecraftServer.getServer().server, entityplayermp1);
 +        // Thermos move func_72381_a down to finding the actual WorldServer, called worldserver by Forge, targetWorld by Bukkit
 +        par1EntityPlayerMP.isDead = true;
-+        
 +        
 +        //entityplayermp1.setWorld(this.mcServer.worldServerForDimension(par1EntityPlayerMP.dimension)); // make sure to update reference for bed spawn logic
 +        
@@ -704,7 +702,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +899,112 @@
+@@ -492,34 +897,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -837,7 +835,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1090,109 @@
+@@ -605,6 +1088,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -947,7 +945,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1200,13 @@
+@@ -612,11 +1198,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -961,7 +959,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1467,24 @@
+@@ -877,13 +1465,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -988,7 +986,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1542,16 @@
+@@ -941,13 +1540,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -1006,7 +1004,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1565,17 @@
+@@ -961,9 +1563,17 @@
          return this.maxPlayers;
      }
  
@@ -1025,7 +1023,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1644,30 @@
+@@ -1032,12 +1642,30 @@
  
      public void removeAllPlayers()
      {
