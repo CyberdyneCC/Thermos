@@ -72,6 +72,12 @@ public class CauldronConfig extends ConfigBase
 
     public final BoolSetting remapPluginFile = new BoolSetting(this, "plugin-settings.default.remap-plugin-file", false, "Remap the plugin file (dev)");
 
+    // Dynamic view distance settings
+    public final IntSetting decreaseVD = new IntSetting(this, "optimized.view-distance.trigger-decrease-player-count", 30, "When to trigger the view distance decrease (default view-distance between this and increase trigger)");
+    public final IntSetting increaseVD = new IntSetting(this, "optimized.view-distance.trigger-increase-player-count", 15, "When to trigger the view distance increase (default view-distance between this and decrease trigger)");
+    public final IntSetting lowerVD = new IntSetting(this, "optimized.view-distance.lower-view-distance", 6, "What the lower view distance should be");
+    public final IntSetting upperVD = new IntSetting(this, "optimized.view-distance.upper-view-distance", 10, "What the upper view distance should be");
+    public final BoolSetting dynamicVD = new BoolSetting(this, "optimized.view-distance.enabled", false, "Use dynamic view distance?");
     /* ======================================================================== */
 
     public CauldronConfig(String fileName, String commandName)
@@ -120,6 +126,11 @@ public class CauldronConfig extends ConfigBase
         settings.put(redstoneTorchL.path, redstoneTorchL);
         settings.put(protectSP.path, protectSP);
         settings.put(realNames.path, realNames);
+        settings.put(dynamicVD.path, dynamicVD);
+        settings.put(increaseVD.path, increaseVD);
+        settings.put(decreaseVD.path, decreaseVD);
+        settings.put(lowerVD.path, lowerVD);
+        settings.put(upperVD.path, upperVD);
         load();
     }
 
