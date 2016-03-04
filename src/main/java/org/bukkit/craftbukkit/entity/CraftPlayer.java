@@ -494,7 +494,6 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         // Grab the To and From World Handles.
         net.minecraft.world.WorldServer fromWorld = ((CraftWorld) from.getWorld()).getHandle();
         net.minecraft.world.WorldServer toWorld = ((CraftWorld) to.getWorld()).getHandle();
-
         // Close any foreign inventory
         if (getHandle().openContainer != getHandle().inventoryContainer) {
             getHandle().closeScreen();
@@ -506,7 +505,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         } else {
         	//Thermos....transfer them correctly?!
             this.getHandle().mountEntity(null);
-        	thermos.thermite.ThermiteTeleportationHandler.transferPlayerToDimension(this.getHandle(), toWorld.dimension, this.getHandle().mcServer.getConfigurationManager()); 
+        	thermos.thermite.ThermiteTeleportationHandler.transferPlayerToDimension(this.getHandle(), toWorld.dimension, this.getHandle().mcServer.getConfigurationManager(), to.getWorld().getEnvironment()); 
         	 //this.getHandle().playerNetServerHandler.teleport(to);
         	 this.getHandle().playerNetServerHandler.teleport(to);
         	 //this.getHandle().playerNetServerHandler.setPlayerLocation(to.getX(), to.getY(), to.getZ(), this.getHandle().rotationYaw, this.getHandle().rotationPitch);

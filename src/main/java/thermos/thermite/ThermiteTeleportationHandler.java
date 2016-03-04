@@ -2,7 +2,11 @@ package thermos.thermite;
 
 import java.util.Iterator;
 
+import org.bukkit.World.Environment;
+
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
@@ -12,12 +16,15 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.network.ForgeMessage;
+import net.minecraftforge.common.network.ForgeNetworkHandler;
 
 public class ThermiteTeleportationHandler {
-	public static void transferEntityToDimension(Entity ent, int dim, ServerConfigurationManager manager) {
+	public static void transferEntityToDimension(Entity ent, int dim, ServerConfigurationManager manager, Environment environ) {
 
 		if (ent instanceof EntityPlayerMP) {
-			transferPlayerToDimension((EntityPlayerMP) ent, dim, manager);
+			transferPlayerToDimension((EntityPlayerMP) ent, dim, manager, environ);
 			return;
 		}
 		WorldServer worldserver = manager.getServerInstance().worldServerForDimension(ent.dimension);
@@ -53,15 +60,22 @@ public class ThermiteTeleportationHandler {
 		ent.setWorld(newWorld);
 	}
 
-	public static void transferPlayerToDimension(EntityPlayerMP player, int dim, ServerConfigurationManager manager) {
+	public static void transferPlayerToDimension(EntityPlayerMP player, int dim, ServerConfigurationManager manager, Environment environ) {
 
 		int oldDim = player.dimension;
 		WorldServer worldserver = manager.getServerInstance().worldServerForDimension(player.dimension);
 		player.dimension = dim;
 		WorldServer worldserver1 = manager.getServerInstance().worldServerForDimension(player.dimension);
-        int fakeDim = dim;
-        if(!net.minecraftforge.common.DimensionManager.isDimensionRegistered(dim))fakeDim = 0;
-		player.playerNetServerHandler.sendPacket(new S07PacketRespawn(fakeDim, player.worldObj.difficultySetting, player.worldObj.getWorldInfo()
+		// Cauldron dont crash the client, let 'em know there's a new dimension in town
+        if (DimensionManager.isBukkitDimension(dim))
+        {
+            FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+            serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(dim, environ.getId()));
+        }
+        // Cauldron end
+		player.playerNetServerHandler.sendPacket(new S07PacketRespawn(dim, worldserver1.difficultySetting, worldserver1.getWorldInfo()
 				.getTerrainType(), player.theItemInWorldManager.getGameType()));
 		worldserver.removePlayerEntityDangerously(player);
 		if (player.riddenByEntity != null) {
