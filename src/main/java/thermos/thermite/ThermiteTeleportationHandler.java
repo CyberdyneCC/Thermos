@@ -59,7 +59,9 @@ public class ThermiteTeleportationHandler {
 		WorldServer worldserver = manager.getServerInstance().worldServerForDimension(player.dimension);
 		player.dimension = dim;
 		WorldServer worldserver1 = manager.getServerInstance().worldServerForDimension(player.dimension);
-		player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, player.worldObj.getWorldInfo()
+        int fakeDim = dim;
+        if(!net.minecraftforge.common.DimensionManager.isDimensionRegistered(dim))fakeDim = 0;
+		player.playerNetServerHandler.sendPacket(new S07PacketRespawn(fakeDim, player.worldObj.difficultySetting, player.worldObj.getWorldInfo()
 				.getTerrainType(), player.theItemInWorldManager.getGameType()));
 		worldserver.removePlayerEntityDangerously(player);
 		if (player.riddenByEntity != null) {
