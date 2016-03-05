@@ -1,0 +1,11 @@
+--- ../src-base/minecraft/net/minecraft/util/LongHashMap.java
++++ ../src-work/minecraft/net/minecraft/util/LongHashMap.java
+@@ -9,7 +9,7 @@
+     private transient volatile int modCount;
+     private static final String __OBFID = "CL_00001492";
+ 
+-    private static int getHashedKey(long p_76155_0_)
++    public static int getHashedKey(long p_76155_0_)
+     {
+         return hash((int)(p_76155_0_ ^ p_76155_0_ >>> 32));
+     }
