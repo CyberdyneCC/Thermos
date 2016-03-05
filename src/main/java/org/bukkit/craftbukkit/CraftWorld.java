@@ -277,7 +277,7 @@ public class CraftWorld implements World {
 
     private void chunkLoadPostProcess(net.minecraft.world.chunk.Chunk chunk, int x, int z) {
         if (chunk != null) {
-            world.theChunkProviderServer.loadedChunkHashMap_KC.add(LongHash.toLong(x, z), chunk); // Passes to chunkt_TH
+            world.theChunkProviderServer.loadedChunkHashMap_KC.add(ChunkCoordIntPair.chunkXZ2Int(x, z), chunk); // Passes to chunkt_TH
             world.theChunkProviderServer.loadedChunks.add(chunk); // Cauldron - vanilla compatibility
             chunk.onChunkLoad();
 
