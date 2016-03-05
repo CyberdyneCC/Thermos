@@ -127,7 +127,7 @@
      public static PlayerInteractEvent onPlayerInteract(EntityPlayer player, Action action, int x, int y, int z, int face)
      {
 -        return onPlayerInteract(player, action, x, y, z, face, null);
-+        if(player == null || player instanceof FakePlayer || player.getClass().getName().contains("CoFH") ||  player.getClass().getName().contains("Fake"))
++    	if(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake"))
 +        {
 +            	return onPlayerBukkitInteract( player, action, x, y, z, face, null);
 +        }
@@ -154,7 +154,7 @@
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, null);
 +                
-+                if(eve != null && !(player instanceof FakePlayer))
++                if(eve != null && !(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake")))
 +                {
 +                	event.cb = eve;
 +                	if(eve.isCancelled())
@@ -180,8 +180,8 @@
 -        PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 -        MinecraftForge.EVENT_BUS.post(event);
 -        return event;
-+        if(player == null || player instanceof FakePlayer || player.getClass().getName().contains("CoFH") || player.getClass().getName().contains("Fake"))
-+        {
++    	if(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake"))
++    	{
 +        	onPlayerBukkitInteract( player, action, x, y, z, face, world, null);
 +        }
 +        org.bukkit.event.block.Action aktor = null;
@@ -206,7 +206,7 @@
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 +                
-+                if(eve != null && !(player instanceof FakePlayer))
++                if(eve != null && !(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake")))
 +                {
 +                	event.cb = eve;
 +                	if(eve.isCancelled()) 

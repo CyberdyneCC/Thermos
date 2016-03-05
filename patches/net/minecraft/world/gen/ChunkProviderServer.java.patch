@@ -85,8 +85,8 @@
 +    public List loadedChunks = new ArrayList(); // Cauldron - vanilla compatibility
 +    public WorldServer worldObj;
 +    private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
-+    public LongHashMap loadedChunkHashMap = new thermos.wrapper.VanillaChunkHashMap(new ChunkBlockHashMap()); // KCauldron - vanilla/mystcraft compatibility
-+    public VanillaChunkHashMap loadedChunkHashMap_KC = (VanillaChunkHashMap)loadedChunkHashMap; // Mobiuscraft KC compat
++    public VanillaChunkHashMap loadedChunkHashMap_KC = new thermos.wrapper.VanillaChunkHashMap(new ChunkBlockHashMap());// Mobiuscraft KC compat
++    public LongHashMap loadedChunkHashMap = loadedChunkHashMap_KC.thisIsNotMyRealFace(); // KCauldron - vanilla/mystcraft compatibility
      private static final String __OBFID = "CL_00001436";
  
      public ChunkProviderServer(WorldServer p_i1520_1_, IChunkLoader p_i1520_2_, IChunkProvider p_i1520_3_)
