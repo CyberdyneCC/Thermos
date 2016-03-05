@@ -469,7 +469,7 @@
      public void run()
      {
          try
-@@ -392,45 +638,47 @@
+@@ -392,45 +638,55 @@
                  this.field_147147_p.func_151315_a(new ChatComponentText(this.motd));
                  this.field_147147_p.func_151321_a(new ServerStatusResponse.MinecraftProtocolVersionIdentifier("1.7.10", 5));
                  this.func_147138_a(this.field_147147_p);
@@ -478,10 +478,18 @@
 +                // Spigot start
 +                Arrays.fill(recentTps, 20);
 +                long lastTick = 0, catchupTime = 0, curTime, wait;
-+                AffinityLock al = AffinityLock.acquireCore();
-+                if(al.isAllocated())
-+                	logger.log(org.apache.logging.log4j.Level.INFO, "[Thermos] We're locked in! " + AffinityLock.dumpLocks());
-+                else logger.log(org.apache.logging.log4j.Level.WARN, "[Thermos] Couldn't bind to a CPU core!");
++                AffinityLock al = null;
++                if(CauldronConfig.instance.affinity.getValue())
++                {
++                	al = AffinityLock.acquireCore();
++                	if(al.isAllocated())
++                		logger.log(org.apache.logging.log4j.Level.INFO, "[Thermos] We're locked in! " + AffinityLock.dumpLocks());
++                	else logger.log(org.apache.logging.log4j.Level.WARN, "[Thermos] Couldn't bind to a CPU core!");
++                }
++                else
++                {
++                	logger.log(org.apache.logging.log4j.Level.INFO, "[Thermos] Refusing to lock affinity, disabled in cauldron.yml");
++                }
 +                try {
                  while (this.serverRunning)
                  {
@@ -537,13 +545,13 @@
                      this.serverIsRunning = true;
                  }
 +                }
-+                finally { al.release(); }
++                finally { if(al != null) { al.release(); } }
 +
 +                // Spigot end
                  FMLCommonHandler.instance().handleServerStopping();
                  FMLCommonHandler.instance().expectServerStopped(); // has to come before finalTick to avoid race conditions
              }
-@@ -448,6 +696,14 @@
+@@ -448,6 +704,14 @@
          catch (Throwable throwable1)
          {
              logger.error("Encountered an unexpected exception", throwable1);
@@ -558,7 +566,7 @@
              CrashReport crashreport = null;
  
              if (throwable1 instanceof ReportedException)
-@@ -477,6 +733,7 @@
+@@ -477,6 +741,7 @@
          {
              try
              {
@@ -566,7 +574,7 @@
                  this.stopServer();
                  this.serverStopped = true;
              }
-@@ -486,6 +743,16 @@
+@@ -486,6 +751,16 @@
              }
              finally
              {
@@ -583,7 +591,7 @@
                  FMLCommonHandler.instance().handleServerStopped();
                  this.serverStopped = true;
                  this.systemExitNow();
-@@ -497,6 +764,11 @@
+@@ -497,6 +772,11 @@
      {
          File file1 = this.getFile("server-icon.png");
  
@@ -595,7 +603,7 @@
          if (file1.isFile())
          {
              ByteBuf bytebuf = Unpooled.buffer();
-@@ -532,8 +804,12 @@
+@@ -532,8 +812,12 @@
  
      public void tick()
      {
@@ -608,7 +616,7 @@
          ++this.tickCounter;
  
          if (this.startProfiling)
-@@ -562,12 +838,21 @@
+@@ -562,12 +846,21 @@
              this.field_147147_p.func_151318_b().func_151330_a(agameprofile);
          }
  
@@ -632,7 +640,7 @@
          }
  
          this.theProfiler.startSection("tallying");
-@@ -575,25 +860,57 @@
+@@ -575,25 +868,57 @@
          this.theProfiler.endSection();
          this.theProfiler.startSection("snooper");
  
@@ -692,7 +700,7 @@
          int i;
  
          Integer[] ids = DimensionManager.getIDs(this.tickCounter % 200 == 0);
-@@ -602,19 +919,21 @@
+@@ -602,19 +927,21 @@
              int id = ids[x];
              long j = System.nanoTime();
  
@@ -717,7 +725,7 @@
  
                  this.theProfiler.startSection("tick");
                  FMLCommonHandler.instance().onPreWorldTick(worldserver);
-@@ -622,22 +941,46 @@
+@@ -622,22 +949,46 @@
  
                  try
                  {
@@ -766,7 +774,7 @@
                      worldserver.addWorldInfoToCrashReport(crashreport);
                      throw new ReportedException(crashreport);
                  }
-@@ -645,10 +988,12 @@
+@@ -645,10 +996,12 @@
                  FMLCommonHandler.instance().onPostWorldTick(worldserver);
                  this.theProfiler.endSection();
                  this.theProfiler.startSection("tracker");
@@ -780,7 +788,7 @@
  
              worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - j;
          }
-@@ -656,15 +1001,21 @@
+@@ -656,15 +1009,21 @@
          this.theProfiler.endStartSection("dim_unloading");
          DimensionManager.unloadWorlds(worldTickTimes);
          this.theProfiler.endStartSection("connection");
@@ -802,7 +810,7 @@
  
          this.theProfiler.endSection();
      }
-@@ -699,6 +1050,13 @@
+@@ -699,6 +1058,13 @@
  
      public WorldServer worldServerForDimension(int p_71218_1_)
      {
@@ -816,7 +824,7 @@
          WorldServer ret = DimensionManager.getWorld(p_71218_1_);
          if (ret == null)
          {
-@@ -784,13 +1142,14 @@
+@@ -784,13 +1150,14 @@
  
      public List getPossibleCompletions(ICommandSender p_71248_1_, String p_71248_2_)
      {
@@ -835,7 +843,7 @@
  
              if (list != null)
              {
-@@ -798,40 +1157,25 @@
+@@ -798,40 +1165,25 @@
  
                  while (iterator.hasNext())
                  {
@@ -884,7 +892,7 @@
      }
  
      public static MinecraftServer getServer()
-@@ -1034,7 +1378,7 @@
+@@ -1034,7 +1386,7 @@
  
      public boolean isServerInOnlineMode()
      {
@@ -893,7 +901,7 @@
      }
  
      public void setOnlineMode(boolean p_71229_1_)
-@@ -1124,7 +1468,7 @@
+@@ -1124,7 +1476,7 @@
  
      public NetworkSystem func_147137_ag()
      {
@@ -902,7 +910,7 @@
      }
  
      @SideOnly(Side.CLIENT)
-@@ -1259,8 +1603,11 @@
+@@ -1259,8 +1611,11 @@
      {
          Bootstrap.func_151354_b();
  
@@ -914,7 +922,7 @@
              boolean flag = true;
              String s = null;
              String s1 = ".";
-@@ -1356,16 +1703,34 @@
+@@ -1356,16 +1711,34 @@
              {
                  dedicatedserver.setGuiEnabled();
              }
@@ -955,7 +963,7 @@
          }
          catch (Exception exception)
          {
-@@ -1400,15 +1765,70 @@
+@@ -1400,15 +1773,70 @@
      @SideOnly(Side.SERVER)
      public String getPlugins()
      {
@@ -1031,7 +1039,7 @@
      }
  
      @SideOnly(Side.SERVER)
-@@ -1455,9 +1875,213 @@
+@@ -1455,9 +1883,213 @@
          return this.serverStopped;
      }
  
