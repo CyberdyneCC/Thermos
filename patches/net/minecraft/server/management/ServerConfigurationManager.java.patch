@@ -9,13 +9,14 @@
  import cpw.mods.fml.relauncher.Side;
  import cpw.mods.fml.relauncher.SideOnly;
  import java.io.File;
-@@ -58,15 +60,38 @@
+@@ -58,15 +60,41 @@
  import net.minecraft.world.Teleporter;
  import net.minecraft.world.World;
  import net.minecraft.world.WorldProvider;
 +import net.minecraft.world.WorldProviderEnd;
  import net.minecraft.world.WorldServer;
  import net.minecraft.world.WorldSettings;
++import net.minecraft.world.WorldSettings.GameType;
  import net.minecraft.world.demo.DemoWorldManager;
  import net.minecraft.world.storage.IPlayerFileData;
  import net.minecraft.world.storage.SaveHandler;
@@ -31,7 +32,9 @@
 +import net.minecraft.server.network.NetHandlerLoginServer;
 +import org.bukkit.craftbukkit.CraftServer;
 +import org.bukkit.craftbukkit.CraftWorld;
++import org.bukkit.craftbukkit.entity.CraftPlayer;
 +import org.bukkit.Bukkit;
++import org.bukkit.GameMode;
 +import org.bukkit.Location;
 +import org.bukkit.TravelAgent;
 +import org.bukkit.entity.Player;
@@ -48,7 +51,7 @@
  public abstract class ServerConfigurationManager
  {
      public static final File field_152613_a = new File("banned-players.json");
-@@ -82,8 +107,8 @@
+@@ -82,8 +110,8 @@
      private final UserListOps ops;
      private final UserListWhitelist whiteListedPlayers;
      private final Map field_148547_k;
@@ -59,7 +62,7 @@
      protected int maxPlayers;
      private int viewDistance;
      private WorldSettings.GameType gameType;
-@@ -91,8 +116,17 @@
+@@ -91,8 +119,17 @@
      private int playerPingIndex;
      private static final String __OBFID = "CL_00001423";
  
@@ -77,7 +80,7 @@
          this.bannedPlayers = new UserListBans(field_152613_a);
          this.bannedIPs = new BanList(field_152614_b);
          this.ops = new UserListOps(field_152615_c);
-@@ -131,12 +165,32 @@
+@@ -131,12 +168,32 @@
              s1 = p_72355_1_.getSocketAddress().toString();
          }
  
@@ -112,7 +115,7 @@
          nethandlerplayserver.sendPacket(new S3FPacketCustomPayload("MC|Brand", this.getServerInstance().getServerModName().getBytes(Charsets.UTF_8)));
          nethandlerplayserver.sendPacket(new S05PacketSpawnPosition(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ));
          nethandlerplayserver.sendPacket(new S39PacketPlayerAbilities(p_72355_2_.capabilities));
-@@ -145,6 +199,7 @@
+@@ -145,6 +202,7 @@
          p_72355_2_.func_147099_x().func_150884_b(p_72355_2_);
          this.func_96456_a((ServerScoreboard)worldserver.getScoreboard(), p_72355_2_);
          this.mcServer.func_147132_au();
@@ -120,7 +123,7 @@
          ChatComponentTranslation chatcomponenttranslation;
  
          if (!p_72355_2_.getCommandSenderName().equalsIgnoreCase(s))
-@@ -158,6 +213,7 @@
+@@ -158,6 +216,7 @@
  
          chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.YELLOW);
          this.sendChatMsg(chatcomponenttranslation);
@@ -128,7 +131,7 @@
          this.playerLoggedIn(p_72355_2_);
          nethandlerplayserver.setPlayerLocation(p_72355_2_.posX, p_72355_2_.posY, p_72355_2_.posZ, p_72355_2_.rotationYaw, p_72355_2_.rotationPitch);
          this.updateTimeAndWeatherForPlayer(p_72355_2_, worldserver);
-@@ -192,7 +248,7 @@
+@@ -192,7 +251,7 @@
          }
      }
  
@@ -137,7 +140,7 @@
      {
          HashSet hashset = new HashSet();
          Iterator iterator = p_96456_1_.getTeams().iterator();
-@@ -225,6 +281,7 @@
+@@ -225,6 +284,7 @@
  
      public void setPlayerManager(WorldServer[] p_72364_1_)
      {
@@ -145,7 +148,7 @@
          this.playerNBTManagerObj = p_72364_1_[0].getSaveHandler().getSaveHandler();
      }
  
-@@ -248,7 +305,7 @@
+@@ -248,7 +308,7 @@
  
      public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP p_72380_1_)
      {
@@ -154,7 +157,7 @@
          NBTTagCompound nbttagcompound1;
  
          if (p_72380_1_.getCommandSenderName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
-@@ -279,6 +336,7 @@
+@@ -279,6 +339,7 @@
              return ((SaveHandler)this.playerNBTManagerObj).getPlayerNBT(player);
          }
      }
@@ -162,7 +165,7 @@
      protected void writePlayerData(EntityPlayerMP p_72391_1_)
      {
          if (p_72391_1_.playerNetServerHandler == null) return;
-@@ -294,18 +352,61 @@
+@@ -294,18 +355,61 @@
  
      public void playerLoggedIn(EntityPlayerMP p_72377_1_)
      {
@@ -228,7 +231,7 @@
      }
  
      public void updatePlayerPertinentChunks(EntityPlayerMP p_72358_1_)
-@@ -313,14 +414,33 @@
+@@ -313,14 +417,33 @@
          p_72358_1_.getServerForPlayer().getPlayerManager().updatePlayerPertinentChunks(p_72358_1_);
      }
  
@@ -264,7 +267,7 @@
          {
              worldserver.removePlayerEntityDangerously(p_72367_1_.ridingEntity);
              logger.debug("removing player mount");
-@@ -329,9 +449,35 @@
+@@ -329,9 +452,35 @@
          worldserver.removeEntity(p_72367_1_);
          worldserver.getPlayerManager().removePlayer(p_72367_1_);
          this.playerEntityList.remove(p_72367_1_);
@@ -303,7 +306,7 @@
      }
  
      public String allowUserToConnect(SocketAddress p_148542_1_, GameProfile p_148542_2_)
-@@ -352,7 +498,7 @@
+@@ -352,7 +501,7 @@
          }
          else if (!this.func_152607_e(p_148542_2_))
          {
@@ -312,7 +315,7 @@
          }
          else if (this.bannedIPs.func_152708_a(p_148542_1_))
          {
-@@ -368,10 +514,75 @@
+@@ -368,10 +517,75 @@
          }
          else
          {
@@ -389,7 +392,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +621,276 @@
+@@ -410,80 +624,296 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -533,9 +536,14 @@
 +        entityplayermp1.playerNetServerHandler.playerEntity = entityplayermp1;
 +        // entityplayermp1.dimension = targetDimension; Thermos move this call to later when actualDimension is found
 +        // HEY don't setWorld here either, that has to down to the bottom
++        //Pass proper bukkitEntity settings over
 +        entityplayermp1.setEntityId(par1EntityPlayerMP.getEntityId());
-+        entityplayermp1.bukkitEntity = par1EntityPlayerMP.bukkitEntity;
-+        entityplayermp1.bukkitEntity.setHandle(entityplayermp1);
++        CraftPlayer cp = (CraftPlayer)par1EntityPlayerMP.bukkitEntity;
++        cp.enderChest.inventory = entityplayermp1.getInventoryEnderChest();
++        cp.inventory.inventory = entityplayermp1.inventory;
++        entityplayermp1.bukkitEntity = cp;
++        cp.setHandle(entityplayermp1);
++        
 +        // Thermos move func_72381_a down to finding the actual WorldServer, called worldserver by Forge, targetWorld by Bukkit
 +        par1EntityPlayerMP.isDead = true;
 +        
@@ -692,6 +700,21 @@
          this.playerEntityList.add(entityplayermp1);
          entityplayermp1.addSelfToInternalCraftingInventory();
          entityplayermp1.setHealth(entityplayermp1.getHealth());
++        switch(entityplayermp1.theItemInWorldManager.getGameType())
++        {
++        	case ADVENTURE:
++        		cp.setGameMode(GameMode.ADVENTURE);
++        		break;
++        	case CREATIVE:
++        		cp.setGameMode(GameMode.CREATIVE);
++        		break;
++        	case SURVIVAL:
++        		cp.setGameMode(GameMode.SURVIVAL);
++        		break;
++        	case NOT_SET:
++        		cp.setGameMode(GameMode.NOT_SET);
++        		break;
++        }
 +        //Thermos Start, make sure dimension then respawn events are called
 +        // If world changed then fire the appropriate change world event else respawn
 +        if (fromWorld != location.getWorld())
@@ -704,7 +727,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +899,112 @@
+@@ -492,34 +922,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -837,7 +860,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1090,109 @@
+@@ -605,6 +1113,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -947,7 +970,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1200,13 @@
+@@ -612,11 +1223,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -961,7 +984,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1467,24 @@
+@@ -877,13 +1490,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -988,7 +1011,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1542,16 @@
+@@ -941,13 +1565,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -1006,7 +1029,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1565,17 @@
+@@ -961,9 +1588,17 @@
          return this.maxPlayers;
      }
  
@@ -1025,7 +1048,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1644,30 @@
+@@ -1032,12 +1667,30 @@
  
      public void removeAllPlayers()
      {

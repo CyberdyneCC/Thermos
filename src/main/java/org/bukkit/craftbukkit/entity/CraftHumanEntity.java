@@ -28,8 +28,8 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
-    private CraftInventoryPlayer inventory;
-    private CraftInventory enderChest;
+    public CraftInventoryPlayer inventory;
+    public CraftInventory enderChest;
     protected final PermissibleBase perm = new PermissibleBase(this);
     private boolean op;
     private GameMode mode;
