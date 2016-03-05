@@ -51,7 +51,7 @@
          PlayerEvent.HarvestCheck event = new PlayerEvent.HarvestCheck(player, block, success);
          MinecraftForge.EVENT_BUS.post(event);
          return event.success;
-@@ -80,27 +96,174 @@
+@@ -80,27 +96,173 @@
      @Deprecated // Location version below
      public static float getBreakSpeed(EntityPlayer player, Block block, int metadata, float original)
      {
@@ -154,8 +154,7 @@
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, null);
 +                
-+                if(eve != null && !(player instanceof FakePlayer))
-+                {
++                if(eve != null && !(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake")))                {
 +                	event.cb = eve;
 +                	if(eve.isCancelled())
 +                	{
@@ -206,7 +205,7 @@
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 +                
-+                if(eve != null && !(player instanceof FakePlayer))
++                if(eve != null && !(player == null || player instanceof FakePlayer || FakePlayer.class.isInstance(player) || player.getClass().getSimpleName().contains("CoFH") ||  player.getClass().getSimpleName().contains("Fake")))
 +                {
 +                	event.cb = eve;
 +                	if(eve.isCancelled()) 
@@ -230,7 +229,7 @@
      public static void onPlayerDestroyItem(EntityPlayer player, ItemStack stack)
      {
          MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, stack));
-@@ -182,30 +345,64 @@
+@@ -182,30 +344,64 @@
          return MinecraftForge.EVENT_BUS.post(new EntityStruckByLightningEvent(entity, bolt));
      }
  
