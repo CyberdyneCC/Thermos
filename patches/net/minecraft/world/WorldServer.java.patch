@@ -404,6 +404,15 @@
      }
  
      public boolean isBlockTickScheduledThisTick(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
+@@ -427,7 +611,7 @@
+                 {
+                     Block block1 = this.getBlock(nextticklistentry.xCoord, nextticklistentry.yCoord, nextticklistentry.zCoord);
+ 
+-                    if (block1.getMaterial() != Material.air && block1 == nextticklistentry.func_151351_a())
++                    if (block1.getMaterial() != Material.air && block1 == nextticklistentry.func_151351_a() && p_147454_6_ != 0)
+                     {
+                         block1.updateTick(this, nextticklistentry.xCoord, nextticklistentry.yCoord, nextticklistentry.zCoord, this.rand);
+                     }
 @@ -474,7 +658,8 @@
  
      public void updateEntities()
