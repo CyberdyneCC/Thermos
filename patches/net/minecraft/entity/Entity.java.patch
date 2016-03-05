@@ -68,7 +68,7 @@
      private double entityRiderPitchDelta;
      private double entityRiderYawDelta;
      public boolean addedToChunk;
-@@ -126,8 +164,10 @@
+@@ -126,16 +164,27 @@
      public int dimension;
      protected int teleportDirection;
      private boolean invulnerable;
@@ -79,8 +79,9 @@
 +    public org.bukkit.projectiles.ProjectileSource projectileSource; // CraftBukkit - For projectiles only
      private static final String __OBFID = "CL_00001533";
      /** Forge: Used to store custom data for each entity. */
-     private NBTTagCompound customEntityData;
-@@ -135,7 +175,16 @@
+-    private NBTTagCompound customEntityData;
++    public NBTTagCompound customEntityData;
+     public boolean captureDrops = false;
      public ArrayList<EntityItem> capturedDrops = new ArrayList<EntityItem>();
      private UUID persistentID;
  
