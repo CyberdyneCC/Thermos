@@ -408,7 +408,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +626,302 @@
+@@ -410,80 +626,304 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -554,6 +554,8 @@
 +        // HEY don't setWorld here either, that has to down to the bottom
 +        //Pass proper bukkitEntity settings over
 +        entityplayermp1.setEntityId(par1EntityPlayerMP.getEntityId());
++        entityplayermp1.capabilities = par1EntityPlayerMP.capabilities;
++        entityplayermp1.timeOffset = par1EntityPlayerMP.timeOffset;
 +        CraftPlayer cp = (CraftPlayer)par1EntityPlayerMP.bukkitEntity;
 +      if ( cp != null )
 +      {
@@ -749,7 +751,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +930,112 @@
+@@ -492,34 +932,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -882,7 +884,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1121,109 @@
+@@ -605,6 +1123,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -992,7 +994,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1231,13 @@
+@@ -612,11 +1233,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -1006,7 +1008,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1498,24 @@
+@@ -877,13 +1500,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -1033,7 +1035,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1573,16 @@
+@@ -941,13 +1575,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -1051,7 +1053,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1596,17 @@
+@@ -961,9 +1598,17 @@
          return this.maxPlayers;
      }
  
@@ -1070,7 +1072,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1675,30 @@
+@@ -1032,12 +1677,30 @@
  
      public void removeAllPlayers()
      {
