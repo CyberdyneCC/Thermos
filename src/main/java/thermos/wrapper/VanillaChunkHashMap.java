@@ -11,16 +11,16 @@ import org.bukkit.craftbukkit.util.LongHash;
 
 public class VanillaChunkHashMap extends LongHashMap {
 	private final ChunkBlockHashMap chunkt_TH;
-	private final HashMap<Integer,Chunk> vanilla = new HashMap<Integer,Chunk>();
+	private final ConcurrentHashMap<Long,Chunk> vanilla = new ConcurrentHashMap<Long,Chunk>();
     public VanillaChunkHashMap(ChunkBlockHashMap chunkt_TH) {
         this.chunkt_TH = chunkt_TH;
     }
 
-    /*private static long V2B(long key) {
+    private static long V2B(long key) {
         return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
-    }*/
+    }
     
-    public HashMap<Integer,Chunk> rawVanilla()
+    public ConcurrentHashMap<Long,Chunk> rawVanilla()
     {
     	return vanilla;
     }
@@ -41,24 +41,24 @@ public class VanillaChunkHashMap extends LongHashMap {
     	{
     		Chunk c = (Chunk) value;
     		chunkt_TH.put(c);
-    		vanilla.put(super.getHashedKey(key), c);
+    		vanilla.put(V2B(key), c);
     	}
     }
 
     
     @Override
     public boolean containsItem(long key) {
-        return vanilla.containsKey(super.getHashedKey(key));
+        return vanilla.containsKey(V2B(key));
     }
     
     @Override
     public Object getValueByKey(long key) {
-        return vanilla.get(super.getHashedKey(key));
+        return vanilla.get(V2B(key));
     }
     
     @Override
     public Object remove(long key) {
-        Object o = vanilla.remove(super.getHashedKey(key));
+        Object o = vanilla.remove(V2B(key));
         if(o instanceof Chunk) // Thermos - Use our special map
         {
         	Chunk c = (Chunk)o;
