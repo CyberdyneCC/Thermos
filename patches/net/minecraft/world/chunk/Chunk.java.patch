@@ -18,7 +18,7 @@
  public class Chunk
  {
      private static final Logger logger = LogManager.getLogger();
-@@ -62,8 +73,42 @@
+@@ -62,15 +73,49 @@
      public int heightMapMinimum;
      public long inhabitedTime;
      private int queuedLightChecks;
@@ -61,6 +61,14 @@
      public Chunk(World p_i1995_1_, int p_i1995_2_, int p_i1995_3_)
      {
          this.storageArrays = new ExtendedBlockStorage[16];
+         this.blockBiomeArray = new byte[256];
+         this.precipitationHeightMap = new int[256];
+         this.updateSkylightColumns = new boolean[256];
+-        this.chunkTileEntityMap = new HashMap();
++        this.chunkTileEntityMap = new HashMap(512,0.90F);
+         this.queuedLightChecks = 4096;
+         this.entityLists = new List[16];
+         this.worldObj = p_i1995_1_;
 @@ -80,13 +125,22 @@
  
          for (int k = 0; k < this.entityLists.length; ++k)

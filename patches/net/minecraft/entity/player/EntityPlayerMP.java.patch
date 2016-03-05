@@ -717,7 +717,7 @@
          this.lastFoodLevel = -1;
 +        this.displayName = p_71049_1_.getDisplayName();
          this.destroyedItemsNetCache.addAll(((EntityPlayerMP)p_71049_1_).destroyedItemsNetCache);
-+        this.customEntityData = p_71049_1_.customEntityData; // Thermos pass custom entity data on to the clone
++        
 +        if(!p_71049_2_ || !(p_71049_1_ instanceof EntityPlayerMP))return;
 +        //Thermos direct copy the right properties
 +        EntityPlayerMP m = (EntityPlayerMP)p_71049_1_;

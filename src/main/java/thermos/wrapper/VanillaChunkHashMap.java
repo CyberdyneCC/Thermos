@@ -66,10 +66,5 @@ public class VanillaChunkHashMap extends LongHashMap {
         }
         return o;
     }
-    
-    @Override
-    public int getNumHashElements()
-    {
-    	return this.vanilla.size();
-    }
+      
 }

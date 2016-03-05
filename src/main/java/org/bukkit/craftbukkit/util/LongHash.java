@@ -2,7 +2,7 @@ package org.bukkit.craftbukkit.util;
 
 public class LongHash {
     public static long toLong(int msw, int lsw) {
-    	return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
+        return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
     }
 
     public static int msw(long l) {
