@@ -1460,7 +1460,7 @@
 +    public boolean isActiveChunk(int x, int z)
 +    {
 +        long now = System.currentTimeMillis();
-+        if(activity == null || now - actin > 2000L) activity = getPersistentChunks();
++        if(activity == null || now - actin > 2000L) { activity = getPersistentChunks(); actin = now; }
 +        return activeChunkSet_CB.containsKey(chunkToKey(x, z)) || activity.containsKey(new ChunkCoordIntPair(x, z));
 +    }
 +
