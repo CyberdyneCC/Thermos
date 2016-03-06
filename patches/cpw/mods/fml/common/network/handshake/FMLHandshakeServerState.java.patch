@@ -1,6 +1,17 @@
 --- ../src-base/minecraft/cpw/mods/fml/common/network/handshake/FMLHandshakeServerState.java
 +++ ../src-work/minecraft/cpw/mods/fml/common/network/handshake/FMLHandshakeServerState.java
-@@ -37,7 +37,11 @@
+@@ -19,6 +19,10 @@
+         {
+             NetworkDispatcher dispatcher = ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER).get();
+             int overrideDim = dispatcher.serverInitiateHandshake();
++            if(overrideDim == -100000)
++            {
++            	return ERROR;
++            }
+             ctx.writeAndFlush(FMLHandshakeMessage.makeCustomChannelRegistration(NetworkRegistry.INSTANCE.channelNamesFor(Side.SERVER))).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+             ctx.writeAndFlush(new FMLHandshakeMessage.ServerHello(overrideDim)).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+             return HELLO;
+@@ -37,7 +41,11 @@
              }
  
              FMLHandshakeMessage.ModList client = (FMLHandshakeMessage.ModList)msg;
