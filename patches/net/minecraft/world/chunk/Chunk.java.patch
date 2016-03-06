@@ -390,7 +390,7 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1682,21 @@
+@@ -1523,4 +1682,22 @@
              }
          }
      }
@@ -399,7 +399,8 @@
 +     * PaperSpigot - Recheck gaps asynchronously.
 +     */
 +    public void recheckGapsAsync(final boolean isStatic) {
-+        if (!worldObj.spigotConfig.useAsyncLighting) {
++    	if (worldObj.isModded == null) worldObj.isModded = false;
++        if (!worldObj.spigotConfig.useAsyncLighting || !worldObj.isModded) {
 +            this.recheckGaps(isStatic);
 +            return;
 +        }
