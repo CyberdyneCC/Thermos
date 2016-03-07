@@ -141,7 +141,20 @@
              case 0:
                  p_151510_0_.writeByte(((Byte)p_151510_1_.getObject()).byteValue());
                  break;
-@@ -318,7 +344,7 @@
+@@ -247,7 +273,11 @@
+                 p_151510_0_.writeFloat(((Float)p_151510_1_.getObject()).floatValue());
+                 break;
+             case 4:
+-                p_151510_0_.writeStringToBuffer((String)p_151510_1_.getObject());
++            	String str = (String)p_151510_1_.getObject();
++            	if(str.getBytes().length < 32767) 
++            		p_151510_0_.writeStringToBuffer((String)p_151510_1_.getObject());
++            	else
++            		System.out.println("[Thermos] Warning! Skipped data watcher string larger than 32767 bytes ( "+str.getBytes().length+")!");
+                 break;
+             case 5:
+                 ItemStack itemstack = (ItemStack)p_151510_1_.getObject();
+@@ -318,7 +348,7 @@
          while (iterator.hasNext())
          {
              DataWatcher.WatchableObject watchableobject = (DataWatcher.WatchableObject)iterator.next();
@@ -150,7 +163,7 @@
  
              if (watchableobject1 != null)
              {
-@@ -343,13 +369,13 @@
+@@ -343,13 +373,13 @@
  
      static
      {
