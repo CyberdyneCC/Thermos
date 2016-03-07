@@ -11,6 +11,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/build/distributions/"
+  - "$HOME/releases/"
 script: "./travii/make.sh"
 before_deploy:
   - export RELEASES=$(ls releases/*jar)
