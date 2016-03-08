@@ -14,8 +14,8 @@ cache:
   - "$HOME/releases/"
 script: "./travii/make.sh"
 before_deploy:
-  - export RELEASES=$(ls releases/*jar)
-  - export LIBRARIES=$(ls releases/*lib*)
+  - export RELEASES=$(ls $HOME/releases/*jar)
+  - export LIBRARIES=$(ls $HOME/releases/*lib*)
 deploy:
   provider: releases
   api_key:
