@@ -52,9 +52,9 @@ public class ChunkBlockHashMap {
     	
         Chunk[][] bunch = this.map.get(chunk_hash(x >> 4, z >> 4));
         if(bunch == null) return null;
-        last = bunch[Math.abs(x % 16)][Math.abs(z % 16)];
-        
-        return last;
+        Chunk ref = bunch[Math.abs(x % 16)][Math.abs(z % 16)];
+        if ( ref != null) last = ref;
+        return ref;
     }
     
     public void put(Chunk chunk)
