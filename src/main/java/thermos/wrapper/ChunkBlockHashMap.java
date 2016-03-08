@@ -89,7 +89,7 @@ public class ChunkBlockHashMap {
     		   temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = null;
     	   }
        }
-       if(x == last.xPosition && z == last.xPosition) // Thermos make sure no chunk is left behind
+       if(last != null && x == last.xPosition && z == last.xPosition) // Thermos make sure no chunk is left behind
     	   last = null;
     }
 }
