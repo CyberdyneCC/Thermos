@@ -114,8 +114,10 @@
 +        // PaperSpigot start - Asynchronous lighting updates
 +        Chunk chunk = this.loadedChunkHashMap_KC.rawThermos().get(p_73241_1_, p_73241_2_); //Thermos replacement
 +        // Thermos don't light modded chunks
-+        try { if (chunk.worldObj.isModded == null) chunk.worldObj.isModded = false; } catch (Exception e) { chunk.worldObj.isModded = false;}
-+        if (chunk != null && (chunk.worldObj.spigotConfig.useAsyncLighting && !chunk.worldObj.isModded) && (chunk.pendingLightUpdates.get() > 0 || chunk.worldObj.getTotalWorldTime() - chunk.lightUpdateTime < 20)) {
++        boolean modFlag = false;
++        try { if (chunk.worldObj.isModded == null) chunk.worldObj.isModded = false; modFlag = chunk.worldObj.isModded;} catch(Exception e){}
++        
++        if (chunk != null && (chunk.worldObj.spigotConfig.useAsyncLighting && !modFlag) && (chunk.pendingLightUpdates.get() > 0 || chunk.worldObj.getTotalWorldTime() - chunk.lightUpdateTime < 20)) {
 +            return;
 +        }
 +        // PaperSpigot end
