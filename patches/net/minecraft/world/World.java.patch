@@ -120,11 +120,13 @@
      protected final int DIST_HASH_MAGIC = 1013904223;
      public float prevRainingStrength;
      public float rainingStrength;
-@@ -100,26 +155,89 @@
+@@ -99,27 +154,90 @@
+     public float thunderingStrength;
      public int lastLightningBolt;
      public EnumDifficulty difficultySetting;
-     public Random rand = new Random();
+-    public Random rand = new Random();
 -    public final WorldProvider provider;
++    public Random rand = new thermos.thermite.ThermiteRandom();
 +    protected int updateLCG = this.rand.nextInt();
 +    public WorldProvider provider; // CraftBukkit - remove final
      protected List worldAccesses = new ArrayList();

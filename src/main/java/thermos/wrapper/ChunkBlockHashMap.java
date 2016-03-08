@@ -45,17 +45,22 @@ public class ChunkBlockHashMap {
     {
     	return this.size;
     }
-    
+    Chunk last = null;
     public Chunk get(int x, int z)
     {
+    	if(last != null && last.xPosition == x && last.zPosition == z) return last; // Thermos prune get calls for shitty mods
+    	
         Chunk[][] bunch = this.map.get(chunk_hash(x >> 4, z >> 4));
         if(bunch == null) return null;
-        return bunch[Math.abs(x % 16)][Math.abs(z % 16)];
+        last = bunch[Math.abs(x % 16)][Math.abs(z % 16)];
+        
+        return last;
     }
     
     public void put(Chunk chunk)
     {
-    	   if(chunk == null)return;
+    	   if(chunk == null)
+    		   return;
     	   size++;
     	   int x = chunk.xPosition, z = chunk.zPosition;
            Chunk[][] temp_chunk_bunch = chunk_array_get(x, z);
@@ -69,6 +74,7 @@ public class ChunkBlockHashMap {
                temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = chunk;
                this.map.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //Thermos - IntHash
            }
+           last = chunk; // Thermos save it away for future gets
     }
 
     public void remove(Chunk chunk)
@@ -83,5 +89,7 @@ public class ChunkBlockHashMap {
     		   temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = null;
     	   }
        }
+       if(x == last.xPosition && z == last.xPosition) // Thermos make sure no chunk is left behind
+    	   last = null;
     }
 }
