@@ -36,4 +36,4 @@ unzip Thermos*bundle*zip
 rm -r bin/unknown
 mv bin libraries
 zip -r libraries.zip libraries
-cp libraries.zip ../../$HOME/release
+cp libraries.zip $HOME/release
