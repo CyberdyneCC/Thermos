@@ -11,7 +11,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/build/distributions/"
-  - "$HOME/releases/"
+  - "$HOME/release/"
 script: "./travii/make.sh"
 deploy:
   provider: releases
@@ -19,7 +19,7 @@ deploy:
     secure: jkvsz8q4r/SDGYQXpJisZ2L0T2jhv5xWebV9Y30Q1fDcuBShHn1Zq0NnPs4TFBG2YiJyZopx6cCyZa9ocuBwjXJkGruKHryU/a4fa2rC0iBEN+5uG9BJBWNsl1oAqwKUDcUw0GDegFpWMABb4Nr3M98KUcTRAAZJ6+/a89pX8yxVUCt1YWsEm9gnOuam1Zy3er86Z+symoOdcJDxv98jczsVueF+rzP9NbzXu8Els1LT47bYXNUaIKjeADCBRHVaYu7Um0PXJ2yHpRnVIZlZAvJB6OJCqtFj1dfaq2LeZvN/bLjSNGocEXaI/atSfkolxNHKv8u5hgggtSCS/zOdF0cGHltdhhFF7DmMN5ZOjcSsXH9wXfO0Gy3ildAI3J1XXist27WYu+WBsZZ+knxCpRWmgh9Y3sktDHlOP7H7r4xpB5MK1mfWgTecqRmIWLFq8mNgmjdPglr402YahtdAz9lX0rXHGkvBTzArUtjqJSb6F0co1NRdxZhY8iF96QnW1m/a/JE4i2f2ao2CXaWoKp0gisXkpfrd8kw2OmFYWdRJhHXufp2Op43rTRnso/VPWmNzj2LFiRlP3RAP6pNGA8QX+yE98CkcUqw+jn5cLc/q1JocrdjbkgzLTneGglJKRLhx6t4wlMgc9Gia6a910H1X1P4dqGOTX30ZsYVKwLw=
   file_glob: true
   skip_cleanup: true
-  file: "$HOME/releases/*"
+  file: "$HOME/release/*"
   on:
     repo: TCPR/Thermos
     tags: true
