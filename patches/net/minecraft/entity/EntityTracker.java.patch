@@ -22,29 +22,51 @@
      private final WorldServer theWorld;
 -    private Set trackedEntities = new HashSet();
 -    private IntHashMap trackedEntityIDs = new IntHashMap();
-+    private Set<EntityTrackerEntry> trackedEntities = new pw.prok.imagine.collections.IndirectSet<EntityTrackerEntry>(); 
++    private Set<EntityTrackerEntry> trackedEntities = new HashSet<EntityTrackerEntry>(); 
 +    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
  
-@@ -73,7 +75,7 @@
-             {
-                 EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+@@ -67,13 +69,10 @@
+         {
+             this.addEntityToTracker(p_72786_1_, 512, 2);
+             EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72786_1_;
+-            Iterator iterator = this.trackedEntities.iterator();
  
+-            while (iterator.hasNext())
++            for(EntityTrackerEntry entitytrackerentry  : this.trackedEntities)
+             {
+-                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+-
 -                if (entitytrackerentry.myEntity != entityplayermp)
 +                if (entitytrackerentry != null && entitytrackerentry.myEntity != entityplayermp)
                  {
                      entitytrackerentry.tryStartWachingThis(entityplayermp);
                  }
-@@ -184,6 +186,7 @@
+@@ -182,8 +181,9 @@
+         this.addEntityToTracker(p_72791_1_, p_72791_2_, p_72791_3_, false);
+     }
  
-     public void addEntityToTracker(Entity p_72785_1_, int p_72785_2_, final int p_72785_3_, boolean p_72785_4_)
+-    public void addEntityToTracker(Entity p_72785_1_, int p_72785_2_, final int p_72785_3_, boolean p_72785_4_)
++    public synchronized void addEntityToTracker(Entity p_72785_1_, int p_72785_2_, final int p_72785_3_, boolean p_72785_4_)
      {
 +        p_72785_2_ = org.spigotmc.TrackingRange.getEntityTrackingRange(p_72785_1_, p_72785_2_); // Spigot
          if (p_72785_2_ > this.entityViewDistance)
          {
              p_72785_2_ = this.entityViewDistance;
-@@ -223,7 +226,9 @@
+@@ -193,6 +193,11 @@
+         {
+             if (this.trackedEntityIDs.containsItem(p_72785_1_.getEntityId()))
+             {
++            	if(!this.trackedEntities.contains(new EntityTrackerEntry(p_72785_1_, p_72785_2_, p_72785_3_, p_72785_4_)))
++            	{
++            		this.trackedEntityIDs.removeObject(p_72785_1_.getEntityId());
++            		System.out.println("[Thermos] Entity tracking error corection code activated.");
++            	}
+                 throw new IllegalStateException("Entity is already tracked!");
+             }
+ 
+@@ -223,7 +228,9 @@
              });
              p_72785_1_.addEntityCrashInfo(crashreportcategory);
              CrashReportCategory crashreportcategory1 = crashreport.makeCategory("Entity That Is Already Tracked");
@@ -54,25 +76,32 @@
  
              try
              {
-@@ -246,6 +251,7 @@
-             while (iterator.hasNext())
+@@ -241,11 +248,9 @@
+         if (p_72790_1_ instanceof EntityPlayerMP)
+         {
+             EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72790_1_;
+-            Iterator iterator = this.trackedEntities.iterator();
+-
+-            while (iterator.hasNext())
++            for(EntityTrackerEntry entitytrackerentry : this.trackedEntities )
              {
-                 EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+-                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
 +                if (entitytrackerentry != null)
                  entitytrackerentry.removeFromWatchingList(entityplayermp);
              }
          }
-@@ -261,18 +267,20 @@
+@@ -261,18 +266,17 @@
  
      public void updateTrackedEntities()
      {
 -        ArrayList arraylist = new ArrayList();
+-        Iterator iterator = this.trackedEntities.iterator();
+-
+-        while (iterator.hasNext())
 +        ArrayList arraylist = new ArrayList(this.trackedEntities.size());
-         Iterator iterator = this.trackedEntities.iterator();
- 
-         while (iterator.hasNext())
++        for (EntityTrackerEntry entitytrackerentry : this.trackedEntities)
          {
-             EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
 +            if (entitytrackerentry != null) {
              entitytrackerentry.sendLocationToAllClients(this.theWorld.playerEntities);
  
@@ -84,7 +113,7 @@
          }
  
          for (int i = 0; i < arraylist.size(); ++i)
-@@ -284,12 +292,13 @@
+@@ -284,7 +288,7 @@
              {
                  EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)iterator1.next();
  
@@ -93,13 +122,7 @@
                  {
                      entitytrackerentry1.tryStartWachingThis(entityplayermp);
                  }
-             }
-         }
-+        ((pw.prok.imagine.collections.Indirect) trackedEntities).compat(theWorld.getTotalWorldTime() % 100 == 0);
-     }
- 
-     public void func_151247_a(Entity p_151247_1_, Packet p_151247_2_)
-@@ -319,6 +328,7 @@
+@@ -319,19 +323,16 @@
          while (iterator.hasNext())
          {
              EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -107,10 +130,16 @@
              entitytrackerentry.removePlayerFromTracker(p_72787_1_);
          }
      }
-@@ -331,7 +341,7 @@
-         {
-             EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
  
+     public void func_85172_a(EntityPlayerMP p_85172_1_, Chunk p_85172_2_)
+     {
+-        Iterator iterator = this.trackedEntities.iterator();
+-
+-        while (iterator.hasNext())
++        for (EntityTrackerEntry entitytrackerentry : this.trackedEntities)
+         {
+-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+-
 -            if (entitytrackerentry.myEntity != p_85172_1_ && entitytrackerentry.myEntity.chunkCoordX == p_85172_2_.xPosition && entitytrackerentry.myEntity.chunkCoordZ == p_85172_2_.zPosition)
 +            if (entitytrackerentry != null && entitytrackerentry.myEntity != p_85172_1_ && entitytrackerentry.myEntity.chunkCoordX == p_85172_2_.xPosition && entitytrackerentry.myEntity.chunkCoordZ == p_85172_2_.zPosition)
              {
