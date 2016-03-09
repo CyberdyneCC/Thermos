@@ -717,18 +717,22 @@
          if (!p_72885_10_)
          {
              explosion.affectedBlockPositions.clear();
-@@ -977,7 +1284,7 @@
+@@ -977,7 +1284,8 @@
      {
          boolean flag = this.isRaining();
          super.updateWeather();
 -
-+        /* CraftBukkit start
++        
++        // Thermos send those gradual rain changes man!
          if (this.prevRainingStrength != this.rainingStrength)
          {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
-@@ -988,10 +1295,6 @@
+@@ -987,11 +1295,9 @@
+         {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
++        
++        /* CraftBukkit start
  
 -        /*The function in use here has been replaced in order to only send the weather info to players in the correct dimension,
 -        rather than to all players on the server. This is what causes the client-side rain, as the
@@ -737,7 +741,7 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1309,33 @@
+@@ -1006,6 +1312,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
@@ -771,7 +775,7 @@
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1399,53 @@
+@@ -1069,4 +1402,53 @@
                  this();
              }
          }
