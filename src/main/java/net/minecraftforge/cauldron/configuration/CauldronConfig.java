@@ -64,6 +64,7 @@ public class CauldronConfig extends ConfigBase
     public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "how many milliseconds the server must ignore before trying repeater updates");
     public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "how many milliseconds the server must ignore before trying redstoneTorch updates");
     public final BoolSetting affinity = new BoolSetting(this, "optimized.affinity-locking", false, "Whether to enable affinity locking. Very technical usage, recommended for dedicated hosts only. Ask on Discord or GitHub for info on how to set this up properly.");
+    public final BoolSetting ramChunks = new BoolSetting(this, "optimized.ram-load-chunks", false, "Loads chunks into the system RAM (experimental). WARNING! ENABLING THIS WILL INCREASE RAM USAGE BY OVER 1GB.");
     
     // World Protection options
     public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
@@ -122,6 +123,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(protectSP.path, protectSP);
         settings.put(realNames.path, realNames);
         settings.put(affinity.path, affinity);
+        settings.put(ramChunks.path, ramChunks);
         load();
     }
 
