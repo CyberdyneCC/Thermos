@@ -11,7 +11,7 @@
  import java.util.zip.DeflaterOutputStream;
  import java.util.zip.GZIPInputStream;
  import java.util.zip.InflaterInputStream;
-@@ -16,359 +19,520 @@
+@@ -16,359 +19,522 @@
  
  public class RegionFile
  {
@@ -75,6 +75,7 @@
 +				if (this.dataBuffer.limit() < 4096L)
 +				{
 +					// Spigot - more effecient chunk zero'ing
++					this.dataBuffer.limit(this.dataBuffer.limit() + RegionFile.emptySector.length*2);
 +					this.dataBuffer.put(RegionFile.emptySector);
 +					this.dataBuffer.put(RegionFile.emptySector);
 +					
@@ -691,6 +692,7 @@
 -        private static final String __OBFID = "CL_00000382";
 +								for (j2 = 0; j2 < k1; ++j2)
 +								{
++									this.dataBuffer.limit(this.dataBuffer.limit()+ emptySector.length);
 +									this.dataBuffer.put(emptySector);
 +									this.sectorFree.add(Boolean.valueOf(false));
 +								}
