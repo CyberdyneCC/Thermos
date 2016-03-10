@@ -5,7 +5,7 @@
  public class RegionFileCache
  {
 -    private static final Map regionsByFilename = new HashMap();
-+    public static final Map regionsByFilename = new HashMap(); // CraftBukkit - private -> public
++    public static final Map<File,RegionFile> regionsByFilename = new HashMap<File,RegionFile>(); // CraftBukkit - private -> public
      private static final String __OBFID = "CL_00000383";
  
      public static synchronized RegionFile createOrLoadRegionFile(File p_76550_0_, int p_76550_1_, int p_76550_2_)
@@ -25,3 +25,44 @@
              if (!file2.exists())
              {
                  file2.mkdirs();
+@@ -32,7 +37,7 @@
+ 
+             if (regionsByFilename.size() >= 256)
+             {
+-                clearRegionFileReferences();
++                deleteOldestReference();
+             }
+ 
+             RegionFile regionfile1 = new RegionFile(file3);
+@@ -40,7 +45,30 @@
+             return regionfile1;
+         }
+     }
+-
++    // Thermos a kinda-copy of the method below, except here we delete the oldest stream rather than deleting all filestreams
++    // This is a key part of ensuring that the chunk existence thread can complete its necessary tasks
++    public static synchronized void deleteOldestReference()
++    {
++    	long oldest = System.currentTimeMillis();
++    	File toJunk = null;
++        for (Map.Entry<File,RegionFile> entry : regionsByFilename.entrySet())
++        {
++        	if(entry.getKey().lastModified() < oldest)
++        	{
++        		oldest = entry.getKey().lastModified();
++        		toJunk = entry.getKey();
++        	}
++        }
++        if(toJunk != null)
++        {
++        	regionsByFilename.remove(toJunk);
++        }
++        else // Default to usual behavior if this fails
++        {
++        	clearRegionFileReferences();
++        }
++    }
++    
+     public static synchronized void clearRegionFileReferences()
+     {
+         Iterator iterator = regionsByFilename.values().iterator();
