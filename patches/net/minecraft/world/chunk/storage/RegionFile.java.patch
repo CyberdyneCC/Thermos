@@ -1,15 +1,41 @@
 --- ../src-base/minecraft/net/minecraft/world/chunk/storage/RegionFile.java
 +++ ../src-work/minecraft/net/minecraft/world/chunk/storage/RegionFile.java
-@@ -16,7 +16,7 @@
+@@ -8,7 +8,10 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.RandomAccessFile;
++import java.nio.MappedByteBuffer;
++import java.nio.channels.FileChannel.MapMode;
+ import java.util.ArrayList;
++import java.util.HashMap;
+ import java.util.zip.DeflaterOutputStream;
+ import java.util.zip.GZIPInputStream;
+ import java.util.zip.InflaterInputStream;
+@@ -16,16 +19,19 @@
  
  public class RegionFile
  {
 -    private static final byte[] emptySector = new byte[4096];
+-    private final File fileName;
+-    private RandomAccessFile dataFile;
 +    private static final byte[] emptySector = new byte[4096]; // Spigot - note: if this ever changes to not be 4096 bytes, update constructor!
-     private final File fileName;
-     private RandomAccessFile dataFile;
++    public final File fileName;
++    public RandomAccessFile dataFile;
      private final int[] offsets = new int[1024];
-@@ -43,16 +43,10 @@
+     private final int[] chunkTimestamps = new int[1024];
+     private ArrayList sectorFree;
+     private int sizeDelta;
+     private long lastModified;
+     private static final String __OBFID = "CL_00000381";
+-
++    
++    public MappedByteBuffer readable = null;
++    public HashMap<Integer,Boolean> nowExists = new HashMap<Integer,Boolean>();
++    
+     public RegionFile(File p_i2001_1_)
+     {
+         this.fileName = p_i2001_1_;
+@@ -43,16 +49,10 @@
  
              if (this.dataFile.length() < 4096L)
              {
@@ -29,7 +55,62 @@
                  this.sizeDelta += 8192;
              }
  
-@@ -209,7 +203,7 @@
+@@ -76,6 +76,9 @@
+             this.sectorFree.set(0, Boolean.valueOf(false));
+             this.sectorFree.set(1, Boolean.valueOf(false));
+             this.dataFile.seek(0L);
++            
++             // Thermos drop it into the RAM
++            
+             int k;
+ 
+             for (j = 0; j < 1024; ++j)
+@@ -112,7 +115,6 @@
+         try
+         {
+             int offset = this.getOffset(x, z);
+-
+             if (offset == 0) return false;
+ 
+             int sectorNumber = offset >> 8;
+@@ -120,14 +122,31 @@
+ 
+             if (sectorNumber + numSectors > this.sectorFree.size()) return false;
+ 
+-            this.dataFile.seek((long)(sectorNumber * 4096));
+-            int length = this.dataFile.readInt();
++            if(this.readable != null)
++            {
++            	if(this.nowExists.containsKey(thermos.wrapper.ChunkBlockHashMap.chunk_hash(x, z)))
++            	{
++            		return true;
++            	}
++                this.readable.position(sectorNumber * 4096);
++                int length = this.readable.getInt();
++                if(length > 4096 * numSectors || length <= 0) return false;
++                
++                byte version = this.readable.get();
++                
++                if (version == 1 || version == 2) return true;
++            }
++            else
++            {
++            	this.dataFile.seek((long)(sectorNumber * 4096));
++            	int length = this.dataFile.readInt();
+ 
+-            if (length > 4096 * numSectors || length <= 0) return false;
++            	if (length > 4096 * numSectors || length <= 0) return false;
+ 
+-            byte version = this.dataFile.readByte();
++            	byte version = this.dataFile.readByte();
+ 
+-            if (version == 1 || version == 2) return true;
++            	if (version == 1 || version == 2) return true;
++            }
+         }
+         catch (IOException ioexception)
+         {
+@@ -209,7 +228,7 @@
  
      public DataOutputStream getChunkDataOutputStream(int p_76710_1_, int p_76710_2_)
      {
@@ -38,3 +119,18 @@
      }
  
      protected synchronized void write(int p_76706_1_, int p_76706_2_, byte[] p_76706_3_, int p_76706_4_)
+@@ -316,12 +335,12 @@
+         this.dataFile.write(p_76712_2_, 0, p_76712_3_);
+     }
+ 
+-    private boolean outOfBounds(int p_76705_1_, int p_76705_2_)
++    public boolean outOfBounds(int p_76705_1_, int p_76705_2_)
+     {
+         return p_76705_1_ < 0 || p_76705_1_ >= 32 || p_76705_2_ < 0 || p_76705_2_ >= 32;
+     }
+ 
+-    private int getOffset(int p_76707_1_, int p_76707_2_)
++    public int getOffset(int p_76707_1_, int p_76707_2_)
+     {
+         return this.offsets[p_76707_1_ + p_76707_2_ * 32];
+     }
