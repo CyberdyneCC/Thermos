@@ -66,8 +66,8 @@
  
 -            this.dataFile = new RandomAccessFile(p_i2001_1_, "rw");
 -            int i;
-+			// Thermos drop it into the RAM
-+			this.dataBuffer = dataFile.getChannel().map(MapMode.READ_WRITE, 0, dataFile.length());
++			// Thermos drop it into the RAM, give it a 12MB cap
++			this.dataBuffer = dataFile.getChannel().map(MapMode.READ_WRITE, 0, Math.max(dataFile.length(), 12000000));
 +			this.dataFile = dataFile;
 +			if(ramMode)
 +			{
