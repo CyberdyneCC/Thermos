@@ -1,6 +1,15 @@
 --- ../src-base/minecraft/org/bukkit/World.java
 +++ ../src-work/minecraft/org/bukkit/World.java
-@@ -1155,6 +1155,56 @@
+@@ -17,6 +17,8 @@
+ import org.bukkit.plugin.messaging.PluginMessageRecipient;
+ import org.bukkit.util.Vector;
+ 
++import net.minecraft.world.WorldServer;
++
+ /**
+  * Represents a world, which may contain entities, chunks and blocks
+  */
+@@ -1155,6 +1157,56 @@
       */
      public boolean isGameRule(String rule);
  
@@ -57,7 +66,7 @@
      /**
       * Represents various map environment types that a world may be
       */
-@@ -1203,6 +1253,12 @@
+@@ -1203,10 +1255,18 @@
              return lookup.get(id);
          }
  
@@ -70,3 +79,9 @@
          static {
              for (Environment env : values()) {
                  lookup.put(env.getId(), env);
+             }
+         }
+     }
++    
++    public abstract WorldServer getWorldServer();
+ }
