@@ -1,5 +1,3 @@
-## Thermos will have a huge change soon, we'll be reverting back to when we first renamed to Thermos & slowly commiting fixes & removing all "fixes" that caused issues.
-
 # Thermos 
 ![Thermos](thermos_icon.png)
 ![Graph](http://i.mcstats.org/Thermos/Global+Statistics@2x.borderless.png)
