@@ -125,6 +125,7 @@ public class CauldronConfig extends ConfigBase
         settings.put(realNames.path, realNames);
         settings.put(affinity.path, affinity);
         settings.put(ramChunks.path, ramChunks);
+        settings.put(instantRemove.path, instantRemove);
         load();
     }
 
