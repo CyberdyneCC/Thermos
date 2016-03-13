@@ -16,7 +16,7 @@
 +    private int pathFindFailures = 0;
      public boolean tryMoveToEntityLiving(Entity p_75497_1_, double p_75497_2_)
      {
-+    	if (this.pathFindFailures > 10 && this.c == null && MinecraftServer.currentTick < this.lastFailure + 40) 
++    	if (this.pathFindFailures > 10 && this.currentPath == null && MinecraftServer.currentTick < this.lastFailure + 40) 
 +    	{
 +    		return false;
 +    	}
