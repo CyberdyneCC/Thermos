@@ -11,7 +11,7 @@
  import java.util.zip.DeflaterOutputStream;
  import java.util.zip.GZIPInputStream;
  import java.util.zip.InflaterInputStream;
-@@ -16,359 +19,524 @@
+@@ -16,359 +19,526 @@
  
  public class RegionFile
  {
@@ -809,6 +809,8 @@
 +			if(this.dataBuffer != null)
 +			{
 +				this.dataBuffer.force();
++				this.dataFile.seek(0L);
++				this.dataFile.write(dataBuffer.array());
 +			}
 +			dataBuffer = null;
 +		}
