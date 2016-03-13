@@ -30,7 +30,21 @@
      public Block getBlockByExtId(int p_150819_1_, int p_150819_2_, int p_150819_3_)
      {
          int l = this.blockLSBArray[p_150819_2_ << 8 | p_150819_3_ << 4 | p_150819_1_] & 255;
-@@ -139,6 +162,106 @@
+@@ -39,7 +62,12 @@
+         {
+             l |= this.blockMSBArray.get(p_150819_1_, p_150819_2_, p_150819_3_) << 8;
+         }
+-
++        
++        for(int IDTOBAN : net.minecraftforge.cauldron.configuration.CauldronConfig.instance.instantRemove.getValue())
++        {
++        	if ( l == IDTOBAN) return Blocks.air;
++        }
++        
+         return Block.getBlockById(l);
+     }
+ 
+@@ -139,6 +167,106 @@
  
      public void removeInvalidBlocks()
      {
@@ -137,7 +151,7 @@
          this.blockRefCount = 0;
          this.tickRefCount = 0;
  
-@@ -197,29 +320,72 @@
+@@ -197,29 +325,72 @@
  
      public void setBlockLSBArray(byte[] p_76664_1_)
      {

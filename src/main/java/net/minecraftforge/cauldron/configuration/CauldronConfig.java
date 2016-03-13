@@ -68,7 +68,8 @@ public class CauldronConfig extends ConfigBase
     
     // World Protection options
     public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
-
+    public final IntArraySetting instantRemove = new IntArraySetting(this, "protection.instant-removal", new Integer[] {}, "Contains Block IDs that you want to NEVER exist in the world i.e. world anchors (just in case)");
+    
     // Plug-in options
     public final BoolSetting reloadPlugins = new BoolSetting(this, "plugin-settings.allow-reload", false, "Allow plugins to be reloaded. WARNING - breaks with some mods. We *will not* support this!");
 
