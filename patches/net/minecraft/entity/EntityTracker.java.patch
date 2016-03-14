@@ -29,7 +29,7 @@
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
  
-@@ -56,6 +60,29 @@
+@@ -56,6 +60,30 @@
          this.entityViewDistance = p_i1516_1_.func_73046_m().getConfigurationManager().getEntityViewDistance();
      }
  
@@ -53,13 +53,14 @@
 +    }
 +    public void unlock()
 +    {
++    	if(this.trackerLock.isLocked()) return;
 +    	this.trackerLock.unlock();
 +    }
 +    
      public void addEntityToTracker(Entity p_72786_1_)
      {
          if (EntityRegistry.instance().tryTrackingEntity(this, p_72786_1_))
-@@ -67,17 +94,19 @@
+@@ -67,17 +95,19 @@
          {
              this.addEntityToTracker(p_72786_1_, 512, 2);
              EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72786_1_;
@@ -85,7 +86,7 @@
          }
          else if (p_72786_1_ instanceof EntityFishHook)
          {
-@@ -182,8 +211,9 @@
+@@ -182,8 +212,9 @@
          this.addEntityToTracker(p_72791_1_, p_72791_2_, p_72791_3_, false);
      }
  
@@ -96,7 +97,7 @@
          if (p_72785_2_ > this.entityViewDistance)
          {
              p_72785_2_ = this.entityViewDistance;
-@@ -193,16 +223,31 @@
+@@ -193,16 +224,31 @@
          {
              if (this.trackedEntityIDs.containsItem(p_72785_1_.getEntityId()))
              {
@@ -129,7 +130,7 @@
              CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Adding entity to track");
              CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity To Track");
              crashreportcategory.addCrashSection("Tracking range", p_72785_2_ + " blocks");
-@@ -223,7 +268,9 @@
+@@ -223,7 +269,9 @@
              });
              p_72785_1_.addEntityCrashInfo(crashreportcategory);
              CrashReportCategory crashreportcategory1 = crashreport.makeCategory("Entity That Is Already Tracked");
@@ -139,7 +140,7 @@
  
              try
              {
-@@ -241,54 +288,56 @@
+@@ -241,54 +289,56 @@
          if (p_72790_1_ instanceof EntityPlayerMP)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72790_1_;
@@ -214,7 +215,7 @@
          }
      }
  
-@@ -314,28 +363,26 @@
+@@ -314,28 +364,26 @@
  
      public void removePlayerFromTrackers(EntityPlayerMP p_72787_1_)
      {
