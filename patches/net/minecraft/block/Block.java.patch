@@ -23,7 +23,7 @@
      {
 +    	if(p_149743_6_ instanceof ArrayList)
 +    	{
-+    		((ArrayList)p_149743_6_).ensureCapacity(10); // Thermos - force ArrayList minimum size
++    		((ArrayList)p_149743_6_).ensureCapacity(30); // Thermos - force ArrayList minimum size
 +    	}
          AxisAlignedBB axisalignedbb1 = this.getCollisionBoundingBoxFromPool(p_149743_1_, p_149743_2_, p_149743_3_, p_149743_4_);
  
