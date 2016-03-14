@@ -597,7 +597,7 @@
  
 +        if (!file1.isFile())
 +        {
-+            try {thermos.SIGen.gen(this,file1);} catch(Exception e){}
++        	System.out.println("Hey, you don't have a server icon! Try out one of Thermos' Icon Generators at https://github.com/TCPR/ThermosIconGenerators !");
 +        }
 +
          if (file1.isFile())
@@ -692,7 +692,7 @@
 +            for (int i = 0; i < this.getConfigurationManager().playerEntityList.size(); ++i)
 +            {
 +                EntityPlayerMP entityplayermp = (EntityPlayerMP) this.getConfigurationManager().playerEntityList.get(i);
-+                entityplayermp.playerNetServerHandler.sendPacket(new S03PacketTimeUpdate(entityplayermp.worldObj.getTotalWorldTime(), entityplayermp.getPlayerTime(), entityplayermp.worldObj.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))); // Add support for per player time
++                entityplayermp.playerNetServerHandler.sendPacket(new S03PacketTimeUpdate(entityplayermp.worldObj.getTotalWorldTime(), entityplayermp.getPlayerTime(), entityplayermp.worldObj.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))); // for per player time
 +            }
 +        }
 +        SpigotTimings.timeUpdateTimer.stopTiming(); // Spigot

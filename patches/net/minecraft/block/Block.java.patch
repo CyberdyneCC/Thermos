@@ -8,18 +8,27 @@
      private static final String __OBFID = "CL_00000199";
  
      public final cpw.mods.fml.common.registry.RegistryDelegate<Block> delegate = 
-@@ -564,6 +565,10 @@
+@@ -133,6 +134,8 @@
+ 
+     public static Block getBlockById(int p_149729_0_)
+     {
++    	if(p_149729_0_ == 0) return Blocks.air;
++    	
+         Block ret = (Block)blockRegistry.getObjectById(p_149729_0_);
+         return ret == null ? Blocks.air : ret;
+     }
+@@ -564,6 +567,10 @@
  
      public void addCollisionBoxesToList(World p_149743_1_, int p_149743_2_, int p_149743_3_, int p_149743_4_, AxisAlignedBB p_149743_5_, List p_149743_6_, Entity p_149743_7_)
      {
 +    	if(p_149743_6_ instanceof ArrayList)
 +    	{
-+    		((ArrayList)p_149743_6_).ensureCapacity(10); // Thermos - force ArrayList minimum size
++    		((ArrayList)p_149743_6_).ensureCapacity(30); // Thermos - force ArrayList minimum size
 +    	}
          AxisAlignedBB axisalignedbb1 = this.getCollisionBoundingBoxFromPool(p_149743_1_, p_149743_2_, p_149743_3_, p_149743_4_);
  
          if (axisalignedbb1 != null && p_149743_5_.intersectsWith(axisalignedbb1))
-@@ -1131,6 +1136,23 @@
+@@ -1131,6 +1138,23 @@
          return this;
      }
  

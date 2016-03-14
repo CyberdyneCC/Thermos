@@ -16,24 +16,61 @@
  
  import cpw.mods.fml.common.registry.EntityRegistry;
  
-@@ -45,8 +47,8 @@
+@@ -45,8 +47,10 @@
  {
      private static final Logger logger = LogManager.getLogger();
      private final WorldServer theWorld;
 -    private Set trackedEntities = new HashSet();
 -    private IntHashMap trackedEntityIDs = new IntHashMap();
 +    private Set<EntityTrackerEntry> trackedEntities = new HashSet<EntityTrackerEntry>(); 
++    private final java.util.concurrent.locks.ReentrantLock trackerLock = new java.util.concurrent.locks.ReentrantLock(); // Thermos - prevent entity tracking crashes
++
 +    public IntHashMap trackedEntityIDs = new IntHashMap(); // CraftBukkit - private -> public
      private int entityViewDistance;
      private static final String __OBFID = "CL_00001431";
  
-@@ -67,13 +69,10 @@
+@@ -56,6 +60,30 @@
+         this.entityViewDistance = p_i1516_1_.func_73046_m().getConfigurationManager().getEntityViewDistance();
+     }
+ 
++    public void waitForLock()
++    {
++    	while(this.trackerLock.isLocked())
++    	{
++    		try
++    		{
++    			Thread.sleep(100L);
++    		}
++    		catch(Exception e)
++    		{
++    			
++    		}
++    	}
++    }
++    public void lock()
++    {
++    	this.trackerLock.lock();
++    }
++    public void unlock()
++    {
++    	if(!this.trackerLock.isLocked()) return;
++    	this.trackerLock.unlock();
++    }
++    
+     public void addEntityToTracker(Entity p_72786_1_)
+     {
+         if (EntityRegistry.instance().tryTrackingEntity(this, p_72786_1_))
+@@ -67,17 +95,19 @@
          {
              this.addEntityToTracker(p_72786_1_, 512, 2);
              EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72786_1_;
 -            Iterator iterator = this.trackedEntities.iterator();
- 
+-
 -            while (iterator.hasNext())
++            
++            waitForLock(); // Themrmos Tracker Crash Prevention
++            lock(); // TTCP
++            
 +            for(EntityTrackerEntry entitytrackerentry  : this.trackedEntities)
              {
 -                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -43,7 +80,13 @@
                  {
                      entitytrackerentry.tryStartWachingThis(entityplayermp);
                  }
-@@ -182,8 +181,9 @@
+             }
++            
++            unlock();// TTCP
+         }
+         else if (p_72786_1_ instanceof EntityFishHook)
+         {
+@@ -182,8 +212,9 @@
          this.addEntityToTracker(p_72791_1_, p_72791_2_, p_72791_3_, false);
      }
  
@@ -54,10 +97,11 @@
          if (p_72785_2_ > this.entityViewDistance)
          {
              p_72785_2_ = this.entityViewDistance;
-@@ -193,6 +193,11 @@
+@@ -193,16 +224,31 @@
          {
              if (this.trackedEntityIDs.containsItem(p_72785_1_.getEntityId()))
              {
++            	waitForLock(); lock();// TTCP
 +            	if(!this.trackedEntities.contains(new EntityTrackerEntry(p_72785_1_, p_72785_2_, p_72785_3_, p_72785_4_)))
 +            	{
 +            		this.trackedEntityIDs.removeObject(p_72785_1_.getEntityId());
@@ -65,8 +109,28 @@
 +            	}
                  throw new IllegalStateException("Entity is already tracked!");
              }
- 
-@@ -223,7 +228,9 @@
+-
++            unlock();// TTCP
++            
+             EntityTrackerEntry entitytrackerentry = new EntityTrackerEntry(p_72785_1_, p_72785_2_, p_72785_3_, p_72785_4_);
++            
++            waitForLock(); lock();// TTCP
+             this.trackedEntities.add(entitytrackerentry);
++            unlock();// TTCP
++            
+             this.trackedEntityIDs.addKey(p_72785_1_.getEntityId(), entitytrackerentry);
+             entitytrackerentry.sendEventsToPlayers(this.theWorld.playerEntities);
++            
++            
+         }
+         catch (Throwable throwable)
+         {
++        	unlock(); // TTCP
++        	
+             CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Adding entity to track");
+             CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity To Track");
+             crashreportcategory.addCrashSection("Tracking range", p_72785_2_ + " blocks");
+@@ -223,7 +269,9 @@
              });
              p_72785_1_.addEntityCrashInfo(crashreportcategory);
              CrashReportCategory crashreportcategory1 = crashreport.makeCategory("Entity That Is Already Tracked");
@@ -76,21 +140,33 @@
  
              try
              {
-@@ -241,11 +248,9 @@
+@@ -241,54 +289,56 @@
          if (p_72790_1_ instanceof EntityPlayerMP)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)p_72790_1_;
 -            Iterator iterator = this.trackedEntities.iterator();
 -
 -            while (iterator.hasNext())
++            waitForLock();lock();// TTCP
 +            for(EntityTrackerEntry entitytrackerentry : this.trackedEntities )
              {
 -                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
 +                if (entitytrackerentry != null)
                  entitytrackerentry.removeFromWatchingList(entityplayermp);
              }
++            unlock();// TTCP
          }
-@@ -261,18 +266,17 @@
+ 
+         EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)this.trackedEntityIDs.removeObject(p_72790_1_.getEntityId());
+ 
+         if (entitytrackerentry1 != null)
+         {
++        	waitForLock();lock();// TTCP
+             this.trackedEntities.remove(entitytrackerentry1);
++            unlock();// TTCP
+             entitytrackerentry1.informAllAssociatedPlayersOfItemDestruction();
+         }
+     }
  
      public void updateTrackedEntities()
      {
@@ -98,37 +174,62 @@
 -        Iterator iterator = this.trackedEntities.iterator();
 -
 -        while (iterator.hasNext())
++    	waitForLock();lock();// TTCP
 +        ArrayList arraylist = new ArrayList(this.trackedEntities.size());
 +        for (EntityTrackerEntry entitytrackerentry : this.trackedEntities)
          {
 -            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
-+            if (entitytrackerentry != null) {
-             entitytrackerentry.sendLocationToAllClients(this.theWorld.playerEntities);
+-            entitytrackerentry.sendLocationToAllClients(this.theWorld.playerEntities);
++            	if (entitytrackerentry != null) {
++            	entitytrackerentry.sendLocationToAllClients(this.theWorld.playerEntities);
  
-             if (entitytrackerentry.playerEntitiesUpdated && entitytrackerentry.myEntity instanceof EntityPlayerMP)
-             {
-                 arraylist.add((EntityPlayerMP)entitytrackerentry.myEntity);
+-            if (entitytrackerentry.playerEntitiesUpdated && entitytrackerentry.myEntity instanceof EntityPlayerMP)
+-            {
+-                arraylist.add((EntityPlayerMP)entitytrackerentry.myEntity);
++            	if (entitytrackerentry.playerEntitiesUpdated && entitytrackerentry.myEntity instanceof EntityPlayerMP)
++            	{
++                	arraylist.add((EntityPlayerMP)entitytrackerentry.myEntity);
++            	}
              }
-+            }
          }
++        unlock();
  
          for (int i = 0; i < arraylist.size(); ++i)
-@@ -284,7 +288,7 @@
+         {
+             EntityPlayerMP entityplayermp = (EntityPlayerMP)arraylist.get(i);
+-            Iterator iterator1 = this.trackedEntities.iterator();
+-
+-            while (iterator1.hasNext())
++            waitForLock(); lock();// TTCP
++            for(EntityTrackerEntry entitytrackerentry1 : this.trackedEntities)
              {
-                 EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)iterator1.next();
+-                EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry)iterator1.next();
  
 -                if (entitytrackerentry1.myEntity != entityplayermp)
 +                if (entitytrackerentry1 != null && entitytrackerentry1.myEntity != entityplayermp)
                  {
                      entitytrackerentry1.tryStartWachingThis(entityplayermp);
                  }
-@@ -319,19 +323,16 @@
-         while (iterator.hasNext())
+             }
++            unlock();// TTCP
+         }
+     }
+ 
+@@ -314,28 +364,26 @@
+ 
+     public void removePlayerFromTrackers(EntityPlayerMP p_72787_1_)
+     {
+-        Iterator iterator = this.trackedEntities.iterator();
+-
+-        while (iterator.hasNext())
++    	waitForLock(); lock(); // TTCP
++        for (EntityTrackerEntry entitytrackerentry: this.trackedEntities)
          {
-             EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
+-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
 +            if (entitytrackerentry != null)
              entitytrackerentry.removePlayerFromTracker(p_72787_1_);
          }
++        unlock();// TTCP
      }
  
      public void func_85172_a(EntityPlayerMP p_85172_1_, Chunk p_85172_2_)
@@ -136,6 +237,7 @@
 -        Iterator iterator = this.trackedEntities.iterator();
 -
 -        while (iterator.hasNext())
++    	waitForLock();lock();// TTCP
 +        for (EntityTrackerEntry entitytrackerentry : this.trackedEntities)
          {
 -            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)iterator.next();
@@ -145,3 +247,8 @@
              {
                  entitytrackerentry.tryStartWachingThis(p_85172_1_);
              }
+         }
++        unlock();// TTCP
+     }
+     
+     /* ======================================== FORGE START =====================================*/

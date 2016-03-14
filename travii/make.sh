@@ -1,5 +1,5 @@
 mkdir $HOME/release
-
+rm -r $HOME/release/*
 # 1448
 cd forge
 git checkout b3a1548cfaac77e9756168a8887270f8181487ad

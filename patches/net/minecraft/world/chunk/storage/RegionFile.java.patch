@@ -11,7 +11,7 @@
  import java.util.zip.DeflaterOutputStream;
  import java.util.zip.GZIPInputStream;
  import java.util.zip.InflaterInputStream;
-@@ -16,359 +19,520 @@
+@@ -16,359 +19,526 @@
  
  public class RegionFile
  {
@@ -33,12 +33,12 @@
 +	private long lastModified;
 +	private static final String __OBFID = "CL_00000381";
 +	
-+	// Thermos - this must be final or we could change the mode while the region file was in use....that could cause horrible errors
-+	private final boolean ramMode = net.minecraftforge.cauldron.configuration.CauldronConfig.instance.ramChunks.getValue();
++	// Thermos - this mustn't be modified during runtime or we could change the mode while the region file was in use....that could cause horrible errors
++	private boolean ramMode = net.minecraftforge.cauldron.configuration.CauldronConfig.instance.ramChunks.getValue();
 +	
 +	// Le RAMdisque
 +	private MappedByteBuffer dataBuffer = null;
-+	private RandomAccessFile dataFile;
++	private RandomAccessFile dataFile = null;
 +	
 +	public RegionFile(File p_i2001_1_)
 +	{
@@ -63,21 +63,24 @@
 -                this.lastModified = p_i2001_1_.lastModified();
 -            }
 +			RandomAccessFile dataFile = new RandomAccessFile(p_i2001_1_, "rw");
- 
--            this.dataFile = new RandomAccessFile(p_i2001_1_, "rw");
--            int i;
-+			// Thermos drop it into the RAM
-+			this.dataBuffer = dataFile.getChannel().map(MapMode.READ_WRITE, 0, dataFile.length());
++			if (dataFile.length() - 120000000L < 16384L) // Refuse to use RAM chunks if the 12MB buffer is unable to keep 16KB free at its end for the region file
++			{
++				this.ramMode = false;
++			}
++			// Thermos drop it into the RAM, give it a 12MB cap
 +			this.dataFile = dataFile;
 +			if(ramMode)
 +			{
++				this.dataBuffer = dataFile.getChannel().map(MapMode.READ_WRITE, 0, 120000000); // Only load up if RAM mode is enabled
 +				int i;
 +				if (this.dataBuffer.limit() < 4096L)
 +				{
-+					// Spigot - more effecient chunk zero'ing
++					// Spigot - more efficient chunk zero'ing
 +					this.dataBuffer.put(RegionFile.emptySector);
 +					this.dataBuffer.put(RegionFile.emptySector);
-+					
+ 
+-            this.dataFile = new RandomAccessFile(p_i2001_1_, "rw");
+-            int i;
 +					this.sizeDelta += 8192;
 +				}
  
@@ -91,7 +94,7 @@
 +				{
 +					for (i = 0; (long)i < (this.dataBuffer.limit() & 4095L); ++i)
 +					{
-+						this.dataBuffer.put((byte) 0);
++						this.dataBuffer.putInt(0);
 +					}
 +				}
  
@@ -99,7 +102,7 @@
 -                {
 -                    this.dataFile.writeInt(0);
 -                }
-+				i = (int)this.dataBuffer.limit() / 4096;
++				i = (int)this.dataBuffer.limit()  / 4096;
 +				this.sectorFree = new ArrayList(i);
 +				int j;
  
@@ -163,7 +166,7 @@
 +				int i;
 +				if (this.dataFile.length() < 4096L)
 +				{
-+					// Spigot - more effecient chunk zero'ing
++					// Spigot - more efficient chunk zero'ing
 +					this.dataFile.write(RegionFile.emptySector); // Spigot
 +					this.dataFile.write(RegionFile.emptySector); // Spigot
  
@@ -691,6 +694,7 @@
 -        private static final String __OBFID = "CL_00000382";
 +								for (j2 = 0; j2 < k1; ++j2)
 +								{
++									//this.dataBuffer.limit(this.dataBuffer.limit()+ emptySector.length);
 +									this.dataBuffer.put(emptySector);
 +									this.sectorFree.add(Boolean.valueOf(false));
 +								}
@@ -774,7 +778,7 @@
 +		if (ramMode)
 +		{
 +			this.dataBuffer.position(((p_76711_1_ + p_76711_2_ * 32) * 4));
-+			this.dataBuffer.getInt(p_76711_3_);
++			this.dataBuffer.putInt(p_76711_3_);
 +		}
 +		else
 +		{
@@ -805,6 +809,8 @@
 +			if(this.dataBuffer != null)
 +			{
 +				this.dataBuffer.force();
++				this.dataFile.seek(0L);
++				this.dataFile.write(dataBuffer.array());
 +			}
 +			dataBuffer = null;
 +		}

@@ -45,15 +45,38 @@ public class ChunkBlockHashMap {
     {
     	return this.size;
     }
-    Chunk last = null;
+    Chunk last[] = new Chunk[4];
+    public void shiftChunkLast(Chunk ref)
+    {
+    	for(int i = 0; i < last.length; i++)
+    	{
+    		if(i < last.length-1)
+    			last[i] = last[i+1];
+    		else
+    			last[i] = ref;
+    	}
+    	return;
+    }
+    public void killDeadChunk(int index)
+    {
+    	//Shift chunk referents upwards so last one doesn't get pushed out of the referent cache
+    	for(int i = index; i > 0; i--)
+    	{
+    		last[i] = last[i-1];
+    	}
+    }
+    
     public Chunk get(int x, int z)
     {
-    	if(last != null && last.xPosition == x && last.zPosition == z) return last; // Thermos prune get calls for shitty mods
-    	
+
+    	for(int i = 0; i < last.length; i++)
+    	{
+        	if(last[i] != null && last[i].xPosition == x && last[i].zPosition == z) return last[i]; // Thermos prune get calls for shitty mods    		
+    	}
         Chunk[][] bunch = this.map.get(chunk_hash(x >> 4, z >> 4));
         if(bunch == null) return null;
         Chunk ref = bunch[Math.abs(x % 16)][Math.abs(z % 16)];
-        if ( ref != null) last = ref;
+        if ( ref != null) shiftChunkLast(ref);
         return ref;
     }
     
@@ -74,7 +97,7 @@ public class ChunkBlockHashMap {
                temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = chunk;
                this.map.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //Thermos - IntHash
            }
-           last = chunk; // Thermos save it away for future gets
+           shiftChunkLast(chunk); // Thermos save it away for future gets
     }
 
     public void remove(Chunk chunk)
@@ -89,7 +112,14 @@ public class ChunkBlockHashMap {
     		   temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = null;
     	   }
        }
-       if(last != null && x == last.xPosition && z == last.xPosition) // Thermos make sure no chunk is left behind
-    	   last = null;
+       for(int i = 0; i < last.length; i++)
+       {
+           if(last[i] != null && x == last[i].xPosition && z == last[i].xPosition) // Thermos make sure no chunk is left behind
+           {
+        	   last[i] = null;
+        	   killDeadChunk(i);
+           }
+       }
+
     }
 }

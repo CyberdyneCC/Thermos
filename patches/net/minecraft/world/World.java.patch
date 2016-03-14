@@ -826,10 +826,12 @@
          this.onEntityRemoved(p_72973_1_);
      }
  
-@@ -1408,40 +1932,58 @@
+@@ -1407,41 +1931,59 @@
+ 
      public List getCollidingBoundingBoxes(Entity p_72945_1_, AxisAlignedBB p_72945_2_)
      {
-         this.collidingBoundingBoxes.clear();
+-        this.collidingBoundingBoxes.clear();
++        this.collidingBoundingBoxes = new ArrayList(30);
 +        if (CauldronHooks.checkBoundingBoxSize(p_72945_1_, p_72945_2_)) return new ArrayList(); // Removing misbehaved living entities
          int i = MathHelper.floor_double(p_72945_2_.minX);
          int j = MathHelper.floor_double(p_72945_2_.maxX + 1.0D);
