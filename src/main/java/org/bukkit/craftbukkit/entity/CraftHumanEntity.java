@@ -49,6 +49,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public EntityEquipment getEquipment() {
+        if (inventory == null) inventory = new CraftInventoryPlayer(((net.minecraft.entity.player.EntityPlayer) entity).inventory);
         return inventory;
     }
 
