@@ -13,6 +13,10 @@ buildscript {
             name 'forge'
             url 'http://files.minecraftforge.net/maven'
         }
+        maven {
+            name 'sonatype'
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
         mavenCentral()
     }
     dependencies {
@@ -43,6 +47,10 @@ repositories {
     maven {
         name 'minecraft'
         url 'https://libraries.minecraft.net/'
+    }
+    maven {
+        name 'sonatype'
+        url 'http://oss.sonatype.org/content/repositories/snapshots'
     }
     mavenCentral()
 }
@@ -146,6 +154,7 @@ dependencies {
     libraries 'org.apache.httpcomponents:httpclient:4.4.1'
     libraries 'net.openhft:affinity:3.0.1'
     libraries 'org.fusesource.jansi:jansi:1.11'
+    libraries 'net.md-5:bungeecord-chat:1.9-SNAPSHOT'
 }
 
 packageUniversal {
