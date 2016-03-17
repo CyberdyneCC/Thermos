@@ -1,4 +1,7 @@
 # Thermos (термос)
+
+[Русский](https://tcpr.github.io/Thermos/#googtrans(en|ru)) [Deutsch](https://tcpr.github.io/Thermos/#googtrans(en|de)) [Français](https://tcpr.github.io/Thermos/#googtrans(en|fr)) [Español](https://tcpr.github.io/Thermos/#googtrans(en|es)) [Português](https://tcpr.github.io/Thermos/#googtrans(en|pt)) [Nederlands](https://tcpr.github.io/Thermos/#googtrans(en|nl)) [汉语](https://tcpr.github.io/Thermos/#googtrans(en|jp)) [日本語](https://tcpr.github.io/Thermos/#googtrans(en|zh)) [조선말](https://tcpr.github.io/Thermos/#googtrans(en|ko)) [हिन्दी](https://tcpr.github.io/Thermos/#googtrans(en|hi))
+
 ![Thermos](thermos_icon.png)
 ![Graph](http://i.mcstats.org/Thermos/Global+Statistics@2x.borderless.png)
 
