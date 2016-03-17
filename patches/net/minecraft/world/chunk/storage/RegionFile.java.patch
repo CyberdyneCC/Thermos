@@ -11,7 +11,7 @@
  import java.util.zip.DeflaterOutputStream;
  import java.util.zip.GZIPInputStream;
  import java.util.zip.InflaterInputStream;
-@@ -16,359 +19,526 @@
+@@ -16,359 +19,521 @@
  
  public class RegionFile
  {
@@ -94,7 +94,7 @@
 +				{
 +					for (i = 0; (long)i < (this.dataBuffer.limit() & 4095L); ++i)
 +					{
-+						this.dataBuffer.putInt(0);
++						this.dataBuffer.put((byte)0);
 +					}
 +				}
  
@@ -809,17 +809,12 @@
 +			if(this.dataBuffer != null)
 +			{
 +				this.dataBuffer.force();
-+				this.dataFile.seek(0L);
-+				this.dataFile.write(dataBuffer.array());
 +			}
-+			dataBuffer = null;
 +		}
 +		if (this.dataFile != null)
 +		{
 +			this.dataFile.close();
 +		}
-+		// Thermos delete the referents
-+		dataFile = null;
 +	}
 +
 +	class ChunkBuffer extends ByteArrayOutputStream
