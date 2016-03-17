@@ -1,4 +1,4 @@
-# Thermos 
+# Thermos (термос)
 ![Thermos](thermos_icon.png)
 ![Graph](http://i.mcstats.org/Thermos/Global+Statistics@2x.borderless.png)
 
