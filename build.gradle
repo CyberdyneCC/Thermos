@@ -37,6 +37,10 @@ apply plugin: 'signing'
 repositories {
     clear()
     maven {
+        name 'sonatype'
+        url 'http://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
         name 'prok'
         url 'https://repo.prok.pw/'
     }
@@ -47,10 +51,6 @@ repositories {
     maven {
         name 'minecraft'
         url 'https://libraries.minecraft.net/'
-    }
-    maven {
-        name 'sonatype'
-        url 'http://oss.sonatype.org/content/repositories/snapshots'
     }
     mavenCentral()
 }
