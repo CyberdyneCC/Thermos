@@ -20,6 +20,7 @@ Advantages over KCauldron:
 + Lag-lowering optimizations
 + Better world protection (Forge stuff doesn't bypass Bukkit plugins!)
 + Many patches that KCauldron didn't get from Spigot
++ Dupe glitch fixes
 
 
 ## Installation
@@ -28,7 +29,7 @@ Click [here](https://tcpr.github.io/Thermos/install)
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
 
-**These unofficial builds are in beta, they may cause issues with your server. You have been warned!**
+**Thermos is still in beta and you may encounter issues in using it with your server. You have been warned!**
 
 P.S. **PLEASE** look at the release notes before downloading! :smile:
 
