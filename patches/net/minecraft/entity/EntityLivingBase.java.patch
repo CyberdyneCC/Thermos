@@ -278,16 +278,21 @@
          this.dataWatcher.updateObject(6, Float.valueOf(MathHelper.clamp_float(p_70606_1_, 0.0F, this.getMaxHealth())));
      }
  
-@@ -757,7 +868,8 @@
+@@ -757,11 +868,12 @@
              }
              else
              {
 -                if ((p_70097_1_ == DamageSource.anvil || p_70097_1_ == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null)
 +                // CraftBukkit - Moved into damageEntity_CB(DamageSource, float)
-+                if (false && (p_70097_1_ == DamageSource.anvil || p_70097_1_ == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null)
++                /*if (false && (p_70097_1_ == DamageSource.anvil || p_70097_1_ == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null)
                  {
                      this.getEquipmentInSlot(4).damageItem((int)(p_70097_2_ * 4.0F + this.rand.nextFloat() * p_70097_2_ * 2.0F), this);
                      p_70097_2_ *= 0.75F;
+-                }
++                }*/
+ 
+                 this.limbSwingAmount = 1.5F;
+                 boolean flag = true;
 @@ -773,16 +885,27 @@
                          return false;
                      }
@@ -380,7 +385,7 @@
              {
                  i = (this.getActivePotionEffect(Potion.resistance).getAmplifier() + 1) * 5;
                  j = 25 - i;
-@@ -1122,26 +1271,161 @@
+@@ -1122,26 +1271,218 @@
          }
      }
  
@@ -392,9 +397,134 @@
 +
 +    // Cauldron end
 +
++    private EntityDamageEvent calculateDebuffsAndCallCB(final DamageSource damagesource, float f)
++    {
++    	final boolean human = this instanceof EntityPlayer;
++    	final float originalDamage = f;
++        // Calculates the damage debuff that occurs when an entity has something on his/her head
++        Function<Double, Double> hardHat = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                if ((damagesource == DamageSource.anvil || damagesource == DamageSource.fallingBlock)
++                        && EntityLivingBase.this.getEquipmentInSlot(4) != null)
++                {
++                	// Saves you from 1/4 damage
++                    return -(f * 0.25F);
++                }
++                return -0.0;
++            }
++        };
++        float hardHatModifier = hardHat.apply((double) f).floatValue();
++        f += hardHatModifier;
++
++        // Calculates the damage debuff that occurs when a player is blocking and can block the damage source
++        Function<Double, Double> blocking = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                if (human)
++                {
++                    if (!damagesource.isUnblockable() && ((EntityPlayer) EntityLivingBase.this).isBlocking() && f > 0.0F)
++                    {
++                    	//Reduce by a bit more than half
++                        return -(f - ((1.0F + f) * 0.5F));
++                    }
++                }
++                return -0.0;
++            }
++        };
++        float blockingModifier = blocking.apply((double) f).floatValue();
++        f += blockingModifier;
++
++        // Calculates the damage debuff that occurs when a player (or entity) is wearing armor...this is damn problematic
++        Function<Double, Double> armor = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                // Cauldron start - apply forge armor hook
++                if (human)
++                {
++                    return -(f - ArmorProperties.ApplyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory,
++                            damagesource, f.floatValue(), false));
++                }
++                // Cauldron end
++                // For non-players...the normal old calcs
++                return -(f - EntityLivingBase.this.applyArmorCalculations(damagesource, f.floatValue()));
++            }
++        };
++        float armorModifier = armor.apply((double) f).floatValue();
++        f += armorModifier;
++
++        // Calculates potion effect debuffs
++        Function<Double, Double> resistance = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                if (!damagesource.isDamageAbsolute() && EntityLivingBase.this.isPotionActive(Potion.resistance) && damagesource != DamageSource.outOfWorld)
++                {
++                    int i = (EntityLivingBase.this.getActivePotionEffect(Potion.resistance).getAmplifier() + 1) * 5;
++                    int j = 25 - i;
++                    float f1 = f.floatValue() * (float) j;
++                    return -(f - (f1 / 25.0F));
++                }
++                return -0.0;
++            }
++        };
++        float resistanceModifier = resistance.apply((double) f).floatValue();
++        f += resistanceModifier;
++
++        // Calculates other potion effect debuffs
++        Function<Double, Double> magic = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                return -(f - EntityLivingBase.this.applyPotionDamageCalculations(damagesource, f.floatValue()));
++            }
++        };
++        float magicModifier = magic.apply((double) f).floatValue();
++        f += magicModifier;
++
++        // Calculates "damage absorption ability" debuffs
++        Function<Double, Double> absorption = new Function<Double, Double>() {
++            @Override
++            public Double apply(Double f)
++            {
++                return -(Math.max(f - Math.max(f - EntityLivingBase.this.getAbsorptionAmount(), 0.0F), 0.0F));
++            }
++        };
++        float absorptionModifier = absorption.apply((double) f).floatValue();
++
++        // Here's why... (facepalm Bukkit)
++        EntityDamageEvent event = CraftEventFactory.handleLivingEntityDamageEvent(this, damagesource, originalDamage, hardHatModifier, blockingModifier,
++                armorModifier, resistanceModifier, magicModifier, absorptionModifier, hardHat, blocking, armor, resistance, magic, absorption);
++
++        return event;
++    }
 +    // CraftBukkit start
 +    protected boolean damageEntity_CB(final DamageSource damagesource, float f)
 +    { // void -> boolean, add final
++    	
++        /*if (!this.isEntityInvulnerable())
++        {
++            f = ForgeHooks.onLivingHurt(this, damagesource, f);
++            if (f < 0) return true;
++            f = this.applyArmorCalculations(damagesource, f);
++            f = this.applyPotionDamageCalculations(damagesource, f);
++            float f1 = f;
++            f = Math.max(f - this.getAbsorptionAmount(), 0.0F);
++            this.setAbsorptionAmount(this.getAbsorptionAmount() - (f1 - f));
++
++            if (f != 0.0F)
++            {
++                float f2 = this.getHealth();
++                this.setHealth(f2 - f);
++                this.func_110142_aN().func_94547_a(damagesource, f2, f);
++                this.setAbsorptionAmount(this.getAbsorptionAmount() - f);
++            }
++        }*/
++    	
++    	
          if (!this.isEntityInvulnerable())
          {
 -            p_70665_2_ = ForgeHooks.onLivingHurt(this, p_70665_1_, p_70665_2_);
@@ -404,127 +534,57 @@
 -            float f1 = p_70665_2_;
 -            p_70665_2_ = Math.max(p_70665_2_ - this.getAbsorptionAmount(), 0.0F);
 -            this.setAbsorptionAmount(this.getAbsorptionAmount() - (f1 - p_70665_2_));
++        	// Check if entity is a "human" aka player
 +            final boolean human = this instanceof EntityPlayer;
-+            float originalDamage = f;
++            final float originalDamage = f;
 +            // Cauldron start - apply forge damage hook
 +            f = ForgeHooks.onLivingHurt(this, damagesource, f);
-+            if (f <= 0) return true;
++            // If the damage is negative return true
++            if (f < 0) return true;
++            // Thermos detect null damage
++            final boolean nulldmg = f == 0;
 +            // Cauldron end
-+            Function<Double, Double> hardHat = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    if ((damagesource == DamageSource.anvil || damagesource == DamageSource.fallingBlock)
-+                            && EntityLivingBase.this.getEquipmentInSlot(4) != null)
-+                    {
-+                        return -(f - (f * 0.75F));
-+                    }
-+                    return -0.0;
-+                }
-+            };
++            
  
 -            if (p_70665_2_ != 0.0F)
-+            float hardHatModifier = hardHat.apply((double) f).floatValue();
-+            f += hardHatModifier;
-+
-+            Function<Double, Double> blocking = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    if (human)
-+                    {
-+                        if (!damagesource.isUnblockable() && ((EntityPlayer) EntityLivingBase.this).isBlocking() && f > 0.0F)
-+                        {
-+                            return -(f - ((1.0F + f) * 0.5F));
-+                        }
-+                    }
-+                    return -0.0;
-+                }
-+            };
-+            float blockingModifier = blocking.apply((double) f).floatValue();
-+            f += blockingModifier;
-+
-+            Function<Double, Double> armor = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    // Cauldron start - apply forge armor hook
-+                    if (human)
-+                    {
-+                        return -(f - ArmorProperties.ApplyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory,
-+                                damagesource, f.floatValue(), false));
-+                    }
-+                    // Cauldron end
-+                    return -(f - EntityLivingBase.this.applyArmorCalculations(damagesource, f.floatValue()));
-+                }
-+            };
-+            float armorModifier = armor.apply((double) f).floatValue();
-+            f += armorModifier;
-+
-+            Function<Double, Double> resistance = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    if (!damagesource.isDamageAbsolute() && EntityLivingBase.this.isPotionActive(Potion.resistance) && damagesource != DamageSource.outOfWorld)
-+                    {
-+                        int i = (EntityLivingBase.this.getActivePotionEffect(Potion.resistance).getAmplifier() + 1) * 5;
-+                        int j = 25 - i;
-+                        float f1 = f.floatValue() * (float) j;
-+                        return -(f - (f1 / 25.0F));
-+                    }
-+                    return -0.0;
-+                }
-+            };
-+            float resistanceModifier = resistance.apply((double) f).floatValue();
-+            f += resistanceModifier;
-+
-+            Function<Double, Double> magic = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    return -(f - EntityLivingBase.this.applyPotionDamageCalculations(damagesource, f.floatValue()));
-+                }
-+            };
-+            float magicModifier = magic.apply((double) f).floatValue();
-+            f += magicModifier;
-+
-+            Function<Double, Double> absorption = new Function<Double, Double>() {
-+                @Override
-+                public Double apply(Double f)
-+                {
-+                    return -(Math.max(f - Math.max(f - EntityLivingBase.this.getAbsorptionAmount(), 0.0F), 0.0F));
-+                }
-+            };
-+            float absorptionModifier = absorption.apply((double) f).floatValue();
-+
-+            EntityDamageEvent event = CraftEventFactory.handleLivingEntityDamageEvent(this, damagesource, originalDamage, hardHatModifier, blockingModifier,
-+                    armorModifier, resistanceModifier, magicModifier, absorptionModifier, hardHat, blocking, armor, resistance, magic, absorption);
-+            if (event.isCancelled())
++            EntityDamageEvent ede = calculateDebuffsAndCallCB(damagesource, f);
++            
++            if (ede.isCancelled())
              {
++            	return false;
++            }
++            f = (float) ede.getFinalDamage();
++            /*if (event.isCancelled())
++            {
 +                return false;
 +            }
 +
-+            f = (float) event.getFinalDamage();
-+
-+            // Apply damage to helmet
++            f = (float) event.getFinalDamage();  
++            */
++            
++            if ( nulldmg ) return true; // Preclude any stupidity with null head items
++            
++            // Apply damage to helmet -- equivalent of Forge EntityLivingBase code line 760
 +            if ((damagesource == DamageSource.anvil || damagesource == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null)
 +            {
-+                this.getEquipmentInSlot(4).damageItem((int) (event.getDamage() * 4.0F + this.rand.nextFloat() * event.getDamage() * 2.0F), this);
++                this.getEquipmentInSlot(4).damageItem((int) (ede.getDamage() * 4.0F + this.rand.nextFloat() * ede.getDamage() * 2.0F), this);
 +            }
 +
 +            // Apply damage to armor
 +            if (!damagesource.isUnblockable())
 +            {
-+                float armorDamage = (float) (event.getDamage() + event.getDamage(DamageModifier.BLOCKING) + event.getDamage(DamageModifier.HARD_HAT));
++                float armorDamage = (float) (ede.getDamage() + ede.getDamage(DamageModifier.BLOCKING) + ede.getDamage(DamageModifier.HARD_HAT));
 +                if (human) {
 +                    EntityPlayer player = (EntityPlayer) this;
 +                    armorDamage = ArmorProperties.ApplyArmor(player, player.inventory.armorInventory, damagesource, armorDamage, true);
 +                } else {
 +                    this.damageArmor(armorDamage);
 +                }
++                
++                // Thermos AVOID DAMAGE if armor nullifies it (CraftBukkit failed to include this, this is why TFC bug happened)
++                if (armorDamage <= 0) return true;
 +            }
-+
-+            absorptionModifier = (float) -event.getDamage(DamageModifier.ABSORPTION);
++            float absorptionModifier = (float) -ede.getDamage(DamageModifier.ABSORPTION);
 +            this.setAbsorptionAmount(Math.max(this.getAbsorptionAmount() - absorptionModifier, 0.0F));
 +            if (f != 0.0F)
 +            {
@@ -545,7 +605,9 @@
 +                    return true;
 +                }
 +                // CraftBukkit end
++                // CraftBukkit start ...caught you!
 +                this.setAbsorptionAmount(this.getAbsorptionAmount() - f);
++                // CraftBukkit end
              }
 +            return true; // CraftBukkit
          }
@@ -553,7 +615,7 @@
      }
  
      public CombatTracker func_110142_aN()
-@@ -1558,6 +1842,7 @@
+@@ -1558,6 +1899,7 @@
      public void onUpdate()
      {
          if (ForgeHooks.onLivingUpdate(this)) return;
@@ -561,7 +623,7 @@
          super.onUpdate();
  
          if (!this.worldObj.isRemote)
-@@ -1608,7 +1893,9 @@
+@@ -1608,7 +1950,9 @@
              }
          }
  
@@ -571,7 +633,7 @@
          double d0 = this.posX - this.prevPosX;
          double d1 = this.posZ - this.prevPosZ;
          float f = (float)(d0 * d0 + d1 * d1);
-@@ -1621,7 +1908,8 @@
+@@ -1621,7 +1965,8 @@
          {
              f3 = 1.0F;
              f2 = (float)Math.sqrt((double)f) * 3.0F;
@@ -581,7 +643,7 @@
          }
  
          if (this.swingProgress > 0.0F)
-@@ -1682,6 +1970,7 @@
+@@ -1682,6 +2027,7 @@
  
          this.worldObj.theProfiler.endSection();
          this.field_70764_aw += f2;
@@ -589,7 +651,7 @@
      }
  
      protected float func_110146_f(float p_110146_1_, float p_110146_2_)
-@@ -1757,6 +2046,7 @@
+@@ -1757,6 +2103,7 @@
              this.motionZ = 0.0D;
          }
  
@@ -597,7 +659,7 @@
          this.worldObj.theProfiler.startSection("ai");
  
          if (this.isMovementBlocked())
-@@ -1783,6 +2073,7 @@
+@@ -1783,6 +2130,7 @@
              }
          }
  
@@ -605,7 +667,7 @@
          this.worldObj.theProfiler.endSection();
          this.worldObj.theProfiler.startSection("jump");
  
-@@ -1811,13 +2102,17 @@
+@@ -1811,13 +2159,17 @@
          this.moveStrafing *= 0.98F;
          this.moveForward *= 0.98F;
          this.randomYawVelocity *= 0.9F;
@@ -623,7 +685,7 @@
          }
  
          this.worldObj.theProfiler.endSection();
-@@ -1829,17 +2124,36 @@
+@@ -1829,17 +2181,36 @@
      {
          List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224D, 0.0D, 0.20000000298023224D));
  
