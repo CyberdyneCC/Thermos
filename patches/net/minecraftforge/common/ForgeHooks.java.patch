@@ -254,7 +254,7 @@
 +                    {
 +                    	world.addEntity(eitm, SpawnReason.DEFAULT); // Same as world.spawnEntity()
 +                    }
-+                    
++                    world.itemStackSpawnQueue.clear();
 +                    player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);
                  }
 -                player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);

@@ -549,7 +549,7 @@
 +        return this.worldObj.findingSpawnPoint ||
 +                this.loadChunkOnProvideRequest ||
 +                (MinecraftServer.callingForgeTick && MinecraftServer.getServer().cauldronConfig.loadChunkOnForgeTick.getValue()) ||
-+                (MinecraftServer.currentTick - initialTick <= 100);
++                (MinecraftServer.currentTick - initialTick <= 200);
 +    }
 +
 +    public long lastAccessed(int x, int z)
