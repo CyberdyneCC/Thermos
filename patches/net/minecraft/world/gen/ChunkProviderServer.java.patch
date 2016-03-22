@@ -285,7 +285,7 @@
          }
  
          return chunk;
-@@ -195,11 +317,30 @@
+@@ -195,11 +317,45 @@
  
      public Chunk provideChunk(int p_73154_1_, int p_73154_2_)
      {
@@ -300,7 +300,22 @@
 +        {
 +            return chunk;
 +        }
-+
++        
++        if (chunk == null)
++        {
++        	logger.error("Provided chunk is null for (" +p_73154_1_ + ", " + p_73154_2_+") !");
++        	return null;
++        }
++        
++        try
++        {
++        	worldObj.isProfilingWorld();
++        }
++        catch (Throwable t)
++        {
++        	return chunk;
++        }
++        
 +        if ((p_73154_1_ != chunk.xPosition || p_73154_2_ != chunk.zPosition) && !worldObj.isProfilingWorld())
 +        {
 +            logger.error("Chunk (" + chunk.xPosition + ", " + chunk.zPosition + ") stored at  (" + p_73154_1_ + ", " + p_73154_2_ + ") in world '" + worldObj.getWorld().getName() + "'");
@@ -319,7 +334,7 @@
      {
          if (this.currentChunkLoader == null)
          {
-@@ -209,6 +350,7 @@
+@@ -209,6 +365,7 @@
          {
              try
              {
@@ -327,7 +342,7 @@
                  Chunk chunk = this.currentChunkLoader.loadChunk(this.worldObj, p_73239_1_, p_73239_2_);
  
                  if (chunk != null)
-@@ -217,8 +359,11 @@
+@@ -217,8 +374,11 @@
  
                      if (this.currentChunkProvider != null)
                      {
@@ -339,7 +354,7 @@
                  }
  
                  return chunk;
-@@ -231,7 +376,7 @@
+@@ -231,7 +391,7 @@
          }
      }
  
@@ -348,7 +363,7 @@
      {
          if (this.currentChunkLoader != null)
          {
-@@ -246,7 +391,7 @@
+@@ -246,7 +406,7 @@
          }
      }
  
@@ -357,7 +372,7 @@
      {
          if (this.currentChunkLoader != null)
          {
-@@ -254,15 +399,18 @@
+@@ -254,15 +414,18 @@
              {
                  p_73242_1_.lastSaveTime = this.worldObj.getTotalWorldTime();
                  this.currentChunkLoader.saveChunk(this.worldObj, p_73242_1_);
@@ -377,7 +392,7 @@
          }
      }
  
-@@ -277,6 +425,35 @@
+@@ -277,6 +440,35 @@
              if (this.currentChunkProvider != null)
              {
                  this.currentChunkProvider.populate(p_73153_1_, p_73153_2_, p_73153_3_);
@@ -413,7 +428,7 @@
                  GameRegistry.generateWorld(p_73153_2_, p_73153_3_, worldObj, currentChunkProvider, p_73153_1_);
                  chunk.setChunkModified();
              }
-@@ -286,11 +463,14 @@
+@@ -286,11 +478,14 @@
      public boolean saveChunks(boolean p_73151_1_, IProgressUpdate p_73151_2_)
      {
          int i = 0;
@@ -431,7 +446,7 @@
  
              if (p_73151_1_)
              {
-@@ -325,36 +505,74 @@
+@@ -325,36 +520,74 @@
      {
          if (!this.worldObj.levelSaving)
          {
@@ -524,7 +539,7 @@
              if (this.currentChunkLoader != null)
              {
                  this.currentChunkLoader.chunkTick();
-@@ -371,7 +589,7 @@
+@@ -371,7 +604,7 @@
  
      public String makeString()
      {
@@ -533,7 +548,7 @@
      }
  
      public List getPossibleCreatures(EnumCreatureType p_73155_1_, int p_73155_2_, int p_73155_3_, int p_73155_4_)
-@@ -386,8 +604,33 @@
+@@ -386,8 +619,33 @@
  
      public int getLoadedChunkCount()
      {
