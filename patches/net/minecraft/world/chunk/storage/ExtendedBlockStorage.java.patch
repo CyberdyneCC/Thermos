@@ -149,7 +149,47 @@
          this.blockRefCount = 0;
          this.tickRefCount = 0;
  
-@@ -197,29 +324,72 @@
+@@ -175,51 +302,112 @@
+         this.blockMSBArray = null;
+     }
+ 
++
++    
+     public NibbleArray getBlockMSBArray()
+     {
++    	if(thermos.chaud.DesUtils.isModded())
++    	{
++    		this.blockMSBArray.forceToNonTrivialArray();
++    	}    	
+         return this.blockMSBArray;
+     }
+ 
+     public NibbleArray getMetadataArray()
+     {
++    	if(thermos.chaud.DesUtils.isModded())
++    	{
++    		this.blockMetadataArray.forceToNonTrivialArray();
++    	}
+         return this.blockMetadataArray;
+     }
+ 
+     public NibbleArray getBlocklightArray()
+     {
++    	if(thermos.chaud.DesUtils.isModded())
++    	{
++    		this.blocklightArray.forceToNonTrivialArray();
++    	}   
+         return this.blocklightArray;
+     }
+ 
+     public NibbleArray getSkylightArray()
+     {
++    	if(thermos.chaud.DesUtils.isModded())
++    	{
++    		this.skylightArray.forceToNonTrivialArray();
++    	}       	
+         return this.skylightArray;
+     }
  
      public void setBlockLSBArray(byte[] p_76664_1_)
      {
