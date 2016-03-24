@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class CauldronConfig extends ConfigBase
 {
-    private String HEADER = "This is the main configuration file for Cauldron.\n"
+    private final String HEADER = "This is the main configuration file for Cauldron.\n"
             + "\n"
             + "If you need help with the configuration or have any questions related to Cauldron,\n"
             + "join us at the IRC or drop by our forums and leave a post.\n"
@@ -89,16 +89,19 @@ public class CauldronConfig extends ConfigBase
 
     public void init()
     {
-    	Setting setting = null;
-    	for(Field f : this.getClass().getDeclaredFields())
+    	for(Field f : this.getClass().getFields())
     	{
-    		if(Modifier.isFinal(f.getModifiers()) && f.getType().isInstance(Setting.class))
+    		if(Modifier.isFinal(f.getModifiers()) && Modifier.isPublic(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
     		{
     			try
     			{
-    				setting = (Setting) f.get(this);
+    				Setting setting = (Setting) f.get(this);
     				if(setting == null) continue;
         			settings.put(setting.path, setting);    				
+    			}
+    			catch (ClassCastException e) 
+    			{
+    				
     			}
     			catch(Throwable t)
     			{
