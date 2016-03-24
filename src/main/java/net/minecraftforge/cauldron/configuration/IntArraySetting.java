@@ -37,6 +37,8 @@ public class IntArraySetting extends ArraySetting<Integer> {
 		{
 			try 
 			{
+				if(potval.length() == 0)	continue;
+				
 				this.value_array.add(Integer.parseInt(potval));
 			} 
 			catch ( Throwable t) 

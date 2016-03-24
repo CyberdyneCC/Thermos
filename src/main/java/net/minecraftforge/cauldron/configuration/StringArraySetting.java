@@ -34,6 +34,7 @@ public class StringArraySetting extends ArraySetting<String> {
     	value_set = new HashSet<String>(vals.length);
     	for(String val : vals)
     	{
+    		if(val.length() == 0 ) continue;
     		value_array.add(val);
     	}
     	value_set.addAll(value_array);
