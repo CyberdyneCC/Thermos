@@ -93,7 +93,17 @@
      public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
      {
          this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
-@@ -512,10 +566,10 @@
+@@ -505,17 +559,17 @@
+     public Block getBlock(final int p_150810_1_, final int p_150810_2_, final int p_150810_3_)
+     {
+         Block block = Blocks.air;
+-
+-        if (p_150810_2_ >> 4 < this.storageArrays.length)
++        int p_2 = p_150810_2_ >> 4;
++        if (p_2 < this.storageArrays.length)
+         {
+-            ExtendedBlockStorage extendedblockstorage = this.storageArrays[p_150810_2_ >> 4];
++            ExtendedBlockStorage extendedblockstorage = this.storageArrays[p_2];
  
              if (extendedblockstorage != null)
              {
