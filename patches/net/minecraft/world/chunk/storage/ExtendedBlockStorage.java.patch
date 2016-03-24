@@ -157,7 +157,7 @@
 +    
      public NibbleArray getBlockMSBArray()
      {
-+    	if(true)
++    	if(this.blockMSBArray)
 +    	{
 +    		this.blockMSBArray.forceToNonTrivialArray();
 +    	}    	
