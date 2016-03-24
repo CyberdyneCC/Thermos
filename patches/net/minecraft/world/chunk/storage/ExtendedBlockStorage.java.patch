@@ -157,7 +157,7 @@
 +    
      public NibbleArray getBlockMSBArray()
      {
-+    	if(thermos.chaud.DesUtils.isModded(sun.reflect.Reflection.getCallerClass().getPackage().getName()))
++    	if(true)
 +    	{
 +    		this.blockMSBArray.forceToNonTrivialArray();
 +    	}    	
@@ -166,7 +166,7 @@
  
      public NibbleArray getMetadataArray()
      {
-+    	if(thermos.chaud.DesUtils.isModded(sun.reflect.Reflection.getCallerClass().getPackage().getName()))
++    	if(true)
 +    	{
 +    		this.blockMetadataArray.forceToNonTrivialArray();
 +    	}
@@ -175,7 +175,7 @@
  
      public NibbleArray getBlocklightArray()
      {
-+    	if(thermos.chaud.DesUtils.isModded(sun.reflect.Reflection.getCallerClass().getPackage().getName()))
++    	if(true)
 +    	{
 +    		this.blocklightArray.forceToNonTrivialArray();
 +    	}   
@@ -184,7 +184,7 @@
  
      public NibbleArray getSkylightArray()
      {
-+    	if(thermos.chaud.DesUtils.isModded(sun.reflect.Reflection.getCallerClass().getPackage().getName()))
++    	if(true)
 +    	{
 +    		this.skylightArray.forceToNonTrivialArray();
 +    	}       	
