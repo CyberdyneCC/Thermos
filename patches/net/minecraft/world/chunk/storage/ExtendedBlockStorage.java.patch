@@ -157,7 +157,7 @@
 +    
      public NibbleArray getBlockMSBArray()
      {
-+    	if(this.blockMSBArray)
++    	if(this.blockMSBArray != null)
 +    	{
 +    		this.blockMSBArray.forceToNonTrivialArray();
 +    	}    	
@@ -166,7 +166,7 @@
  
      public NibbleArray getMetadataArray()
      {
-+    	if(true)
++    	if(blockMetadataArray != null)
 +    	{
 +    		this.blockMetadataArray.forceToNonTrivialArray();
 +    	}
@@ -175,7 +175,7 @@
  
      public NibbleArray getBlocklightArray()
      {
-+    	if(true)
++    	if(blocklightArray != null)
 +    	{
 +    		this.blocklightArray.forceToNonTrivialArray();
 +    	}   
@@ -184,7 +184,7 @@
  
      public NibbleArray getSkylightArray()
      {
-+    	if(true)
++    	if(skylightArray != null)
 +    	{
 +    		this.skylightArray.forceToNonTrivialArray();
 +    	}       	
