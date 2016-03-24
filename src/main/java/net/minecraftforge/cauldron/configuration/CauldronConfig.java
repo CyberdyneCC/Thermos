@@ -4,12 +4,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.command.CauldronCommand;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class CauldronConfig extends ConfigBase
 {
-    private final String HEADER = "This is the main configuration file for Cauldron.\n"
+    private String HEADER = "This is the main configuration file for Cauldron.\n"
             + "\n"
             + "If you need help with the configuration or have any questions related to Cauldron,\n"
             + "join us at the IRC or drop by our forums and leave a post.\n"
@@ -91,11 +92,11 @@ public class CauldronConfig extends ConfigBase
     	Setting setting = null;
     	for(Field f : this.getClass().getDeclaredFields())
     	{
-    		if(f.getType().isInstance(Setting.class))
+    		if(Modifier.isFinal(f.getModifiers()) && f.getType().isInstance(Setting.class))
     		{
     			try
     			{
-    				f.get(setting);
+    				setting = (Setting) f.get(this);
     				if(setting == null) continue;
         			settings.put(setting.path, setting);    				
     			}
