@@ -97,13 +97,13 @@ public class ChunkBlockHashMap {
 			temp_chunk_bunch[chunk_array(x)][chunk_array(z)] = chunk;
 			this.map.put(chunk_hash(x >> 4, z >> 4), temp_chunk_bunch); //Thermos - IntHash
 		}
-		if ( chunk != null)
+		/*if ( chunk != null)
 		{
 			last4 = last3; 
 			last3 = last2; 
 			last2 = last1;
 			last1 = chunk;
-		}
+		}*/
 	}
 
 	public void remove(Chunk chunk)
