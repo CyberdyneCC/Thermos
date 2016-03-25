@@ -121,14 +121,23 @@ public class ChunkBlockHashMap {
 		if(last1 != null && last1.xPosition == x && last1.zPosition == z)
 		{
 			last1 = null;
+			last1 = last2;
+			last2 = last3;
+			last3 = last4;
+			last4 = null;
 		}
 		if(last2 != null && last2.xPosition == x && last2.zPosition == z)
 		{
 			last2 = null;
+			last2 = last3;
+			last3 = last4;
+			last4 = null;
 		}
 		if(last3 != null && last3.xPosition == x && last3.zPosition == z)
 		{
 			last3 = null;
+			last3 = last4; 
+			last4 = null;
 		}
 		if(last4 != null && last4.xPosition == x && last4.zPosition == z)
 		{
