@@ -1330,7 +1330,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         {
             if ( getHealth() <= 0 && isOnline() )
             {
-                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0, false );
+                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0 );
             }
         }
 

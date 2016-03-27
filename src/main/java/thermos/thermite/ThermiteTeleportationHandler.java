@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.MathHelper;
@@ -77,6 +78,8 @@ public class ThermiteTeleportationHandler {
         // Cauldron end
 		player.playerNetServerHandler.sendPacket(new S07PacketRespawn(dim, worldserver1.difficultySetting, worldserver1.getWorldInfo()
 				.getTerrainType(), player.theItemInWorldManager.getGameType()));
+		player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+
 		worldserver.removePlayerEntityDangerously(player);
 		if (player.riddenByEntity != null) {
 			player.riddenByEntity.mountEntity(null);

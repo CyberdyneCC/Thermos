@@ -410,7 +410,7 @@
      public EntityPlayerMP createPlayerForUser(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -410,80 +628,305 @@
+@@ -410,80 +628,307 @@
          return new EntityPlayerMP(this.mcServer, this.mcServer.worldServerForDimension(0), p_148545_1_, (ItemInWorldManager)object);
      }
  
@@ -478,11 +478,9 @@
 +    }
 +
 +    // Cauldron start - refactor entire method for sanity.
-+    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3)
++    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2)
 +    {
-+    	boolean isdeath = true;
-+    	if(par3) isdeath = false;
-+    	return this.respawnPlayer(par1EntityPlayerMP, par2, par3, null, isdeath);
++    	return this.respawnPlayer(par1EntityPlayerMP, par2, false, null, false);
 +    }
 +
 +    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int targetDimension, boolean returnFromEnd, Location location, boolean isdeath)
@@ -561,8 +559,7 @@
 +        CraftPlayer cp = (CraftPlayer)par1EntityPlayerMP.bukkitEntity;
 +      if ( cp != null )
 +      {
-+        try { cp.enderChest.inventory = entityplayermp1.getInventoryEnderChest(); } catch(Exception e) {cp.enderChest = new CraftInventory(entityplayermp1.getInventoryEnderChest());}
-+        try { cp.inventory.inventory = entityplayermp1.inventory; } catch(Exception e) {cp.inventory = new CraftInventoryPlayer(entityplayermp1.inventory); }
++
 +        entityplayermp1.bukkitEntity = cp;
 +        cp.setHandle(entityplayermp1);
 +      }
@@ -710,6 +707,11 @@
 +        }
 +        else entityplayermp1.clonePlayer(par1EntityPlayerMP, returnFromEnd);        
 +        
++        if(cp != null){
++        	try { cp.enderChest.inventory = entityplayermp1.getInventoryEnderChest(); } catch(Exception e) {cp.enderChest = new CraftInventory(entityplayermp1.getInventoryEnderChest());}
++        	try { cp.inventory.inventory = entityplayermp1.inventory; } catch(Exception e) {cp.inventory = new CraftInventoryPlayer(entityplayermp1.inventory); }
++        }
++        
 +        // CraftBukkit end
 +        //Forge same
          entityplayermp1.playerNetServerHandler.sendPacket(new S05PacketSpawnPosition(chunkcoordinates1.posX, chunkcoordinates1.posY, chunkcoordinates1.posZ));
@@ -754,7 +756,7 @@
          return entityplayermp1;
      }
  
-@@ -492,34 +935,112 @@
+@@ -492,34 +937,112 @@
          transferPlayerToDimension(p_72356_1_, p_72356_2_, mcServer.worldServerForDimension(p_72356_2_).getDefaultTeleporter());
      }
  
@@ -887,7 +889,7 @@
      }
  
      public void transferEntityToWorld(Entity p_82448_1_, int p_82448_2_, WorldServer p_82448_3_, WorldServer p_82448_4_, Teleporter teleporter)
-@@ -605,6 +1126,109 @@
+@@ -605,6 +1128,109 @@
          p_82448_1_.setWorld(p_82448_4_);
      }
  
@@ -997,7 +999,7 @@
      public void sendPlayerInfoToAllPlayers()
      {
          if (++this.playerPingIndex > 600)
-@@ -612,11 +1236,13 @@
+@@ -612,11 +1238,13 @@
              this.playerPingIndex = 0;
          }
  
@@ -1011,7 +1013,7 @@
      }
  
      public void sendPacketToAllPlayers(Packet p_148540_1_)
-@@ -877,13 +1503,24 @@
+@@ -877,13 +1505,24 @@
          for (int j = 0; j < this.playerEntityList.size(); ++j)
          {
              EntityPlayerMP entityplayermp = (EntityPlayerMP)this.playerEntityList.get(j);
@@ -1038,7 +1040,7 @@
                  if (d4 * d4 + d5 * d5 + d6 * d6 < p_148543_8_ * p_148543_8_)
                  {
                      entityplayermp.playerNetServerHandler.sendPacket(p_148543_11_);
-@@ -941,13 +1578,16 @@
+@@ -941,13 +1580,16 @@
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(1, 0.0F));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(7, p_72354_2_.getRainStrength(1.0F)));
              p_72354_1_.playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(8, p_72354_2_.getWeightedThunderStrength(1.0F)));
@@ -1056,7 +1058,7 @@
          p_72385_1_.playerNetServerHandler.sendPacket(new S09PacketHeldItemChange(p_72385_1_.inventory.currentItem));
      }
  
-@@ -961,9 +1601,17 @@
+@@ -961,9 +1603,17 @@
          return this.maxPlayers;
      }
  
@@ -1075,7 +1077,7 @@
      }
  
      public void setWhiteListEnabled(boolean p_72371_1_)
-@@ -1032,12 +1680,30 @@
+@@ -1032,12 +1682,30 @@
  
      public void removeAllPlayers()
      {

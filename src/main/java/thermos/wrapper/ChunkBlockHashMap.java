@@ -16,8 +16,9 @@ public class ChunkBlockHashMap {
 	public static long chunk_hash(int x, int z)
 	{
 		//return ((x & 0xFFFF) << 16) | (z & 0xFFFF);
-		long key = LongHash.toLong(x, z);
-		return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
+//		long key = LongHash.toLong(x, z);
+//		return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
+		return (((long)x)<<32L)^z;
 	}
 
 	private static int chunk_array(int index)
