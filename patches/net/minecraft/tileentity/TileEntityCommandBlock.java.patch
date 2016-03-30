@@ -52,7 +52,7 @@
 +    @Override
 +    public boolean canUpdate()
 +    {
-+        return false;
++        return true; // Thermos - don't create incompat issues for no reason...jeez guys... >.< Fix #180
 +    }
 +    // Cauldron end
  }
