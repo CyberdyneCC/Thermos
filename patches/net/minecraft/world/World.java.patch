@@ -40,11 +40,12 @@
  import cpw.mods.fml.common.FMLLog;
  
  import com.google.common.collect.ImmutableSetMultimap;
-@@ -67,9 +71,60 @@
+@@ -67,9 +71,61 @@
  import net.minecraftforge.event.entity.EntityEvent;
  import net.minecraftforge.event.entity.EntityJoinWorldEvent;
  import net.minecraftforge.event.world.WorldEvent;
 +import net.openhft.affinity.AffinityLock;
++import thermos.chaud.HashedArrayList;
  import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
  import net.minecraft.entity.EnumCreatureType;
  
@@ -101,14 +102,15 @@
  public abstract class World implements IBlockAccess
  {
     /**
-@@ -83,15 +138,15 @@
+@@ -82,16 +138,15 @@
+     public final MapStorage perWorldStorage;
  
      public boolean scheduledUpdatesAreImmediate;
-     public List loadedEntityList = new ArrayList();
+-    public List loadedEntityList = new ArrayList();
 -    protected List unloadedEntityList = new ArrayList();
++    public List loadedEntityList = new HashedArrayList();
 +    public List unloadedEntityList = new ArrayList(); // Cauldron
      public List loadedTileEntityList = new ArrayList();
-+    public HashSet loadedTileCheckSet = new HashSet();
      private List addedTileEntityList = new ArrayList();
 -    private List field_147483_b = new ArrayList();
 +    public List field_147483_b = new ArrayList(); // Cauldron

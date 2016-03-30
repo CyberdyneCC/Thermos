@@ -219,7 +219,7 @@
 +    	{
 +    		System.out.println("[Thermos] Checking if it is a tile activator...");
 +    	}
-+    	return x == 0 && y==0 && z==0 && face == -1 && player.getClass().getSimpleName().equals("[CoFH]");
++    	return x == 0 && y==0 && z==0 && face == -1 && player instanceof FakePlayer && player.getGameProfile().getName().contains("[CoFH]");
 +    }
 +    
 +    public static PlayerInteractEvent onPlayerBukkitInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world, org.bukkit.event.player.PlayerInteractEvent eve)
