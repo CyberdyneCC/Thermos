@@ -10,8 +10,8 @@ import java.util.ListIterator;
 public class HashedArrayList<TileEntity> implements List<TileEntity>
 {
 
-	private ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
-	private HashSet<TileEntity> hashed = new HashSet<TileEntity>();
+	public ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
+	public HashSet<TileEntity> hashed = new HashSet<TileEntity>();
 	
 	@Override
 	public boolean add(TileEntity arg0)
@@ -95,7 +95,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	@Override
 	public Iterator<TileEntity> iterator() 
 	{
-		return this.stuff.iterator();
+		return new HashedArrayIterator(this.stuff.iterator(), this.hashed);
 	}
 
 	@Override
@@ -190,6 +190,35 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	public Object[] toArray(Object[] arg0) 
 	{
 		return this.stuff.toArray(arg0);
+	}
+	
+	class HashedArrayIterator<TileEntity> implements Iterator<TileEntity> 
+	{
+		Iterator<TileEntity> aritr;
+		HashSet<TileEntity> teset;
+		public HashedArrayIterator(Iterator<TileEntity> aritr, HashSet<TileEntity> teset)
+		{
+			this.aritr = aritr;
+			this.teset = teset;
+		}
+		@Override
+		public boolean hasNext() {
+			return aritr.hasNext();
+		}
+
+		private TileEntity last = null;
+		
+		@Override
+		public TileEntity next() {
+			last = aritr.next();
+			return last;
+		}
+		@Override
+		public void remove()
+		{
+			aritr.remove();
+			teset.remove(last);
+		}
 	}
 
 }
