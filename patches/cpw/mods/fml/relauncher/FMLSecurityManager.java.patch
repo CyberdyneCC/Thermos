@@ -14,7 +14,7 @@
          {
              throw new SecurityException("Cannot replace the FML security manager");
          }
-+        else // Allow the default security policy to be taken into consideration
++        else if ("register".equals(permName))// Allow the default security policy to be taken into consideration for "register"-ing
 +        {
 +        	defman.checkPermission(perm);
 +        }
