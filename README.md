@@ -38,7 +38,7 @@ P.S. **PLEASE** look at the release notes before downloading! :smile:
 
 ## Chat
 
-Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE2XaJ4m)
+Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE3u813t)
 
 ## Donate/Support
 
