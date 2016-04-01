@@ -10,8 +10,8 @@ import java.util.ListIterator;
 public class HashedArrayList<TileEntity> implements List<TileEntity>
 {
 
-	public ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
-	public HashSet<TileEntity> hashed = new HashSet<TileEntity>();
+	private ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
+	private HashSet<TileEntity> hashed = new HashSet<TileEntity>();
 	
 	@Override
 	public boolean add(TileEntity arg0)
@@ -221,4 +221,61 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		}
 	}
 
+	class HashedArrayListIterator<TileEntity> implements ListIterator<TileEntity> 
+	{
+		ListIterator<TileEntity> aritr;
+		HashSet<TileEntity> teset;
+		public HashedArrayListIterator(ListIterator<TileEntity> aritr, HashSet<TileEntity> teset)
+		{
+			this.aritr = aritr;
+		}
+		@Override
+		public void add(TileEntity arg0) {
+			boolean flag = teset.add(arg0);
+			if (flag)
+				this.aritr.add(arg0);
+		}
+		@Override
+		public boolean hasNext() {
+			return aritr.hasNext();
+		}
+		@Override
+		public boolean hasPrevious() {
+			return aritr.hasPrevious();
+		}
+		
+		private TileEntity lastRet = null;
+		
+		@Override
+		public TileEntity next() {
+			lastRet = aritr.next();
+			return lastRet;
+		}
+		@Override
+		public int nextIndex() {
+			return aritr.nextIndex();
+		}
+		@Override
+		public TileEntity previous() {
+			lastRet = aritr.previous();
+			return lastRet;
+		}
+		@Override
+		public int previousIndex() {
+			return aritr.previousIndex();
+		}
+		@Override
+		public void remove() {
+			aritr.remove();
+			teset.remove(lastRet);
+			
+		}
+		@Override
+		public void set(TileEntity arg0) {
+			aritr.set(arg0);
+			teset.remove(lastRet);
+			teset.add(arg0);
+			
+		}
+	}	
 }
