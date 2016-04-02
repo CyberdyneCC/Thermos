@@ -196,7 +196,7 @@
                              iterator1.remove();
                          }
                      }
-@@ -297,21 +401,29 @@
+@@ -297,9 +401,16 @@
              for (int i = 0; i < this.inventory.getSizeInventory(); ++i)
              {
                  ItemStack itemstack = this.inventory.getStackInSlot(i);
@@ -207,19 +207,15 @@
 +                
 +                if (itemstack.stackSize <= 0 )
                  {
--                    Packet packet = ((ItemMapBase)itemstack.getItem()).func_150911_c(itemstack, this.worldObj, this);
 +                	this.inventory.setInventorySlotContents(i, null);
 +                }
 +                
 +                if (itemstack.getItem().isMap())
 +                {
-+                    /*Packet packet = ((ItemMapBase)itemstack.getItem()).func_150911_c(itemstack, this.worldObj, this);
+                     Packet packet = ((ItemMapBase)itemstack.getItem()).func_150911_c(itemstack, this.worldObj, this);
  
                      if (packet != null)
-                     {
-                         this.playerNetServerHandler.sendPacket(packet);
--                    }
-+                    }*/
+@@ -309,9 +420,10 @@
                  }
              }
  
