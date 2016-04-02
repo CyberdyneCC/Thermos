@@ -1,0 +1,19 @@
+--- ../src-base/minecraft/org/bukkit/event/player/PlayerChatTabCompleteEvent.java
++++ ../src-work/minecraft/org/bukkit/event/player/PlayerChatTabCompleteEvent.java
+@@ -24,7 +24,15 @@
+         if (i < 0) {
+             this.lastToken = message;
+         } else {
+-            this.lastToken = message.substring(i + 1);
++        	if(message.charAt(i+1) == '@')
++        	{
++        		if(message.length() - 1 < i + 2)
++        			this.lastToken = "";
++        		else
++        			this.lastToken = message.substring(i + 2);
++        	}
++        	else
++        		this.lastToken = message.substring(i + 1);
+         }
+         this.completions = completions;
+     }
