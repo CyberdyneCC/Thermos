@@ -1,5 +1,14 @@
 --- ../src-base/minecraft/org/bukkit/command/SimpleCommandMap.java
 +++ ../src-work/minecraft/org/bukkit/command/SimpleCommandMap.java
+@@ -164,7 +164,7 @@
+     public boolean dispatch(CommandSender sender, String commandLine) throws CommandException {
+         String[] args = PATTERN_ON_SPACE.split(commandLine);
+ 
+-        if (args.length == 0) {
++        if (args.length == 0 || (net.minecraftforge.cauldron.configuration.CauldronConfig.instance.noFallbackAlias.getValue() && args[0].contains(":"))) {
+             return false;
+         }
+ 
 @@ -176,11 +176,15 @@
          }
  

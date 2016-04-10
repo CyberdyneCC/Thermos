@@ -31,7 +31,7 @@
 -        NBTTagCompound nbttagcompound = new NBTTagCompound();
 -        Iterator iterator = this.tagMap.keySet().iterator();
 +        NBTTagCompound nbttagcompound = new NBTTagCompound(true);
-+        nbttagcompound.tagMap = new HashMap<String, NBTBase>((int)(this.tagMap.size()*1.35)); //compaction factor
++        nbttagcompound.tagMap = new HashMap<String, NBTBase>((int)(this.tagMap.size()*1.35)+1); //compaction factor
 +        
 +        for(Map.Entry<String, NBTBase> s : this.tagMap.entrySet())
 +            nbttagcompound.setTag(s.getKey(), s.getValue().copy());
