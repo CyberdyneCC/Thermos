@@ -641,7 +641,7 @@
          {
              ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
              chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.RED);
-@@ -708,51 +1059,421 @@
+@@ -708,51 +1059,430 @@
              {
                  if (!ChatAllowedCharacters.isAllowedCharacter(s.charAt(i)))
                  {
@@ -929,6 +929,15 @@
 +            return;
 +        }
 +        
++        
++        if (net.minecraftforge.cauldron.configuration.CauldronConfig.instance.noFallbackAlias.getValue())
++        {
++        	int ind = p_147361_1_.indexOf(':');
++        	int spc = p_147361_1_.indexOf(' ');
++        	if (ind != -1 && ( ind < spc || spc == -1))
++        		p_147361_1_ = "/" + p_147361_1_.substring(ind);
++        }        
++        
 +        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, p_147361_1_, new LazyPlayerSet());
 +        this.server.getPluginManager().callEvent(event);
 +
@@ -1075,7 +1084,7 @@
          if (p_147357_1_.func_149513_d() == 1)
          {
              this.playerEntity.setSneaking(true);
-@@ -772,7 +1493,7 @@
+@@ -772,7 +1502,7 @@
          else if (p_147357_1_.func_149513_d() == 3)
          {
              this.playerEntity.wakeUpPlayer(false, true, true);
@@ -1084,7 +1093,7 @@
          }
          else if (p_147357_1_.func_149513_d() == 6)
          {
-@@ -789,8 +1510,20 @@
+@@ -789,8 +1519,20 @@
  
      public void processUseEntity(C02PacketUseEntity p_147340_1_)
      {
@@ -1106,7 +1115,7 @@
          this.playerEntity.func_143004_u();
  
          if (entity != null)
-@@ -805,9 +1538,53 @@
+@@ -805,9 +1547,53 @@
  
              if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
              {
@@ -1160,7 +1169,7 @@
                  }
                  else if (p_147340_1_.func_149565_c() == C02PacketUseEntity.Action.ATTACK)
                  {
-@@ -819,6 +1596,13 @@
+@@ -819,6 +1605,13 @@
                      }
  
                      this.playerEntity.attackTargetEntityWithCurrentItem(entity);
@@ -1174,7 +1183,7 @@
                  }
              }
          }
-@@ -828,14 +1612,26 @@
+@@ -828,14 +1621,26 @@
      {
          this.playerEntity.func_143004_u();
          C16PacketClientStatus.EnumState enumstate = p_147342_1_.func_149435_c();
@@ -1203,7 +1212,7 @@
                  else if (this.playerEntity.getServerForPlayer().getWorldInfo().isHardcoreModeEnabled())
                  {
                      if (this.serverController.isSinglePlayer() && this.playerEntity.getCommandSenderName().equals(this.serverController.getServerOwner()))
-@@ -857,7 +1653,7 @@
+@@ -857,7 +1662,7 @@
                          return;
                      }
  
@@ -1212,7 +1221,7 @@
                  }
  
                  break;
-@@ -871,17 +1667,461 @@
+@@ -871,17 +1676,461 @@
  
      public void processCloseWindow(C0DPacketCloseWindow p_147356_1_)
      {
@@ -1675,7 +1684,7 @@
              if (ItemStack.areItemStacksEqual(p_147351_1_.func_149546_g(), itemstack))
              {
                  this.playerEntity.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
-@@ -903,6 +2143,12 @@
+@@ -903,6 +2152,12 @@
                  }
  
                  this.playerEntity.sendContainerAndContentsToPlayer(this.playerEntity.openContainer, arraylist);
@@ -1688,7 +1697,7 @@
              }
          }
      }
-@@ -925,9 +2171,61 @@
+@@ -925,9 +2180,61 @@
              boolean flag = p_147344_1_.func_149627_c() < 0;
              ItemStack itemstack = p_147344_1_.func_149625_d();
              boolean flag1 = p_147344_1_.func_149627_c() >= 1 && p_147344_1_.func_149627_c() < 36 + InventoryPlayer.getHotbarSize();
@@ -1751,7 +1760,7 @@
              if (flag1 && flag2 && flag3)
              {
                  if (itemstack == null)
-@@ -956,6 +2254,11 @@
+@@ -956,6 +2263,11 @@
  
      public void processConfirmTransaction(C0FPacketConfirmTransaction p_147339_1_)
      {
@@ -1763,7 +1772,7 @@
          Short oshort = (Short)this.field_147372_n.lookup(this.playerEntity.openContainer.windowId);
  
          if (oshort != null && p_147339_1_.func_149533_d() == oshort.shortValue() && this.playerEntity.openContainer.windowId == p_147339_1_.func_149532_c() && !this.playerEntity.openContainer.isPlayerNotUsingContainer(this.playerEntity))
-@@ -966,6 +2269,11 @@
+@@ -966,6 +2278,11 @@
  
      public void processUpdateSign(C12PacketUpdateSign p_147343_1_)
      {
@@ -1775,7 +1784,7 @@
          this.playerEntity.func_143004_u();
          WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
  
-@@ -980,6 +2288,7 @@
+@@ -980,6 +2297,7 @@
                  if (!tileentitysign.func_145914_a() || tileentitysign.func_145911_b() != this.playerEntity)
                  {
                      this.serverController.logWarning("Player " + this.playerEntity.getCommandSenderName() + " just tried to change non-editable sign");
@@ -1783,7 +1792,7 @@
                      return;
                  }
              }
-@@ -990,6 +2299,7 @@
+@@ -990,6 +2308,7 @@
              for (j = 0; j < 4; ++j)
              {
                  boolean flag = true;
@@ -1791,7 +1800,7 @@
  
                  if (p_147343_1_.func_149589_f()[j].length() > 15)
                  {
-@@ -1018,7 +2328,29 @@
+@@ -1018,7 +2337,29 @@
                  int k = p_147343_1_.func_149586_d();
                  i = p_147343_1_.func_149585_e();
                  TileEntitySign tileentitysign1 = (TileEntitySign)tileentity;
@@ -1822,7 +1831,7 @@
                  tileentitysign1.markDirty();
                  worldserver.markBlockForUpdate(j, k, i);
              }
-@@ -1041,7 +2373,22 @@
+@@ -1041,7 +2382,22 @@
  
      public void processPlayerAbilities(C13PacketPlayerAbilities p_147348_1_)
      {
@@ -1846,7 +1855,7 @@
      }
  
      public void processTabComplete(C14PacketTabComplete p_147341_1_)
-@@ -1093,16 +2440,18 @@
+@@ -1093,16 +2449,18 @@
                  {
                      if (itemstack.getItem() == Items.writable_book && itemstack.getItem() == itemstack1.getItem())
                      {
@@ -1869,7 +1878,7 @@
              }
              finally
              {
-@@ -1135,19 +2484,18 @@
+@@ -1135,19 +2493,18 @@
  
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
@@ -1895,7 +1904,7 @@
              }
              finally
              {
-@@ -1174,9 +2522,12 @@
+@@ -1174,9 +2531,12 @@
                          ((ContainerMerchant)container).setCurrentRecipeIndex(i);
                      }
                  }
@@ -1909,7 +1918,7 @@
                  }
              }
              else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
-@@ -1222,9 +2573,12 @@
+@@ -1222,9 +2582,12 @@
                              this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                          }
                      }
@@ -1924,7 +1933,7 @@
                      }
                      finally
                      {
-@@ -1257,9 +2611,12 @@
+@@ -1257,9 +2620,12 @@
                              tileentitybeacon.markDirty();
                          }
                      }
@@ -1939,7 +1948,7 @@
                      }
                  }
              }
-@@ -1281,6 +2638,13 @@
+@@ -1281,6 +2647,13 @@
                      containerrepair.updateItemName("");
                  }
              }
@@ -1953,7 +1962,7 @@
          }
      }
  
-@@ -1292,6 +2656,21 @@
+@@ -1292,6 +2665,21 @@
          }
      }
  

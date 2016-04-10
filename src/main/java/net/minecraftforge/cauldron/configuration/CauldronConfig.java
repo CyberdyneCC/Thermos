@@ -73,7 +73,7 @@ public class CauldronConfig extends ConfigBase
     public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
     public final IntArraySetting instantRemove = new IntArraySetting(this, "protection.instant-removal", "", "Contains Block IDs that you want to NEVER exist in the world i.e. world anchors (just in case) (e.g. instant-removal: 1,93,56,24 ");
     public final StringArraySetting blockedCMDs = new StringArraySetting(this, "protection.blocked-cmds", "", "Contains commands you want to block from being used in-game, you must also include command aliases (e.g. blocked-cmds: /op,/deop,/stop,/restart .");
-    public final BoolSetting noFallbackAlias = new BoolSetting(this, "protection.no-fallback-alias", true, "Don't allow commands of the format plugin:cmd (recommended to keep at true)");
+    public final BoolSetting noFallbackAlias = new BoolSetting(this, "protection.no-fallback-alias", true, "Don't allow commands of the format plugin:cmd, the plugin: will be removed (recommended to keep at true)");
     // Plug-in options
     public final BoolSetting reloadPlugins = new BoolSetting(this, "plugin-settings.allow-reload", false, "Allow plugins to be reloaded. WARNING - breaks with some mods. We *will not* support this!");
 
