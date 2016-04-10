@@ -66,10 +66,13 @@ public class ChunkBlockHashMap {
 				if (set[0] >> 4 == x >> 4 && set[1] >> 4 == z >> 4)
 				{
 					x = set[0]; z = set[1];
+					x %= 16;
+					z %= 16;					
 					if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
 					{
 						return false;
-					}					
+					}
+					x = set[0]; z = set[1];					
 				}
 				else
 				{
@@ -79,24 +82,32 @@ public class ChunkBlockHashMap {
 					{
 						return false;
 					}
+					x %= 16;
+					z %= 16;
 					if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
 					{
 						return false;
-					}					
+					}		
+					x = set[0]; z = set[1];					
+					
 				}
 			}
 			else
 			{
 				x = set[0]; z = set[1];
 				last = this.map.get((((long)(x>>4))<<32L)^(z>>4));
+
 				if (last == null)
 				{
 					return false;
 				}
+				x %= 16;
+				z %= 16;
 				if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
 				{
 					return false;
 				}
+				x = set[0]; z = set[1];				
 			}
 		}
 		
