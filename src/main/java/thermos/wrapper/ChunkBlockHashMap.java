@@ -1,5 +1,6 @@
 package thermos.wrapper;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
@@ -49,8 +50,59 @@ public class ChunkBlockHashMap {
 		return this.size;
 	}
 	
-	Chunk last1,last2,last3,last4;
+	private Chunk last1,last2,last3,last4;
 
+	public boolean bulkCheck(Collection<int[]> coords)
+	{
+		// FYI: this class repeats a lot of code for a reason. Rather than stupidly jump around methods,
+		// this kind of low level, highly-optimized code requires us to avoid raising the stack size and do in-method
+		// optimal operations
+		Chunk[][] last = null; // FYI: local field does not hide a class field
+		int x = -1, z = -1;
+		for(int[] set : coords)
+		{
+			if (last != null)
+			{
+				if (set[0] >> 4 == x >> 4 && set[1] >> 4 == z >> 4)
+				{
+					x = set[0]; z = set[1];
+					if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
+					{
+						return false;
+					}					
+				}
+				else
+				{
+					x = set[0]; z = set[1];
+					last = this.map.get((((long)(x>>4))<<32L)^(z>>4));
+					if (last == null)
+					{
+						return false;
+					}
+					if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
+					{
+						return false;
+					}					
+				}
+			}
+			else
+			{
+				x = set[0]; z = set[1];
+				last = this.map.get((((long)(x>>4))<<32L)^(z>>4));
+				if (last == null)
+				{
+					return false;
+				}
+				if (last[(x + (x >> 31)) ^ (x >> 31)][(z + (z >> 31)) ^ (z >> 31)] == null)
+				{
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	public Chunk get(int x, int z)
 	{
 		if(last1 != null && last1.xPosition == x && last1.zPosition == z)
