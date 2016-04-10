@@ -34,7 +34,7 @@
 +	private static final String __OBFID = "CL_00000381";
 +	
 +	// Thermos - this mustn't be modified during runtime or we could change the mode while the region file was in use....that could cause horrible errors
-+	private boolean ramMode = net.minecraftforge.cauldron.configuration.CauldronConfig.instance.ramChunks.getValue();
++	private boolean ramMode = false && net.minecraftforge.cauldron.configuration.CauldronConfig.instance.ramChunks.getValue();
 +	
 +	// Le RAMdisque
 +	private MappedByteBuffer dataBuffer = null;
