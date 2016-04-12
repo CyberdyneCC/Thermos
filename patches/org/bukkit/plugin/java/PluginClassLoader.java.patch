@@ -284,7 +284,7 @@
 +        			try
 +        			{
 +        				if (Integer.parseInt(vn[1]) >= 23)
-+        					jarMapping.packages.put("com/google/common", "guava19/com/google/common");
++        					jarMapping.packages.put("com/google/common", "guava17/com/google/common");
 +        				else
 +        	        		jarMapping.packages.put("com/google/common", "guava10/com/google/common");
 +        			}

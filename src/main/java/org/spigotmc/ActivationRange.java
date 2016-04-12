@@ -320,7 +320,7 @@ public class ActivationRange
         int x = net.minecraft.util.MathHelper.floor_double( entity.posX );
         int z = net.minecraft.util.MathHelper.floor_double( entity.posZ );
         
-        if ( isActive && !entity.worldObj.doChunksNearChunkExist( x, 0, z, 16 ) ) {
+        if ( isActive && !(entity.worldObj.isActiveBlockCoord(x, z) || entity.worldObj.doChunksNearChunkExist( x, 0, z, 16 ) )) {
             isActive = false;
         }
         
