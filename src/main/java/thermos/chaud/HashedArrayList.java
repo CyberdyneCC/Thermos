@@ -143,7 +143,10 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = this.hashed.removeAll(arg0);
 		
 		if (flag)
-			this.stuff = new ArrayList<TileEntity>(hashed);
+		{
+			this.stuff = new ArrayList<TileEntity>((int)(hashed.size()*1.5)+1);
+			for(TileEntity te : hashed) this.stuff.add(te);
+		}
 		
 		return flag;
 	}
