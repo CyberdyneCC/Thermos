@@ -1232,8 +1232,8 @@
          {
              EntityEvent.CanUpdate event = new EntityEvent.CanUpdate(p_72866_1_);
              MinecraftForge.EVENT_BUS.post(event);
-+            forceUpdate = canUpdate; // Cauldron
              canUpdate = event.canUpdate;
++            forceUpdate = canUpdate; // Cauldron
          }
 -
 +        // Spigot start
