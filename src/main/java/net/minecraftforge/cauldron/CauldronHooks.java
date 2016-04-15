@@ -284,8 +284,6 @@ public class CauldronHooks
         if (entity == null || world.sushchestvoConfig == null) return false;
         int cX = net.minecraft.util.MathHelper.floor_double( entity.posX ) >> 4, cZ = net.minecraft.util.MathHelper.floor_double( entity.posZ ) >> 4;
         int iX = net.minecraft.util.MathHelper.floor_double( entity.posX ), iZ = net.minecraft.util.MathHelper.floor_double( entity.posZ );
-        if (MinecraftServer.sushchestvoConfig.skipTileEntityTicks.getValue())
-        {
         	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick tiles that are trying to unload
         	{
         		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
@@ -322,8 +320,6 @@ public class CauldronHooks
                 return true;
             }
             return false;
-        }
-        return true;
     }
     
     public static boolean canTileEntityTick(TileEntity tileEntity, World world)
