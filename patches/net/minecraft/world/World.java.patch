@@ -111,11 +111,13 @@
      public boolean scheduledUpdatesAreImmediate;
 -    public List loadedEntityList = new ArrayList();
 -    protected List unloadedEntityList = new ArrayList();
-+    public List loadedEntityList = new HashedArrayList();
-+    public List unloadedEntityList = new ArrayList(); // Cauldron
-     public List loadedTileEntityList = new ArrayList();
-     private List addedTileEntityList = new ArrayList();
+-    public List loadedTileEntityList = new ArrayList();
+-    private List addedTileEntityList = new ArrayList();
 -    private List field_147483_b = new ArrayList();
++    public List loadedEntityList = new HashedArrayList();
++    public List unloadedEntityList = new HashedArrayList(); // Cauldron
++    public List loadedTileEntityList = new HashedArrayList();
++    private List addedTileEntityList = new HashedArrayList();
 +    public List field_147483_b = new ArrayList(); // Cauldron
      public List playerEntities = new ArrayList();
      public List weatherEffects = new ArrayList();
