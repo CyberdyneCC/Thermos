@@ -284,7 +284,7 @@ public class CauldronHooks
         if (entity == null || world.sushchestvoConfig == null) return false;
         int cX = net.minecraft.util.MathHelper.floor_double( entity.posX ) >> 4, cZ = net.minecraft.util.MathHelper.floor_double( entity.posZ ) >> 4;
         int iX = net.minecraft.util.MathHelper.floor_double( entity.posX ), iZ = net.minecraft.util.MathHelper.floor_double( entity.posZ );
-        	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick tiles that are trying to unload
+        	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick entities that are in chunks trying to unload
         	{
         		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
         		if(cps.chunksToUnload.contains(cX, cZ))
