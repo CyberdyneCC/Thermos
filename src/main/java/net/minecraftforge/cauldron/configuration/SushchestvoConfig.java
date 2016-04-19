@@ -3,8 +3,7 @@ package net.minecraftforge.cauldron.configuration;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.CauldronHooks;
 import net.minecraftforge.cauldron.SushchestvoCache;
-import net.minecraftforge.cauldron.TileEntityCache;
-import net.minecraftforge.cauldron.command.TileEntityCommand;
+import net.minecraftforge.cauldron.command.SushchestvoCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SushchestvoConfig extends ConfigBase
@@ -18,7 +17,7 @@ public class SushchestvoConfig extends ConfigBase
             + "Forums: http://cauldron.minecraftforge.net/\n";
     
     /* ======================================================================== */
-    public final BoolSetting skipEntityTicks = new BoolSetting(this, "settings.skip-entity-ticks", true, "If enabled, turns on tileentity tick skip feature when no players are near.");
+    public final BoolSetting skipEntityTicks = new BoolSetting(this, "settings.skip-entity-ticks", true, "If enabled, turns on entity tick skip feature when no players are near.");
     public final BoolSetting enableECanUpdateWarning = new BoolSetting(this, "debug.enable-ent-can-update-warning", false, "Set true to detect which entities should not be ticking.");
     public final BoolSetting preventInvalidEntityUpdates = new BoolSetting(this, "settings.prevent-invalid-entity-updates", true, "Used to determine if an entity should tick and if not the TE is added to a ban list. Note: This should help improve performance.");
     /* ======================================================================== */
@@ -31,12 +30,14 @@ public class SushchestvoConfig extends ConfigBase
 
     public void addCommands()
     {
-        commands.put(this.commandName, new TileEntityCommand());
+        commands.put(this.commandName, new SushchestvoCommand());
     }
 
     public void init()
     {
+    	settings.put(skipEntityTicks.path, skipEntityTicks);
         settings.put(enableECanUpdateWarning.path, enableECanUpdateWarning);
+        settings.put(preventInvalidEntityUpdates.path, preventInvalidEntityUpdates);
         load();
     }
 
