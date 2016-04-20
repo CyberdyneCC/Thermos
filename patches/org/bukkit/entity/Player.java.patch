@@ -1,6 +1,29 @@
 --- ../src-base/minecraft/org/bukkit/entity/Player.java
 +++ ../src-work/minecraft/org/bukkit/entity/Player.java
-@@ -1035,4 +1035,77 @@
+@@ -2,19 +2,11 @@
+ 
+ import java.net.InetSocketAddress;
+ 
+-import org.bukkit.Achievement;
+-import org.bukkit.ChatColor;
+-import org.bukkit.Effect;
+-import org.bukkit.Instrument;
+-import org.bukkit.Location;
+-import org.bukkit.Material;
+-import org.bukkit.Note;
+-import org.bukkit.OfflinePlayer;
+-import org.bukkit.Sound;
+-import org.bukkit.Statistic;
+-import org.bukkit.WeatherType;
++import net.md_5.bungee.api.chat.BaseComponent;
++import org.bukkit.*;
+ import org.bukkit.command.CommandSender;
+ import org.bukkit.conversations.Conversable;
++import org.bukkit.craftbukkit.CraftServer;
+ import org.bukkit.map.MapView;
+ import org.bukkit.plugin.messaging.PluginMessageRecipient;
+ import org.bukkit.scoreboard.Scoreboard;
+@@ -1035,4 +1027,88 @@
       * @see Player#setHealthScaled(boolean)
       */
      public double getHealthScale();
@@ -72,6 +95,17 @@
 +        public java.util.Set<Player> getHiddenPlayers()
 +        {
 +            throw new UnsupportedOperationException( "Not supported yet." );
++        }
++
++        /**
++         * Send a BaseComponent message from the BungeeCord Chat api.
++         */
++        public void sendMessage(BaseComponent component) {
++            throw new UnsupportedOperationException( "Not supported yet." );
++        }
++
++        public /* varargs */ void sendMessage(BaseComponent ... components) {
++            throw new UnsupportedOperationException("Not supported yet.");
 +        }
 +    }
 +
