@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SushchestvoConfig extends ConfigBase
 {
-    private final String HEADER = "This is the main configuration file for Entities.\n"
+    private final String HEADER = "This is the main configuration file for Entities aka Sushchestvos (in Russian).\n"
             + "\n"
             + "If you need help with the configuration or have any questions related to Thermos,\n"
             + "join us at the IRC or drop by our forums and leave a post.\n"
