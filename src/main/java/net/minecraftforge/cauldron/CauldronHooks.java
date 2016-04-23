@@ -304,7 +304,7 @@ public class CauldronHooks
             {
                 String seConfigPath = entity.getClass().getName().replace(".", "-");
                 seConfigPath = seConfigPath.replaceAll("[^A-Za-z0-9\\-]", ""); // Fix up odd class names to prevent YAML errors
-                seCache = new SushchestvoCache(entity.getClass(), world.getWorldInfo().getWorldName().toLowerCase(), seConfigPath, world.sushchestvoConfig.getBoolean(seConfigPath + ".tick-no-players", false), world.tileentityConfig.getInt(seConfigPath + ".tick-interval", 1));
+                seCache = new SushchestvoCache(entity.getClass(), world.getWorldInfo().getWorldName().toLowerCase(), seConfigPath, world.sushchestvoConfig.getBoolean(seConfigPath + ".tick-no-players", false), world.sushchestvoConfig.getInt(seConfigPath + ".tick-interval", 1));
                 sushchestvoCache.put(entity.getClass(), seCache);
             }
 
