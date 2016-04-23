@@ -64,6 +64,7 @@ public class SushchestvoConfig extends ConfigBase
             for (SushchestvoCache seCache : CauldronHooks.sushchestvoCache.values())
             {
                 seCache.tickNoPlayers = config.getBoolean( "world-settings." + seCache.worldName + "." + seCache.configPath + ".tick-no-players", config.getBoolean( "world-settings.default." + seCache.configPath + ".tick-no-players") );
+                seCache.neverEverTick = config.getBoolean( "world-settings." + seCache.worldName + "." + seCache.configPath + ".never-ever-tick", config.getBoolean( "world-settings.default." + seCache.configPath + ".never-ever-tick") );
                 seCache.tickInterval = config.getInt( "world-settings." + seCache.worldName + "." + seCache.configPath + ".tick-interval", config.getInt( "world-settings.default." + seCache.configPath + ".tick-interval") );
             }
             this.saveWorldConfigs();
