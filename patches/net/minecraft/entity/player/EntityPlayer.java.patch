@@ -511,7 +511,26 @@
          }
      }
  
-@@ -2035,7 +2253,7 @@
+@@ -2022,7 +2240,17 @@
+             this.experience = p_71049_1_.experience;
+             this.setScore(p_71049_1_.getScore());
+         }
+-
++        else if(this instanceof EntityPlayerMP)
++        {
++        	if(((EntityPlayerMP)p_71049_1_).keptInventory)
++        	{
++                this.inventory.copyInventory(p_71049_1_.inventory);
++                this.experienceLevel = p_71049_1_.experienceLevel;
++                this.experienceTotal = p_71049_1_.experienceTotal;
++                this.experience = p_71049_1_.experience;
++                this.setScore(p_71049_1_.getScore());
++        	}
++        }
+         this.theInventoryEnderChest = p_71049_1_.theInventoryEnderChest;
+ 
+         this.spawnChunkMap = p_71049_1_.spawnChunkMap;
+@@ -2035,7 +2263,7 @@
          {
              getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
          }
