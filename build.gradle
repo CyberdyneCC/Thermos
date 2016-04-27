@@ -74,7 +74,7 @@ minecraft {
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'ca.tcpr'
+group = 'cyberdynecc'
 
 ext.buildInfoCached = null;
 
@@ -192,7 +192,7 @@ def generateManifest(boolean legacy = false) {
             'Thermos-Channel'       : project.name,
             'Thermos-Version'       : project.version,
             'Thermos-Legacy'        : legacy,
-            'Implementation-Vendor' : 'TCPR',
+            'Implementation-Vendor' : 'CyberdyneCC',
             'Implementation-Title'  : project.name,
             'Implementation-Version': project.version,
             'Specification-Vendor'  : 'Bukkit Team',

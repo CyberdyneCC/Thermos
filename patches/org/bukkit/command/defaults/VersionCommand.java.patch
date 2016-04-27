@@ -5,7 +5,7 @@
  
          if (args.length == 0) {
 -            sender.sendMessage("This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")");
-+            sender.sendMessage("This server is running Thermos | https://github.com/TCPR/Thermos | " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
++            sender.sendMessage("This server is running Thermos | https://github.com/CyberdyneCC/Thermos | " + Bukkit.getBukkitVersion() + " | " + Bukkit.getVersion());
          } else {
 -            StringBuilder name = new StringBuilder();
  
