@@ -345,7 +345,7 @@
      public boolean func_150802_k()
      {
 -        return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
-+        return true; // Spigot https://github.com/TCPR/Thermos/commit/e1ada4deb899529eaf28e3de66666f880a65d60f
++        return true; // Spigot https://github.com/CyberdyneCC/Thermos/commit/e1ada4deb899529eaf28e3de66666f880a65d60f
 +        //return this.field_150815_m && this.isTerrainPopulated && this.isLightPopulated;
      }
  

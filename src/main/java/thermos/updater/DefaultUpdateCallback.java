@@ -55,7 +55,7 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
         mNewVersion = newVersion;
         if (!mHasUpdate) {
             Bukkit.getConsoleSender().sendMessage("New version of Thermos available: " + newVersion);
-            Bukkit.getConsoleSender().sendMessage("Download at: https://github.com/TCPR/Thermos/releases");
+            Bukkit.getConsoleSender().sendMessage("Download at: https://github.com/CyberdyneCC/Thermos/releases");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (hasPermission(player)) {
                     sendUpdate(player);

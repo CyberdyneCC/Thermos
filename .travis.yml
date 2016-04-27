@@ -21,5 +21,5 @@ deploy:
   skip_cleanup: true
   file: "$HOME/release/*"
   on:
-    repo: TCPR/Thermos
+    repo: CyberdyneCC/Thermos
     tags: true
