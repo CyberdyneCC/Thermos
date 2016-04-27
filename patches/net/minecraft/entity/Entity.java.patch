@@ -710,7 +710,7 @@
          }
      }
  
-@@ -2038,46 +2472,76 @@
+@@ -2038,46 +2472,83 @@
          {
              this.worldObj.theProfiler.startSection("changeDimension");
              MinecraftServer minecraftserver = MinecraftServer.getServer();
@@ -757,6 +757,13 @@
 +            // CraftBukkit end
 +            this.dimension = i;
              this.worldObj.removeEntity(this);
++            // Thermos silently remove the entity so it can be magically transported to another world :D    
++            if (!(this instanceof EntityLivingBase) && this.addedToChunk && this.worldObj.chunkExists(this.chunkCoordX, this.chunkCoordZ))
++            {
++            	this.worldObj.getChunkFromChunkCoords(this.chunkCoordX, this.chunkCoordZ).removeEntity(this);
++            	this.worldObj.loadedEntityList.remove(this);
++            }
++                
              this.isDead = false;
              this.worldObj.theProfiler.startSection("reposition");
 -            minecraftserver.getConfigurationManager().transferEntityToWorld(this, j, worldserver, worldserver1);
@@ -804,7 +811,7 @@
      public float func_145772_a(Explosion p_145772_1_, World p_145772_2_, int p_145772_3_, int p_145772_4_, int p_145772_5_, Block p_145772_6_)
      {
          return p_145772_6_.getExplosionResistance(this, p_145772_2_, p_145772_3_, p_145772_4_, p_145772_5_, posX, posY + getEyeHeight(), posZ);
-@@ -2474,4 +2938,14 @@
+@@ -2474,4 +2945,14 @@
                  }
              }
          }
