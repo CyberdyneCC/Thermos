@@ -710,7 +710,7 @@
          }
      }
  
-@@ -2038,36 +2472,62 @@
+@@ -2038,46 +2472,76 @@
          {
              this.worldObj.theProfiler.startSection("changeDimension");
              MinecraftServer minecraftserver = MinecraftServer.getServer();
@@ -789,7 +789,14 @@
              }
  
              this.isDead = true;
-@@ -2077,7 +2537,6 @@
++            if (this instanceof EntityItem) // Thermos kill this stack to avoid dupe glitch?
++            {
++                ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
++                stack.stackSize = 0;
++            }
+             this.worldObj.theProfiler.endSection();
+             worldserver.resetUpdateEntityTick();
+             worldserver1.resetUpdateEntityTick();
              this.worldObj.theProfiler.endSection();
          }
      }
@@ -797,7 +804,7 @@
      public float func_145772_a(Explosion p_145772_1_, World p_145772_2_, int p_145772_3_, int p_145772_4_, int p_145772_5_, Block p_145772_6_)
      {
          return p_145772_6_.getExplosionResistance(this, p_145772_2_, p_145772_3_, p_145772_4_, p_145772_5_, posX, posY + getEyeHeight(), posZ);
-@@ -2474,4 +2933,14 @@
+@@ -2474,4 +2938,14 @@
                  }
              }
          }
