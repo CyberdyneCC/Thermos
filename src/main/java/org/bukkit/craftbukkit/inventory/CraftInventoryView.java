@@ -61,7 +61,8 @@ public class CraftInventoryView extends InventoryView {
         if (slot == -999) {
             return null;
         }
-        return CraftItemStack.asCraftMirror(container.getSlot(slot).getStack());
+        net.minecraft.inventory.Slot s = container.getSlot(slot);
+        return s != null ? CraftItemStack.asCraftMirror(s.getStack()) : null;
     }
 
     public boolean isInTop(int rawSlot) {

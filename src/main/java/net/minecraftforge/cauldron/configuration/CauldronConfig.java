@@ -3,6 +3,9 @@ package net.minecraftforge.cauldron.configuration;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.command.CauldronCommand;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class CauldronConfig extends ConfigBase
@@ -63,10 +66,14 @@ public class CauldronConfig extends ConfigBase
     // Optimization options
     public final IntSetting repeaterL = new IntSetting(this, "optimized.redstone-repeater-update-speed", -1, "how many milliseconds the server must ignore before trying repeater updates");
     public final IntSetting redstoneTorchL = new IntSetting(this, "optimized.redstone-redstoneTorch-update-speed", -1, "how many milliseconds the server must ignore before trying redstoneTorch updates");
-
-    // World Protection options
+    public final BoolSetting affinity = new BoolSetting(this, "optimized.affinity-locking", false, "Whether to enable affinity locking. Very technical usage, recommended for dedicated hosts only. Ask on Discord or GitHub for info on how to set this up properly.");
+    public final BoolSetting ramChunks = new BoolSetting(this, "optimized.ram-load-chunks", false, "Loads chunks into the system RAM (experimental). WARNING! ENABLING THIS WILL INCREASE RAM USAGE BY OVER 1GB.");
+    
+    //Protection options
     public final BoolSetting protectSP = new BoolSetting(this, "protection.spawn-protect", true, "Whether to enable Thermos' all-seeing protection in the spawn world");
-
+    public final IntArraySetting instantRemove = new IntArraySetting(this, "protection.instant-removal", "", "Contains Block IDs that you want to NEVER exist in the world i.e. world anchors (just in case) (e.g. instant-removal: 1,93,56,24 ");
+    public final StringArraySetting blockedCMDs = new StringArraySetting(this, "protection.blocked-cmds", "", "Contains commands you want to block from being used in-game, you must also include command aliases (e.g. blocked-cmds: /op,/deop,/stop,/restart .");
+    public final BoolSetting noFallbackAlias = new BoolSetting(this, "protection.no-fallback-alias", true, "Don't allow commands of the format plugin:cmd, the plugin: will be removed (recommended to keep at true)");
     // Plug-in options
     public final BoolSetting reloadPlugins = new BoolSetting(this, "plugin-settings.allow-reload", false, "Allow plugins to be reloaded. WARNING - breaks with some mods. We *will not* support this!");
 
@@ -83,43 +90,28 @@ public class CauldronConfig extends ConfigBase
 
     public void init()
     {
-        settings.put(dumpMaterials.path, dumpMaterials);
-        settings.put(disableWarnings.path, disableWarnings);
-        settings.put(worldLeakDebug.path, worldLeakDebug);
-        settings.put(connectionLogging.path, connectionLogging);
-        settings.put(tickIntervalLogging.path, tickIntervalLogging);
-        settings.put(chunkLoadLogging.path, chunkLoadLogging);
-        settings.put(chunkUnloadLogging.path, chunkUnloadLogging);
-        settings.put(entitySpawnLogging.path, entitySpawnLogging);
-        settings.put(entityDespawnLogging.path, entityDespawnLogging);
-        settings.put(entityDeathLogging.path, entityDeathLogging);
-        settings.put(logWithStackTraces.path, logWithStackTraces);
-        settings.put(dumpChunksOnDeadlock.path, dumpChunksOnDeadlock);
-        settings.put(dumpHeapOnDeadlock.path, dumpHeapOnDeadlock);
-        settings.put(dumpThreadsOnWarn.path, dumpThreadsOnWarn);
-        settings.put(logEntityCollisionChecks.path, logEntityCollisionChecks);
-        settings.put(logEntitySpeedRemoval.path, logEntitySpeedRemoval);
-        settings.put(largeCollisionLogSize.path, largeCollisionLogSize);
-        settings.put(largeEntityCountLogSize.path, largeEntityCountLogSize);
-        settings.put(loadChunkOnRequest.path, loadChunkOnRequest);
-        settings.put(loadChunkOnForgeTick.path, loadChunkOnForgeTick);
-        settings.put(checkEntityBoundingBoxes.path, checkEntityBoundingBoxes);
-        settings.put(checkEntityMaxSpeeds.path, checkEntityMaxSpeeds);
-        settings.put(largeBoundingBoxLogSize.path, largeBoundingBoxLogSize);
-        settings.put(enableThreadContentionMonitoring.path, enableThreadContentionMonitoring);
-        settings.put(infiniteWaterSource.path, infiniteWaterSource);
-        settings.put(flowingLavaDecay.path, flowingLavaDecay);
-        settings.put(fakePlayerLogin.path, fakePlayerLogin);
-        settings.put(remapPluginFile.path, remapPluginFile);
-        settings.put(reloadPlugins.path, reloadPlugins);
-        settings.put(userLogin.path, userLogin);
-        settings.put(allowTntPunishment.path, allowTntPunishment);
-        settings.put(maxPlayersVisible.path, maxPlayersVisible);
-        settings.put(chunkGCGracePeriod.path, chunkGCGracePeriod);
-        settings.put(repeaterL.path, repeaterL);
-        settings.put(redstoneTorchL.path, redstoneTorchL);
-        settings.put(protectSP.path, protectSP);
-        settings.put(realNames.path, realNames);
+    	for(Field f : this.getClass().getFields())
+    	{
+    		if(Modifier.isFinal(f.getModifiers()) && Modifier.isPublic(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
+    		{
+    			try
+    			{
+    				Setting setting = (Setting) f.get(this);
+    				if(setting == null) continue;
+        			settings.put(setting.path, setting);    				
+    			}
+    			catch (ClassCastException e) 
+    			{
+    				
+    			}
+    			catch(Throwable t)
+    			{
+    				System.out.println("[Thermos] Failed to initialize a CauldronConfig setting.");
+    				t.printStackTrace();
+    			}
+
+    		}
+    	}
         load();
     }
 

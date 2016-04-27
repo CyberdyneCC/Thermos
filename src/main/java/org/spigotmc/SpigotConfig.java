@@ -276,4 +276,10 @@ public class SpigotConfig
     {
         fullMatchRate = getInt( "settings.fullMatchRate", 10);
     }
+
+    //thermos start - Add getconfig method to spigot
+    public static YamlConfiguration getConfig() {
+        return config;
+    }
+    //thermos end
 }

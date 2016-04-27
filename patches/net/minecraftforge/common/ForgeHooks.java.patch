@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/common/ForgeHooks.java
 +++ ../src-work/minecraft/net/minecraftforge/common/ForgeHooks.java
-@@ -63,6 +63,16 @@
+@@ -63,6 +63,17 @@
  import net.minecraftforge.event.world.BlockEvent;
  import net.minecraftforge.event.world.NoteBlockEvent;
  import static net.minecraft.init.Blocks.*;
@@ -12,12 +12,13 @@
 +import org.bukkit.block.BlockState;
 +import org.bukkit.craftbukkit.block.CraftBlockState;
 +import org.bukkit.entity.Player;
++import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 +import org.bukkit.event.world.StructureGrowEvent;
 +//Cauldron end
  
  public class ForgeHooks
  {
-@@ -379,10 +389,12 @@
+@@ -379,10 +390,12 @@
      public static ChatComponentTranslation onServerChatEvent(NetHandlerPlayServer net, String raw, ChatComponentTranslation comp)
      {
          ServerChatEvent event = new ServerChatEvent(net.playerEntity, raw, comp);
@@ -30,7 +31,7 @@
          return event.component;
      }
  
-@@ -439,6 +451,8 @@
+@@ -439,6 +452,8 @@
  
      public static BlockEvent.BreakEvent onBlockBreakEvent(World world, GameType gameType, EntityPlayerMP entityPlayer, int x, int y, int z)
      {
@@ -39,7 +40,7 @@
          // Logic from tryHarvestBlock for pre-canceling the event
          boolean preCancelEvent = false;
          if (gameType.isAdventure() && !entityPlayer.isCurrentToolAdventureModeExempt(x, y, z))
-@@ -449,9 +463,9 @@
+@@ -449,9 +464,9 @@
          {
              preCancelEvent = true;
          }
@@ -51,7 +52,7 @@
          {
              S23PacketBlockChange packet = new S23PacketBlockChange(x, y, z, world);
              packet.field_148883_d = Blocks.air;
-@@ -463,11 +477,11 @@
+@@ -463,11 +478,11 @@
          Block block = world.getBlock(x, y, z);
          int blockMetadata = world.getBlockMetadata(x, y, z);
          BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, blockMetadata, entityPlayer);
@@ -65,7 +66,7 @@
          {
              // Let the client know the block still exists
              entityPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
-@@ -500,81 +514,137 @@
+@@ -500,81 +515,150 @@
          if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
          {
              world.captureBlockSnapshots = true;
@@ -79,14 +80,20 @@
 +                }
 +            }
 +            // Cauldron end
++            
++            if(!world.captureTreeGeneration)
++            	world.captureItemDrops = true; // Thermos real og right here, prevent sugar cane dupe glitch amongst other issues
++            
          }
  
 +        ItemStack.currentPlayer = player; // Cauldron
          boolean flag = itemstack.getItem().onItemUse(itemstack, player, world, x, y, z, side, hitX, hitY, hitZ);
 +        ItemStack.currentPlayer = null; // Cauldron
          world.captureBlockSnapshots = false;
- 
+-
 -        if (flag)
++        if(!world.captureTreeGeneration) // Thermos stop capturing item drops to the world
++        	world.captureItemDrops = false;
 +        // Cauldron start
 +        if (flag && world.captureTreeGeneration && world.capturedBlockSnapshots.size() > 0)
          {
@@ -185,6 +192,7 @@
 +                }
 +                else if (blockSnapshots.size() == 1)
 +                {
++                	// Call both Bukkit's BlockPlaceEvent and Forge's
 +                    placeEvent = ForgeEventFactory.onPlayerBlockPlace(player, blockSnapshots.get(0),
 +                            net.minecraftforge.common.util.ForgeDirection.getOrientation(side));
 +                }
@@ -209,6 +217,7 @@
 +                        blocksnapshot.restore(true, false);
 +                        world.restoringBlockSnapshots = false;
                      }
++                    world.itemStackSpawnQueue.clear(); // Thermos clear the potential drops because the event was cancelled
 +                }
 +                else
 +                {
@@ -240,6 +249,12 @@
 +
 +                        world.markAndNotifyBlock(blockX, blockY, blockZ, null, oldBlock, newBlock, updateFlag);
 +                    }
++                    
++                    for (EntityItem eitm : world.itemStackSpawnQueue) // Thermos load em into the world, mission is a go!
++                    {
++                    	world.addEntity(eitm, SpawnReason.DEFAULT); // Same as world.spawnEntity()
++                    }
++                    world.itemStackSpawnQueue.clear();
 +                    player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);
                  }
 -                player.addStat(StatList.objectUseStats[Item.getIdFromItem(itemstack.getItem())], 1);

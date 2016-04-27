@@ -14,6 +14,7 @@ import java.util.UUID;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.BlockSnapshot;
 
 import org.apache.commons.lang.Validate;
@@ -1471,5 +1472,10 @@ public class CraftWorld implements World {
     {
         return spigot;
     }
+    
     // Spigot end
+    public WorldServer getWorldServer()
+    {
+    	return this.world;
+    }    
 }

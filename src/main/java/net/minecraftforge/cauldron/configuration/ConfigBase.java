@@ -92,6 +92,10 @@ public abstract class ConfigBase
                 {
                     worldserver.tileentityConfig.save();
                 }
+                if (worldserver.sushchestvoConfig != null)
+                {
+                    worldserver.sushchestvoConfig.save();
+                }                
             }
         }
     }

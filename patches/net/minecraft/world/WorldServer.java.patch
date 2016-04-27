@@ -404,22 +404,15 @@
      }
  
      public boolean isBlockTickScheduledThisTick(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
-@@ -438,7 +622,6 @@
+@@ -427,7 +611,7 @@
+                 {
+                     Block block1 = this.getBlock(nextticklistentry.xCoord, nextticklistentry.yCoord, nextticklistentry.zCoord);
  
-             p_147454_5_ = 1;
-         }
--
-         if (this.checkChunksExist(p_147454_1_ - b0, p_147454_2_ - b0, p_147454_3_ - b0, p_147454_1_ + b0, p_147454_2_ + b0, p_147454_3_ + b0))
-         {
-             if (p_147454_4_.getMaterial() != Material.air)
-@@ -453,6 +636,7 @@
-                 this.pendingTickListEntriesTreeSet.add(nextticklistentry);
-             }
-         }
-+
-     }
- 
-     public void func_147446_b(int p_147446_1_, int p_147446_2_, int p_147446_3_, Block p_147446_4_, int p_147446_5_, int p_147446_6_)
+-                    if (block1.getMaterial() != Material.air && block1 == nextticklistentry.func_151351_a())
++                    if (block1.getMaterial() != Material.air && block1 == nextticklistentry.func_151351_a() && p_147454_6_ != 0)
+                     {
+                         block1.updateTick(this, nextticklistentry.xCoord, nextticklistentry.yCoord, nextticklistentry.zCoord, this.rand);
+                     }
 @@ -474,7 +658,7 @@
  
      public void updateEntities()
@@ -475,17 +468,18 @@
          int i = this.pendingTickListEntriesTreeSet.size();
  
 -        if (i != this.pendingTickListEntriesHashSet.size())
-+        if (CauldronCommand.debug)//i != this.pendingTickListEntriesHashSet.size())
++        if (CauldronCommand.debug)
          {
 -            throw new IllegalStateException("TickNextTick list out of synch");
-+	    if(System.currentTimeMillis() - last > 20000){
-+	    System.out.println("[WARN - Robotia] TickNextTick list out of synch by " +Math.abs(this.pendingTickListEntriesTreeSet.size()-this.pendingTickListEntriesHashSet.size() ));
-+	    reevaluate(); last = System.currentTimeMillis();}
-+            //throw new IllegalStateException("TickNextTick list out of synch");
++        	if(System.currentTimeMillis() - last > 20000L)
++        	{
++        		System.out.println("[WARN - Robotia] TickNextTick list out of synch by " +Math.abs(this.pendingTickListEntriesTreeSet.size()-this.pendingTickListEntriesHashSet.size() ));
++        		reevaluate(); last = System.currentTimeMillis();
++        	}
++            	//throw new IllegalStateException("TickNextTick list out of synch");
          }
 -        else
-+        if(true)
-         {
+-        {
              if (i > 1000)
              {
 -                i = 1000;
@@ -502,25 +496,35 @@
              }
  
              this.theProfiler.startSection("cleaning");
-@@ -579,11 +805,12 @@
+@@ -577,17 +803,15 @@
+ 
+             this.theProfiler.endSection();
              this.pendingTickListEntriesThisTick.clear();
-             return !this.pendingTickListEntriesTreeSet.isEmpty();
-         }
-+        return !this.pendingTickListEntriesTreeSet.isEmpty();
+-            return !this.pendingTickListEntriesTreeSet.isEmpty();
+-        }
++            return !this.pendingTickListEntriesTreeSet.isEmpty();        
      }
  
-     public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
+-    public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
++    public List<NextTickListEntry> getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
      {
 -        ArrayList arraylist = null;
-+        HashSet arraylist = null;
-         ChunkCoordIntPair chunkcoordintpair = p_72920_1_.getChunkCoordIntPair();
-         int i = (chunkcoordintpair.chunkXPos << 4) - 2;
+-        ChunkCoordIntPair chunkcoordintpair = p_72920_1_.getChunkCoordIntPair();
+-        int i = (chunkcoordintpair.chunkXPos << 4) - 2;
++        ArrayList<NextTickListEntry> arraylist = null;
++        int i = (p_72920_1_.xPosition << 4) - 2; // Thermos get rid of unnecessary ChunkCoordPosition pair creation
          int j = i + 16 + 2;
-@@ -617,20 +844,24 @@
+-        int k = (chunkcoordintpair.chunkZPos << 4) - 2;
++        int k = (p_72920_1_.zPosition << 4) - 2;
+         int l = k + 16 + 2;
+ 
+         for (int i1 = 0; i1 < 2; ++i1)
+@@ -617,19 +841,24 @@
                      if (p_72920_2_)
                      {
                          this.pendingTickListEntriesHashSet.remove(nextticklistentry);
-+                        if(i1 != 0)
++                        
++                        if(i1 != 0) // Thermos - dump it if we're looking at this.pendingTickListEntriesThisTick
 +                        {
 +                        	this.pendingTickListEntriesTreeSet.remove(nextticklistentry);
 +                        }
@@ -530,7 +534,7 @@
                      if (arraylist == null)
                      {
 -                        arraylist = new ArrayList();
-+                        arraylist = new HashSet();
++                        arraylist = new ArrayList<NextTickListEntry>(30);
                      }
  
                      arraylist.add(nextticklistentry);
@@ -538,13 +542,11 @@
              }
          }
 -
--        return arraylist;
-+	if(arraylist==null)return null;
-+        return new ArrayList(arraylist);
++        
+         return arraylist;
      }
  
-     public void updateEntityWithOptionalForce(Entity p_72866_1_, boolean p_72866_2_)
-@@ -651,7 +882,37 @@
+@@ -651,7 +880,37 @@
      protected IChunkProvider createChunkProvider()
      {
          IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
@@ -583,7 +585,7 @@
          return this.theChunkProviderServer;
      }
  
-@@ -659,29 +920,31 @@
+@@ -659,29 +918,31 @@
      {
          ArrayList arraylist = new ArrayList();
  
@@ -630,7 +632,7 @@
          return arraylist;
      }
  
-@@ -704,7 +967,7 @@
+@@ -704,7 +965,7 @@
  
          if (this.pendingTickListEntriesHashSet == null)
          {
@@ -639,7 +641,7 @@
          }
  
          if (this.pendingTickListEntriesTreeSet == null)
-@@ -733,7 +996,28 @@
+@@ -733,7 +994,28 @@
              int i = 0;
              int j = this.provider.getAverageGroundLevel();
              int k = 0;
@@ -668,7 +670,7 @@
              if (chunkposition != null)
              {
                  i = chunkposition.chunkPosX;
-@@ -876,6 +1160,20 @@
+@@ -876,6 +1158,20 @@
  
      public boolean addWeatherEffect(Entity p_72942_1_)
      {
@@ -689,7 +691,7 @@
          if (super.addWeatherEffect(p_72942_1_))
          {
              this.mcServer.getConfigurationManager().sendToAllNear(p_72942_1_.posX, p_72942_1_.posY, p_72942_1_.posZ, 512.0D, this.provider.dimensionId, new S2CPacketSpawnGlobalEntity(p_72942_1_));
-@@ -894,13 +1192,24 @@
+@@ -894,13 +1190,24 @@
  
      public Explosion newExplosion(Entity p_72885_1_, double p_72885_2_, double p_72885_4_, double p_72885_6_, float p_72885_8_, boolean p_72885_9_, boolean p_72885_10_)
      {
@@ -715,18 +717,22 @@
          if (!p_72885_10_)
          {
              explosion.affectedBlockPositions.clear();
-@@ -977,7 +1286,7 @@
+@@ -977,7 +1284,8 @@
      {
          boolean flag = this.isRaining();
          super.updateWeather();
 -
-+        /* CraftBukkit start
++        
++        // Thermos send those gradual rain changes man!
          if (this.prevRainingStrength != this.rainingStrength)
          {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
-@@ -988,10 +1297,6 @@
+@@ -987,11 +1295,9 @@
+         {
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
++        
++        /* CraftBukkit start
  
 -        /*The function in use here has been replaced in order to only send the weather info to players in the correct dimension,
 -        rather than to all players on the server. This is what causes the client-side rain, as the
@@ -735,7 +741,7 @@
          if (flag != this.isRaining())
          {
              if (flag)
-@@ -1006,6 +1311,33 @@
+@@ -1006,6 +1312,33 @@
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
              this.mcServer.getConfigurationManager().sendPacketToAllPlayersInDimension(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
          }
@@ -769,7 +775,7 @@
      }
  
      protected int func_152379_p()
-@@ -1069,4 +1401,53 @@
+@@ -1069,4 +1402,53 @@
                  this();
              }
          }

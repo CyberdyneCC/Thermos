@@ -20,9 +20,14 @@ import java.util.logging.Logger;
 
 import com.mojang.authlib.GameProfile;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.network.play.server.S33PacketUpdateSign;
 import net.minecraft.network.play.server.S38PacketPlayerListItem;
@@ -494,7 +499,6 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         // Grab the To and From World Handles.
         net.minecraft.world.WorldServer fromWorld = ((CraftWorld) from.getWorld()).getHandle();
         net.minecraft.world.WorldServer toWorld = ((CraftWorld) to.getWorld()).getHandle();
-
         // Close any foreign inventory
         if (getHandle().openContainer != getHandle().inventoryContainer) {
             getHandle().closeScreen();
@@ -504,7 +508,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (fromWorld == toWorld) {
             entity.playerNetServerHandler.teleport(to);
         } else {
-        	server.getHandle().respawnPlayer(entity, toWorld.dimension, false, to, false); // Cauldron
+        	//Thermos....transfer them correctly?!
+            this.getHandle().mountEntity(null);
+        	thermos.thermite.ThermiteTeleportationHandler.transferPlayerToDimension(this.getHandle(), toWorld.dimension, this.getHandle().mcServer.getConfigurationManager(), to.getWorld().getEnvironment()); 
+        	 //this.getHandle().playerNetServerHandler.teleport(to);
+        	 this.getHandle().playerNetServerHandler.teleport(to);
+        	 //this.getHandle().playerNetServerHandler.setPlayerLocation(to.getX(), to.getY(), to.getZ(), this.getHandle().rotationYaw, this.getHandle().rotationPitch);
+        	//server.getHandle().respawnPlayer(entity, toWorld.dimension, false, to, false); // Cauldron
         }
         return true;
     }
@@ -1325,7 +1335,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         {
             if ( getHealth() <= 0 && isOnline() )
             {
-                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0, false );
+                server.getServer().getConfigurationManager().respawnPlayer( getHandle(), 0 );
             }
         }
 
@@ -1334,6 +1344,22 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         {
            return getHandle().translator;
         }
+
+        @Override
+        public void sendMessage(BaseComponent component) {
+            this.sendMessage(new BaseComponent[]{component});
+        }
+
+        @Override
+        public /* varargs */ void sendMessage(BaseComponent ... components) {
+            if (CraftPlayer.this.getHandle().playerNetServerHandler == null) {
+                return;
+            }
+            S02PacketChat packet = new S02PacketChat();
+            packet.components = components;
+            CraftPlayer.this.getHandle().playerNetServerHandler.sendPacket(packet);
+        }
+
     };
 
     public Player.Spigot spigot()

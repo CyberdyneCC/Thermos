@@ -182,7 +182,7 @@
          try {
              Class<?> jarClass;
              try {
-@@ -58,34 +207,290 @@
+@@ -58,34 +207,314 @@
      }
  
      @Override
@@ -275,7 +275,31 @@
 +            // Guava 10 is part of the Bukkit API, so plugins can use it, but FML includes Guava 15
 +            // To resolve this conflict, remap plugin usages to Guava 10 in a separate package
 +            // Most plugins should keep this enabled, unless they want a newer Guava
-+            jarMapping.packages.put("com/google/common", "guava10/com/google/common");
++	    // Thermos force usage of guava17 for pex 1.23 and newer
++        	if (this.description.getName().equals("PermissionsEx"))
++        	{
++        		String[] vn = this.description.getVersion().split(".");
++        		if(vn.length >= 2)
++        		{
++        			try
++        			{
++        				if (Integer.parseInt(vn[1]) >= 23)
++        					jarMapping.packages.put("com/google/common", "guava17/com/google/common");
++        				else
++        	        		jarMapping.packages.put("com/google/common", "guava10/com/google/common");
++        			}
++        			catch(Exception e)
++        			{
++                		jarMapping.packages.put("com/google/common", "guava10/com/google/common");        				
++        			}
++        		}
++        		else
++        		{
++        			jarMapping.packages.put("com/google/common", "guava10/com/google/common");
++        		}
++        	}
++        	else
++        		jarMapping.packages.put("com/google/common", "guava10/com/google/common");
 +            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/com/google/gson", "com/google/gson"); // Handle Gson being in a "normal" place
 +            // Bukkit moves these packages to nms while we keep them in root so we must relocate them for plugins that rely on them
 +            jarMapping.packages.put("net/minecraft/util/io", "io");

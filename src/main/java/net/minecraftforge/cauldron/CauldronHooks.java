@@ -48,6 +48,7 @@ public class CauldronHooks
     public static int tickingDimension = 0;
     public static ChunkCoordIntPair tickingChunk = null;
     public static Map<Class<? extends TileEntity>, TileEntityCache> tileEntityCache = new HashMap<Class<? extends TileEntity>, TileEntityCache>();
+    public static Map<Class<? extends Entity>, SushchestvoCache> sushchestvoCache = new HashMap<Class<? extends Entity>, SushchestvoCache>();
 
     private static TObjectLongHashMap<CollisionWarning> recentWarnings = new TObjectLongHashMap<CollisionWarning>();
 
@@ -278,26 +279,68 @@ public class CauldronHooks
         }
     }
 
+    /*
+     * Thermos
+     * 0 = false, dependent on others
+     * 1 = true
+     * -1 = false, absolute
+     */
+    public static byte canSushchestvoTick(Entity entity, World world)
+    {
+        if (entity == null || world.sushchestvoConfig == null) { return 0; }
+        if (!MinecraftServer.sushchestvoConfig.skipEntityTicks.getValue()) { return 1; }
+        
+        int cX = net.minecraft.util.MathHelper.floor_double( entity.posX ) >> 4, cZ = net.minecraft.util.MathHelper.floor_double( entity.posZ ) >> 4;
+        int iX = net.minecraft.util.MathHelper.floor_double( entity.posX ), iZ = net.minecraft.util.MathHelper.floor_double( entity.posZ );
+        	SushchestvoCache seCache = sushchestvoCache.get(entity.getClass());
+            if (seCache == null)
+            {
+                String seConfigPath = entity.getClass().getName().replace(".", "-");
+                seConfigPath = seConfigPath.replaceAll("[^A-Za-z0-9\\-]", ""); // Fix up odd class names to prevent YAML errors
+                seCache = new SushchestvoCache(entity.getClass(), world.getWorldInfo().getWorldName().toLowerCase(), seConfigPath, world.sushchestvoConfig.getBoolean(seConfigPath + ".tick-no-players", false), world.sushchestvoConfig.getBoolean(seConfigPath + ".never-ever-tick", false), world.sushchestvoConfig.getInt(seConfigPath + ".tick-interval", 1));
+                sushchestvoCache.put(entity.getClass(), seCache);
+            }
+
+            // Tick with no players near?
+            if (!seCache.tickNoPlayers && !world.isActiveBlockCoord(iX, iZ))
+            {
+                return 0;
+            }
+            else if(seCache.neverEverTick)
+            {
+            	return -1;
+            }
+    
+            // Skip tick interval
+            if (seCache.tickInterval > 0 && (world.getWorldInfo().getWorldTotalTime() % seCache.tickInterval == 0L))
+            {
+                return 1;
+            }
+            
+        	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick entities that are in chunks trying to unload
+        	{
+        		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
+        		if(cps.chunksToUnload.contains(cX, cZ))
+        		{
+        			Chunk c = cps.getChunkIfLoaded(cX, cZ);
+        			if(c != null)
+        			{
+        				if(c.lastAccessedTick < 2L)
+        				{
+        					return 1;
+        				}
+        			}
+        		}
+        	}
+        	
+            return 0;
+    }
+    
     public static boolean canTileEntityTick(TileEntity tileEntity, World world)
     {
         if (tileEntity == null || world.tileentityConfig == null) return false;
         if (MinecraftServer.tileEntityConfig.skipTileEntityTicks.getValue())
         {
-        	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick tiles that are trying to unload
-        	{
-        		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
-        		if(cps.chunksToUnload.contains(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4))
-        		{
-        			Chunk c = cps.getChunkIfLoaded(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4);
-        			if(c != null)
-        			{
-        				if(c.lastAccessedTick < 2L)
-        				{
-        					return true;
-        				}
-        			}
-        		}
-        	}
             TileEntityCache teCache = tileEntityCache.get(tileEntity.getClass());
             if (teCache == null)
             {
@@ -318,6 +361,23 @@ public class CauldronHooks
             {
                 return true;
             }
+            
+        	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick tiles that are trying to unload
+        	{
+        		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
+        		if(cps.chunksToUnload.contains(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4))
+        		{
+        			Chunk c = cps.getChunkIfLoaded(tileEntity.xCoord >> 4, tileEntity.zCoord >> 4);
+        			if(c != null)
+        			{
+        				if(c.lastAccessedTick < 2L)
+        				{
+        					return true;
+        				}
+        			}
+        		}
+        	}
+        	
             return false;
         }
         return true;

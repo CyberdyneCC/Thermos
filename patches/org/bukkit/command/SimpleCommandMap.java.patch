@@ -1,5 +1,14 @@
 --- ../src-base/minecraft/org/bukkit/command/SimpleCommandMap.java
 +++ ../src-work/minecraft/org/bukkit/command/SimpleCommandMap.java
+@@ -167,7 +167,7 @@
+         if (args.length == 0) {
+             return false;
+         }
+-
++        
+         String sentCommandLabel = args[0].toLowerCase();
+         Command target = getCommand(sentCommandLabel);
+ 
 @@ -176,11 +176,15 @@
          }
  

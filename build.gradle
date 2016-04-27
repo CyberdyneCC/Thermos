@@ -13,6 +13,15 @@ buildscript {
             name 'forge'
             url 'http://files.minecraftforge.net/maven'
         }
+        maven {
+            name 'sonatype'
+            url 'http://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        maven {
+            name 'spigot'
+            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+
         mavenCentral()
     }
     dependencies {
@@ -33,6 +42,10 @@ apply plugin: 'signing'
 repositories {
     clear()
     maven {
+        name 'sonatype'
+        url 'http://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
         name 'prok'
         url 'https://repo.prok.pw/'
     }
@@ -44,6 +57,11 @@ repositories {
         name 'minecraft'
         url 'https://libraries.minecraft.net/'
     }
+    maven {
+        name 'spigot'
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+
     mavenCentral()
 }
 
@@ -115,7 +133,6 @@ configurations {
 
 dependencies {
     bootstrap 'pw.prok:KBootstrap:0.2.+'
-
     libraries 'net.minecraft:launchwrapper:1.12@jar'
     libraries 'org.ow2.asm:asm-all:5.0.3'
     libraries 'com.typesafe.akka:akka-actor_2.11:2.3.3'

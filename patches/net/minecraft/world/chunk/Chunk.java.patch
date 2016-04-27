@@ -93,7 +93,17 @@
      public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
      {
          this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
-@@ -512,10 +566,10 @@
+@@ -505,17 +559,17 @@
+     public Block getBlock(final int p_150810_1_, final int p_150810_2_, final int p_150810_3_)
+     {
+         Block block = Blocks.air;
+-
+-        if (p_150810_2_ >> 4 < this.storageArrays.length)
++        int p_2 = p_150810_2_ >> 4;
++        if (p_2 < this.storageArrays.length)
+         {
+-            ExtendedBlockStorage extendedblockstorage = this.storageArrays[p_150810_2_ >> 4];
++            ExtendedBlockStorage extendedblockstorage = this.storageArrays[p_2];
  
              if (extendedblockstorage != null)
              {
@@ -390,7 +400,7 @@
                  }
              }
              else if (p_76607_4_ && this.storageArrays[l] != null && this.storageArrays[l].getBlockMSBArray() != null)
-@@ -1523,4 +1682,21 @@
+@@ -1523,4 +1682,22 @@
              }
          }
      }
@@ -399,7 +409,8 @@
 +     * PaperSpigot - Recheck gaps asynchronously.
 +     */
 +    public void recheckGapsAsync(final boolean isStatic) {
-+        if (!worldObj.spigotConfig.useAsyncLighting) {
++    	if (worldObj.isModded == null) worldObj.isModded = false;
++        if (!worldObj.spigotConfig.useAsyncLighting || !worldObj.isModded) {
 +            this.recheckGaps(isStatic);
 +            return;
 +        }

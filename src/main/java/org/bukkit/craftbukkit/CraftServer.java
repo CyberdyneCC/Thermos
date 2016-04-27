@@ -30,6 +30,7 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraftforge.cauldron.apiimpl.CauldronPluginInterface;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -107,6 +108,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scheduler.BukkitWorker;
 import org.bukkit.util.StringUtil;
 import org.bukkit.util.permissions.DefaultPermissions;
+import org.spigotmc.SpigotConfig;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
@@ -140,6 +142,7 @@ import jline.console.ConsoleReader;
 
 public final class CraftServer implements Server {
     private static final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
+    public static Spigot spigot;
     private final String serverName = "Cauldron"; // Cauldron - temporarily keep MCPC-Plus name until plugins adapt
     private final String serverVersion;
     private final String bukkitVersion = Versioning.getBukkitVersion();
@@ -217,7 +220,27 @@ public final class CraftServer implements Server {
         if (!MinecraftServer.useConsole) { // Cauldron
             getLogger().info("Console input is disabled due to --noconsole command argument");
         }
+        this.spigot = new Server.Spigot(){
 
+            @Override
+            public YamlConfiguration getConfig() {
+                return SpigotConfig.getConfig();
+            }
+
+            @Override
+            public void broadcast(BaseComponent component) {
+                for (Player player : CraftServer.this.getOnlinePlayers()) {
+                    player.spigot().sendMessage(component);
+                }
+            }
+
+            @Override
+            public /* varargs */ void broadcast(BaseComponent ... components) {
+                for (Player player : CraftServer.this.getOnlinePlayers()) {
+                    player.spigot().sendMessage(components);
+                }
+            }
+        };
         /* Cauldron start - moved to MinecraftServer so FML/Forge can access during server startup
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());        
         configuration.options().copyDefaults(true);
@@ -1668,7 +1691,14 @@ public final class CraftServer implements Server {
         String token = event.getLastToken();
         for (Player p : getOnlinePlayers()) {
             if (player.canSee(p) && StringUtil.startsWithIgnoreCase(p.getName(), token)) {
-                completions.add(p.getName());
+            	if (event.isPinging())
+            	{
+            		StringBuilder sb = new StringBuilder(1 + p.getName().length());
+            		sb.append('@'); sb.append(p.getName());
+            		completions.add(sb.toString());
+            	}
+            	else
+            		completions.add(p.getName());
             }
         }
         pluginManager.callEvent(event);
@@ -1752,5 +1782,10 @@ public final class CraftServer implements Server {
     @Override
     public UnsafeValues getUnsafe() {
         return CraftMagicNumbers.INSTANCE;
+    }
+
+    @Override
+    public Server.Spigot spigot() {
+        return this.spigot;
     }
 }
