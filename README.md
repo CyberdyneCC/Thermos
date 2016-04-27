@@ -24,7 +24,7 @@ Advantages over KCauldron:
 
 
 ## Installation
-Click [here](https://tcpr.github.io/Thermos/install)
+Click [here](http://cyberdynecc.github.io/Thermos/install)
 
 ## Downloads
 You can download the pre-built packages from [here](https://github.com/CyberdyneCC/Thermos/releases). 
@@ -46,7 +46,7 @@ You can pledge to support Robotia and his work through a monthly [Patreon](https
 
 ## Contributing
 
-Please read the [guide](https://github.com/CyberdyneCC/Thermos/blob/master/CONTRIBUTING.md) on how to contribute - TCPR/Thermos always needs improvements :smile: 
+Please read the [guide](https://github.com/CyberdyneCC/Thermos/blob/master/CONTRIBUTING.md) on how to contribute - Thermos always needs improvements :smile: 
 
 
 
