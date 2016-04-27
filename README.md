@@ -27,7 +27,7 @@ Advantages over KCauldron:
 Click [here](https://tcpr.github.io/Thermos/install)
 
 ## Downloads
-You can download the pre-built packages from [here](https://github.com/TCPR/Thermos/releases). 
+You can download the pre-built packages from [here](https://github.com/CyberdyneCC/Thermos/releases). 
 
 **Thermos is still in beta and you may encounter issues in using it with your server. You have been warned!**
 
@@ -38,7 +38,7 @@ P.S. **PLEASE** look at the release notes before downloading! :smile:
 
 ## Chat
 
-Feel free to drop in on the TCPR Discord chat [here](https://discord.gg/0VmBoNh2sE3u813t)
+Feel free to drop in on the CyberdyneCC Discord chat [here](https://discord.gg/0yZaOwSQocQHebex)
 
 ## Donate/Support
 
@@ -46,7 +46,7 @@ You can pledge to support Robotia and his work through a monthly [Patreon](https
 
 ## Contributing
 
-Please read the [guide](https://github.com/TCPR/Thermos/blob/master/CONTRIBUTING.md) on how to contribute - TCPR/Thermos always needs improvements :smile: 
+Please read the [guide](https://github.com/CyberdyneCC/Thermos/blob/master/CONTRIBUTING.md) on how to contribute - TCPR/Thermos always needs improvements :smile: 
 
 
 
