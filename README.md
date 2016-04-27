@@ -1,11 +1,11 @@
 # Thermos (термос)
 
-[Русский](https://tcpr.github.io/Thermos/#googtrans(en|ru)) [Deutsch](https://tcpr.github.io/Thermos/#googtrans(en|de)) [Français](https://tcpr.github.io/Thermos/#googtrans(en|fr)) [Español](https://tcpr.github.io/Thermos/#googtrans(en|es)) [Português](https://tcpr.github.io/Thermos/#googtrans(en|pt)) [Nederlands](https://tcpr.github.io/Thermos/#googtrans(en|nl)) [汉语](https://tcpr.github.io/Thermos/#googtrans(en|jp)) [日本語](https://tcpr.github.io/Thermos/#googtrans(en|zh)) [조선말](https://tcpr.github.io/Thermos/#googtrans(en|ko)) [हिन्दी](https://tcpr.github.io/Thermos/#googtrans(en|hi))
+[Русский](https://cyberdynecc.github.io/Thermos/#googtrans(en|ru)) [Deutsch](https://cyberdynecc.github.io/Thermos/#googtrans(en|de)) [Français](https://cyberdynecc.github.io/Thermos/#googtrans(en|fr)) [Español](https://cyberdynecc.github.io/Thermos/#googtrans(en|es)) [Português](https://cyberdynecc.github.io/Thermos/#googtrans(en|pt)) [Nederlands](https://cyberdynecc.github.io/Thermos/#googtrans(en|nl)) [汉语](https://cyberdynecc.github.io/Thermos/#googtrans(en|jp)) [日本語](https://cyberdynecc.github.io/Thermos/#googtrans(en|zh)) [조선말](https://cyberdynecc.github.io/Thermos/#googtrans(en|ko)) [हिन्दी](https://cyberdynecc.github.io/Thermos/#googtrans(en|hi))
 
 ![Thermos](thermos_icon.png)
 ![Graph](http://i.mcstats.org/Thermos/Global+Statistics@2x.borderless.png)
 
-[![Build Status](https://travis-ci.org/TCPR/Thermos.svg?branch=master)](https://travis-ci.org/TCPR/Thermos)
+[![Build Status](https://travis-ci.org/CyberdyneCC/Thermos.svg?branch=master)](https://travis-ci.org/CyberdyneCC/Thermos)
 ![Minecraft Forge v10.13.4.1614][forge]
 ![Minecraft v1.7.10][mc]
 ![Java JDK v1.8][java]
@@ -55,10 +55,10 @@ Please read the [guide](https://github.com/CyberdyneCC/Thermos/blob/master/CONTR
 * Java 8 JDK
 * `JAVA_HOME` defined on your OS
 
-## Building TCPR/Thermos
+## Building CyberdyneCC/Thermos
 * Checkout project
   * You can use IDE or clone from console:
-  `git clone https://github.com/TCPR/Thermos.git`
+  `git clone https://github.com/CyberdyneCC/Thermos.git`
 * Setup
   * Auto: `setup.sh`
   * Manual:
