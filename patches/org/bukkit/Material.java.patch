@@ -55,7 +55,7 @@
      private Material(final int id, final int stack) {
          this(id, stack, MaterialData.class);
      }
-@@ -526,7 +558,7 @@
+@@ -526,10 +558,17 @@
       * @return true if this material is a block
       */
      public boolean isBlock() {
@@ -64,7 +64,17 @@
      }
  
      /**
-@@ -615,16 +647,202 @@
++     * Checks if the material is a forge block
++     *
++     * @return true if this material is a forge block
++     */
++    public boolean isForgeBlock() { return isForgeBlock; }
++
++    /**
+      * Checks if this Material is edible.
+      *
+      * @return true if this Material is edible.
+@@ -615,16 +654,202 @@
          } catch (NumberFormatException ex) {}
  
          if (result == null) {
