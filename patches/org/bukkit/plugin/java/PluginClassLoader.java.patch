@@ -182,7 +182,7 @@
          try {
              Class<?> jarClass;
              try {
-@@ -58,34 +207,314 @@
+@@ -58,34 +207,336 @@
      }
  
      @Override
@@ -298,6 +298,28 @@
 +        			jarMapping.packages.put("com/google/common", "guava10/com/google/common");
 +        		}
 +        	}
++        	else if (this.description.getName().equals("BuycraftX"))
++        	{
++        		String[] vn = this.description.getVersion().split(".");
++        		if(vn.length >= 2)
++        		{
++        			try
++        			{
++        				if (Integer.parseInt(vn[1]) >= 10)
++        					jarMapping.packages.put("com/google/common", "guava17/com/google/common");
++        				else
++        	        		jarMapping.packages.put("com/google/common", "guava10/com/google/common");
++        			}
++        			catch(Exception e)
++        			{
++                		jarMapping.packages.put("com/google/common", "guava10/com/google/common");        				
++        			}
++        		}
++        		else
++        		{
++        			jarMapping.packages.put("com/google/common", "guava10/com/google/common");
++        		}
++        	}        	
 +        	else
 +        		jarMapping.packages.put("com/google/common", "guava10/com/google/common");
 +            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/com/google/gson", "com/google/gson"); // Handle Gson being in a "normal" place
