@@ -1,17 +1,12 @@
 package thermos.chaud;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class HashedArrayList<TileEntity> implements List<TileEntity>
 {
 
 	private ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
-	private HashSet<TileEntity> hashed = new HashSet<TileEntity>();
+	private Set<TileEntity> hashed = Collections.synchronizedSet(new HashSet<TileEntity>());
 	
 	@Override
 	public boolean add(TileEntity arg0)
@@ -198,8 +193,8 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	class HashedArrayIterator<TileEntity> implements Iterator<TileEntity> 
 	{
 		Iterator<TileEntity> aritr;
-		HashSet<TileEntity> teset;
-		public HashedArrayIterator(Iterator<TileEntity> aritr, HashSet<TileEntity> teset)
+		Set<TileEntity> teset;
+		public HashedArrayIterator(Iterator aritr, Set<TileEntity> teset)
 		{
 			this.aritr = aritr;
 			this.teset = teset;
