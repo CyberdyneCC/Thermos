@@ -99,7 +99,7 @@
 +            // CraftBukkit start - Send "down" to the server
 +            BlockFromToEvent event = new BlockFromToEvent(source, BlockFace.DOWN);
 +
-+            if (server != null)
++            if (server != null && source != null)
              {
 -                p_149674_1_.setBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_, Blocks.stone);
 -                this.func_149799_m(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_);
@@ -161,7 +161,7 @@
 -            {
 -                this.func_149813_h(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_ - 1, j1);
 -            }
-+                    if (server != null)
++                    if (server != null && source != null)
 +                    {
 +                        server.getPluginManager().callEvent(event);
 +                    }
