@@ -1,44 +1,49 @@
 --- ../src-base/minecraft/net/minecraft/item/ItemWritableBook.java
 +++ ../src-work/minecraft/net/minecraft/item/ItemWritableBook.java
-@@ -25,41 +25,6 @@
+@@ -25,6 +25,46 @@
          return true;
      }
  
--    public boolean shadowUpdate(ItemStack par1, boolean isSigning)
--    {
--        if (this.hasTagCompound() && par1.hasTagCompound())
--        {
--            NBTTagCompound nbttagcompound = this.getTagCompound();
--            NBTTagCompound nbttagcompound1 = par1.getTagCompound();
--            if (nbttagcompound1.hasKey("pages"))
--                nbttagcompound.setTag("pages", nbttagcompound1.getTag("pages"));
--            if (isSigning)
--            {
--                if (nbttagcompound1.hasKey("title"))
--                {
--                    nbttagcompound.setTag("title", nbttagcompound1.getTag("title"));
--                }
--                if (nbttagcompound1.hasKey("author"))
--                    nbttagcompound.setTag("author", nbttagcompound1.getTag("author"));
--            }
--        }
--        else if(par1.hasTagCompound())
--        {
--            NBTTagCompound nbttagcompound1 = par1.getTagCompound();
--            if (nbttagcompound1.hasKey("pages"))
--                this.setTagInfo("pages", nbttagcompound1.getTag("pages"));
--            if (isSigning)
--            {
--                if (nbttagcompound1.hasKey("title"))
--                {
--                    this.setTagInfo("title", nbttagcompound1.getTag("title"));
--                }
--                if (nbttagcompound1.hasKey("author"))
--                    this.setTagInfo("author", nbttagcompound1.getTag("author"));
--            }
--        }
--    }
--
++    public boolean shadowUpdate(ItemStack par1, boolean isSigning)
++    {
++        if (isSigning)
++        {
++            this.setTagInfo("title", new NBTTagString(par1.getTagCompound().getString("title")));
++        }
++        this.setTagInfo("pages", par1.getTagCompound().getTagList("pages", 8));
++        /*if (this.hasTagCompound() && par1.hasTagCompound())
++        {
++            NBTTagCompound nbttagcompound = this.getTagCompound();
++            NBTTagCompound nbttagcompound1 = par1.getTagCompound();
++            if (nbttagcompound1.hasKey("pages"))
++                nbttagcompound.setTag("pages", nbttagcompound1.getTag("pages"));
++            if (isSigning)
++            {
++                if (nbttagcompound1.hasKey("title"))
++                {
++                    nbttagcompound.setTag("title", nbttagcompound1.getTag("title"));
++                }
++                if (nbttagcompound1.hasKey("author"))
++                    nbttagcompound.setTag("author", nbttagcompound1.getTag("author"));
++            }
++        }
++        else if(par1.hasTagCompound())
++        {
++            NBTTagCompound nbttagcompound1 = par1.getTagCompound();
++            if (nbttagcompound1.hasKey("pages"))
++                this.setTagInfo("pages", nbttagcompound1.getTag("pages"));
++            if (isSigning)
++            {
++                if (nbttagcompound1.hasKey("title"))
++                {
++                    this.setTagInfo("title", nbttagcompound1.getTag("title"));
++                }
++                if (nbttagcompound1.hasKey("author"))
++                    this.setTagInfo("author", nbttagcompound1.getTag("author"));
++            }
++        }*/
++    }
++
      public static boolean func_150930_a(NBTTagCompound p_150930_0_)
      {
          if (p_150930_0_ == null)

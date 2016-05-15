@@ -1871,7 +1871,7 @@
                      {
 -                        itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));
 +                        ((ItemWritableBook)itemstack1).shadowUpdate(itemstack, false);
-+                        CraftEventFactory.handleEditBookEvent(playerEntity, itemstack); // CraftBukkit
++                        CraftEventFactory.handleEditBookEvent(playerEntity, itemstack1); // CraftBukkit
                      }
  
                      return;
@@ -1889,16 +1889,15 @@
              }
              finally
              {
-@@ -1135,19 +2498,19 @@
- 
+@@ -1136,18 +2499,19 @@
                      if (itemstack.getItem() == Items.written_book && itemstack1.getItem() == Items.writable_book)
                      {
--                        itemstack1.setTagInfo("author", new NBTTagString(this.playerEntity.getCommandSenderName()));
+                         itemstack1.setTagInfo("author", new NBTTagString(this.playerEntity.getCommandSenderName()));
 -                        itemstack1.setTagInfo("title", new NBTTagString(itemstack.getTagCompound().getString("title")));
 -                        itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));
 -                        itemstack1.func_150996_a(Items.written_book);
 +                        ((ItemWritableBook)itemstack1).shadowUpdate(itemstack, true);
-+                        CraftEventFactory.handleEditBookEvent(playerEntity, itemstack); // CraftBukkit
++                        CraftEventFactory.handleEditBookEvent(playerEntity, itemstack1); // CraftBukkit
                      }
  
                      return;
@@ -1916,7 +1915,7 @@
              }
              finally
              {
-@@ -1174,9 +2537,12 @@
+@@ -1174,9 +2538,12 @@
                          ((ContainerMerchant)container).setCurrentRecipeIndex(i);
                      }
                  }
@@ -1930,7 +1929,7 @@
                  }
              }
              else if ("MC|AdvCdm".equals(p_147349_1_.func_149559_c()))
-@@ -1222,9 +2588,12 @@
+@@ -1222,9 +2589,12 @@
                              this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                          }
                      }
@@ -1945,7 +1944,7 @@
                      }
                      finally
                      {
-@@ -1257,9 +2626,12 @@
+@@ -1257,9 +2627,12 @@
                              tileentitybeacon.markDirty();
                          }
                      }
@@ -1960,7 +1959,7 @@
                      }
                  }
              }
-@@ -1281,6 +2653,13 @@
+@@ -1281,6 +2654,13 @@
                      containerrepair.updateItemName("");
                  }
              }
@@ -1974,7 +1973,7 @@
          }
      }
  
-@@ -1292,6 +2671,21 @@
+@@ -1292,6 +2672,21 @@
          }
      }
  
