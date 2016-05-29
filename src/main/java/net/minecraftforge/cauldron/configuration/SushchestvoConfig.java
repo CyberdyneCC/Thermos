@@ -17,7 +17,7 @@ public class SushchestvoConfig extends ConfigBase
             + "Forums: http://cauldron.minecraftforge.net/\n";
     
     /* ======================================================================== */
-    public final BoolSetting skipEntityTicks = new BoolSetting(this, "settings.skip-entity-ticks", true, "If enabled, turns on entity tick skip feature when no players are near.");
+    public final BoolSetting skipEntityTicks = new BoolSetting(this, "settings.skip-entity-ticks", true, "If enabled, allows the default entity tick skip feature when no players are near.");
     public final BoolSetting enableECanUpdateWarning = new BoolSetting(this, "debug.enable-ent-can-update-warning", false, "Set true to detect which entities should not be ticking.");
     public final BoolSetting preventInvalidEntityUpdates = new BoolSetting(this, "settings.prevent-invalid-entity-updates", true, "Used to determine if an entity should tick and if not the TE is added to a ban list. Note: This should help improve performance.");
     /* ======================================================================== */

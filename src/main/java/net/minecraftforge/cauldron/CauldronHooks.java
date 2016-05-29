@@ -301,12 +301,7 @@ public class CauldronHooks
                 sushchestvoCache.put(entity.getClass(), seCache);
             }
 
-            // Tick with no players near?
-            if (!seCache.tickNoPlayers && !world.isActiveBlockCoord(iX, iZ))
-            {
-                return 0;
-            }
-            else if(seCache.neverEverTick)
+            if(seCache.neverEverTick)
             {
             	return -1;
             }
@@ -314,9 +309,15 @@ public class CauldronHooks
             // Skip tick interval
             if (seCache.tickInterval > 0 && (world.getWorldInfo().getWorldTotalTime() % seCache.tickInterval == 0L))
             {
+                return 0;
+            }
+
+            // Tick with no players near?
+            if (seCache.tickNoPlayers)
+            {
                 return 1;
             }
-            
+
         	if(world.chunkProvider instanceof ChunkProviderServer) // Thermos - allow the server to tick entities that are in chunks trying to unload
         	{
         		ChunkProviderServer cps = ((ChunkProviderServer)world.chunkProvider);
@@ -333,7 +334,7 @@ public class CauldronHooks
         		}
         	}
         	
-            return 0;
+            return -1;
     }
     
     public static boolean canTileEntityTick(TileEntity tileEntity, World world)
