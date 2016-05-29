@@ -2,11 +2,15 @@ package thermos.chaud;
 
 import java.util.*;
 
-public class HashedArrayList<TileEntity> implements List<TileEntity>
+public class HashedArrayList<TileEntity> extends ArrayList<TileEntity>
 {
 
-	private ArrayList<TileEntity> stuff = new ArrayList<TileEntity>();
-	private Set<TileEntity> hashed = Collections.synchronizedSet(new HashSet<TileEntity>());
+	public HashedArrayList()
+	{
+		super();
+	}
+
+	private Set<TileEntity> hashed = Collections.synchronizedSet(new LinkedHashSet<TileEntity>());
 	
 	@Override
 	public boolean add(TileEntity arg0)
@@ -14,7 +18,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = hashed.add(arg0);
 		
 		if (flag)
-			stuff.add(arg0);
+			super.add(arg0);
 		
 		return flag;
 	}
@@ -25,7 +29,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = hashed.add(arg1);
 		
 		if (flag)
-			stuff.add(arg0, arg1);
+			super.add(arg0, arg1);
 	}
 
 	@Override
@@ -34,7 +38,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = hashed.addAll(arg0);
 		
 		if (flag)
-			stuff.addAll(arg0);
+			super.addAll(arg0);
 		
 		return flag;
 	}
@@ -45,7 +49,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = hashed.addAll(arg1);
 		
 		if (flag)
-			stuff.addAll(arg0, arg1);
+			super.addAll(arg0, arg1);
 		
 		return flag;
 	}
@@ -54,7 +58,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	public void clear()
 	{
 		this.hashed.clear();
-		this.stuff.clear();
+		super.clear();
 	}
 
 	@Override
@@ -72,32 +76,32 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	@Override
 	public TileEntity get(int arg0)
 	{
-		return stuff.get(arg0);
+		return super.get(arg0);
 	}
 
 	@Override
 	public int indexOf(Object arg0)
 	{
-		return stuff.indexOf(arg0);
+		return super.indexOf(arg0);
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return stuff.isEmpty();
+		return super.isEmpty();
 	}
 
 	@Override
 	public Iterator<TileEntity> iterator() 
 	{
-		return new HashedArrayIterator(this.stuff.iterator(), this.hashed);
+		return new HashedArrayIterator(super.iterator(), this.hashed);
 	}
 
 	@Override
 	public int lastIndexOf(Object arg0) {
 		if (this.hashed.contains(arg0))
 		{
-			return this.stuff.lastIndexOf(arg0);
+			return super.lastIndexOf(arg0);
 		}
 		else 
 		{
@@ -112,20 +116,20 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 
 	@Override
 	public ListIterator listIterator(int arg0) {
-		return this.stuff.listIterator(arg0);
+		return super.listIterator(arg0);
 	}
 
 	@Override
 	public boolean remove(Object arg0) {
 		boolean flag = this.hashed.remove(arg0);
 		if (flag)
-			this.stuff.remove(arg0);
+			super.remove(arg0);
 		return flag;
 	}
 
 	@Override
 	public TileEntity remove(int arg0) {
-		TileEntity te = this.stuff.remove(arg0);
+		TileEntity te = super.remove(arg0);
 		
 		if (te != null)
 			hashed.remove(te);
@@ -139,8 +143,8 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		
 		if (flag)
 		{
-			this.stuff = new ArrayList<TileEntity>((int)(hashed.size()*1.5)+1);
-			for(TileEntity te : hashed) this.stuff.add(te);
+			super.clear();
+			super.addAll(this.hashed);
 		}
 		
 		return flag;
@@ -151,7 +155,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 		boolean flag = this.hashed.retainAll(arg0);
 		
 		if (flag)
-			this.stuff = new ArrayList<TileEntity>(hashed);
+			super.retainAll(arg0);
 		
 		return flag;
 	}
@@ -159,7 +163,7 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 	@Override
 	public TileEntity set(int arg0, TileEntity arg1) 
 	{
-			TileEntity te = this.stuff.set(arg0, arg1);
+			TileEntity te = super.set(arg0, arg1);
 			
 			if (te != null)
 				this.hashed.remove(arg1);
@@ -169,25 +173,25 @@ public class HashedArrayList<TileEntity> implements List<TileEntity>
 
 	@Override
 	public int size() {
-		return this.stuff.size();
+		return super.size();
 	}
 
 	@Override
 	public List<TileEntity> subList(int arg0, int arg1)
 	{
-		return this.stuff.subList(arg0, arg1);
+		return super.subList(arg0, arg1);
 	}
 
 	@Override
 	public Object[] toArray() 
 	{
-		return this.stuff.toArray();
+		return super.toArray();
 	}
 
 	@Override
 	public Object[] toArray(Object[] arg0) 
 	{
-		return this.stuff.toArray(arg0);
+		return super.toArray(arg0);
 	}
 	
 	class HashedArrayIterator<TileEntity> implements Iterator<TileEntity> 

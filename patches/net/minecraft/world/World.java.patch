@@ -1253,7 +1253,7 @@
 +         1  = force tick and ignore Spigot
 +        */
 +        byte tickAbility = CauldronHooks.canSushchestvoTick(p_72866_1_,this);
-+        if (!isForced && !canUpdate && (!org.spigotmc.ActivationRange.checkIfActive(p_72866_1_) && tickAbility != 1)) // Cauldron - ignore if forge event forced update or entity is in forced chunk
++        if (!isForced && !canUpdate && (tickAbility == -1 || (!org.spigotmc.ActivationRange.checkIfActive(p_72866_1_) && tickAbility != 1))) // Cauldron - ignore if forge event forced update or entity is in forced chunk
 +        {
 +            p_72866_1_.ticksExisted++;
 +            p_72866_1_.inactiveTick();
