@@ -1,16 +1,25 @@
 --- ../src-base/minecraft/net/minecraft/item/ItemWritableBook.java
 +++ ../src-work/minecraft/net/minecraft/item/ItemWritableBook.java
-@@ -25,6 +25,46 @@
+@@ -3,6 +3,7 @@
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.nbt.NBTTagCompound;
+ import net.minecraft.nbt.NBTTagList;
++import net.minecraft.nbt.NBTTagString;
+ import net.minecraft.world.World;
+ 
+ public class ItemWritableBook extends Item
+@@ -25,6 +26,47 @@
          return true;
      }
  
-+    public boolean shadowUpdate(ItemStack par1, boolean isSigning)
++    public static boolean shadowUpdate(ItemStack par1, boolean isSigning)
 +    {
 +        if (isSigning)
 +        {
-+            this.setTagInfo("title", new NBTTagString(par1.getTagCompound().getString("title")));
++            par1.setTagInfo("title", new NBTTagString(par1.getTagCompound().getString("title")));
 +        }
-+        this.setTagInfo("pages", par1.getTagCompound().getTagList("pages", 8));
++        par1.setTagInfo("pages", par1.getTagCompound().getTagList("pages", 8));
++        return true;
 +        /*if (this.hasTagCompound() && par1.hasTagCompound())
 +        {
 +            NBTTagCompound nbttagcompound = this.getTagCompound();
