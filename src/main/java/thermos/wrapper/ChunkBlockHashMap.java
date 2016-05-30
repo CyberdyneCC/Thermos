@@ -10,35 +10,9 @@ import net.minecraft.world.chunk.Chunk;
 
 public class ChunkBlockHashMap {
 
-	//private final ConcurrentHashMap<Integer, Chunk[][]> map = new ConcurrentHashMap<Integer, Chunk[][]>();
 	private final org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> map = new org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]>();
+	private final Chunk[] lasts = new Chunk[4];
 	private int size = 0;
-
-	/*public static long chunk_hash(int x, int z)
-	{
-		//return ((x & 0xFFFF) << 16) | (z & 0xFFFF);
-//		long key = LongHash.toLong(x, z);
-//		return LongHash.toLong((int) (key & 0xFFFFFFFFL), (int) (key >>> 32));
-		return (((long)x)<<32L)^z;
-	}*/
-
-	/*private static int chunk_array(int index)
-	{
-		index = index % 16;
-		return (index + (index >> 31)) ^ (index >> 31);
-	}
-	*/
-	/*private Chunk[][] chunk_array_get(int x, int z)
-	{
-		Chunk[][] bunch = this.map.get(chunk_hash(x >> 4, z >> 4));
-		return bunch;
-	}*/
-	
-	/*private Chunk[][] chunk_array_remove(int x, int z)
-	{
-		Chunk[][] bunch = this.map.remove(chunk_hash(x >> 4, z >> 4));
-		return bunch;
-	}*/
 
 	public org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> raw()
 	{
@@ -49,8 +23,6 @@ public class ChunkBlockHashMap {
 	{
 		return this.size;
 	}
-	
-	private Chunk last1,last2,last3,last4;
 
 	public boolean bulkCheck(Collection<int[]> coords)
 	{
@@ -116,22 +88,10 @@ public class ChunkBlockHashMap {
 	
 	public Chunk get(int x, int z)
 	{
-		if(last1 != null && last1.xPosition == x && last1.zPosition == z)
-		{
-			return last1;
-		}
-		if(last2 != null && last2.xPosition == x && last2.zPosition == z)
-		{
-			return last2;
-		}
-		if(last3 != null && last3.xPosition == x && last3.zPosition == z)
-		{
-			return last3;
-		}
-		if(last4 != null && last4.xPosition == x && last4.zPosition == z)
-		{
-			return last4;
-		}   
+		for(Chunk last : lasts)
+			if(last != null && last.xPosition == x && last.zPosition == z)
+				return last;
+		
 		
 		Chunk[][] bunch = this.map.get((((long)(x>>4))<<32L)^(z>>4));
 		if(bunch == null) return null;
@@ -142,11 +102,13 @@ public class ChunkBlockHashMap {
 		
 		if ( ref != null)
 		{
-			last4 = last3; 
-			last3 = last2; 
-			last2 = last1;
-			last1 = ref;
+			for(int i = lasts.length - 1; i > 0; i--)
+				lasts[i] = lasts[i - 1];
+			
+			lasts[0] = ref;
 		}
+		
+		
 		return ref;
 	}
 
@@ -154,6 +116,7 @@ public class ChunkBlockHashMap {
 	{
 		if(chunk == null)
 			return;
+		
 		size++;
 		int x = chunk.xPosition, z = chunk.zPosition;
 		
@@ -177,13 +140,12 @@ public class ChunkBlockHashMap {
 			temp_chunk_bunch[x][z] = chunk;
 			this.map.put(chunkhash, temp_chunk_bunch); //Thermos
 		}
-		if ( chunk != null)
-		{
-			last4 = last3; 
-			last3 = last2; 
-			last2 = last1;
-			last1 = chunk;
-		}
+
+		for(int i = lasts.length - 1; i > 0; i--)
+			lasts[i] = lasts[i - 1];
+			
+		lasts[0] = chunk;
+		
 	}
 
 	public void remove(Chunk chunk)
@@ -205,30 +167,15 @@ public class ChunkBlockHashMap {
 				temp_chunk_bunch[x][z] = null;
 			}
 		}
-		if(last1 != null && last1.xPosition == chunk.xPosition && last1.zPosition == chunk.zPosition)
+		
+		for(int i = 0; i < lasts.length; i++)
 		{
-			last1 = null;
-			last1 = last2;
-			last2 = last3;
-			last3 = last4;
-			last4 = null;
+			if(lasts[i] != null && lasts[i].xPosition == chunk.xPosition && lasts[i].zPosition == chunk.zPosition)
+			{
+				lasts[i] = lasts[0];
+				lasts[0] = null;
+				break;
+			}
 		}
-		if(last2 != null && last2.xPosition == chunk.xPosition && last2.zPosition == chunk.zPosition)
-		{
-			last2 = null;
-			last2 = last3;
-			last3 = last4;
-			last4 = null;
-		}
-		if(last3 != null && last3.xPosition == chunk.xPosition && last3.zPosition == chunk.zPosition)
-		{
-			last3 = null;
-			last3 = last4; 
-			last4 = null;
-		}
-		if(last4 != null && last4.xPosition == chunk.xPosition && last4.zPosition == chunk.zPosition)
-		{
-			last4 = null;
-		}       
 	}
 }
