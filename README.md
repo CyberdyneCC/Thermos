@@ -96,9 +96,9 @@ All builds will be in `build/distributions`
 
 ✔ TuxTwoLib: Didn't work with Thermos at all [Fixed]
 
-✖ Mobius / Opis: Randomly will not work with Thermos, sometimes will, but most of the time it wont.
+✔ Mobius / Opis: You can download fixed version [HERE](https://cdn.discordapp.com/attachments/172072987154055168/186577486593785857/MobiusCore-1.2.5-Thermos.jar)
 
-✖ SkinsRestorer: Unknown status, currently doesn't work.
+✔ SkinsRestorer: Latest working version is 10.4.4
 
 [Fixed]: http://gogs.tcpr.ca/TCPR/Fixes "Fixed"
 [forge]: https://img.shields.io/badge/Minecraft%20Forge-v10.13.4.1614-green.svg "Minecraft Forge v10.13.4.1614"
