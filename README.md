@@ -78,7 +78,7 @@ All builds will be in `build/distributions`
 * Re apply patches & build binaries
   * `./gradlew clean setupCauldron jar`
 
-## Known Caveats
+## Known Caveats, use provided fixes at your own risk.
 
 ✔ Aether II: isDonor function can lock up servers. [Fixed]
 
