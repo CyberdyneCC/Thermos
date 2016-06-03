@@ -8,7 +8,7 @@
  import java.util.Set;
  import java.util.concurrent.Callable;
  import net.minecraft.crash.CrashReport;
-@@ -38,322 +39,365 @@
+@@ -38,322 +39,372 @@
  import net.minecraft.world.chunk.Chunk;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -57,10 +57,17 @@
 -            Iterator iterator = this.trackedEntities.iterator();
 +	public void waitForLock()
 +	{
++		int counter = 0;
 +		while(this.trackerLock.isLocked())
 +		{
 +			try
 +			{
++				counter += 1;
++				if(counter >= 100)
++				{
++					unlock();
++					break;
++				}
 +				Thread.sleep(100L);
 +			}
 +			catch(Exception e)
@@ -515,7 +522,7 @@
 +	public void updateTrackedEntities()
 +	{
 +		waitForLock();lock();// TTCP
-+		ArrayList arraylist = new ArrayList(this.trackedEntities.size());
++		ArrayList arraylist = new ArrayList((int)(this.trackedEntities.size() *1.5) + 1);
 +		for (EntityTrackerEntry entitytrackerentry : this.trackedEntities)
 +		{
 +			if (entitytrackerentry != null) {
@@ -526,7 +533,7 @@
 -        EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry)this.trackedEntityIDs.lookup(p_151248_1_.getEntityId());
 +				if (entitytrackerentry.playerEntitiesUpdated && entitytrackerentry.myEntity instanceof EntityPlayerMP)
 +				{
-+					arraylist.add((EntityPlayerMP)entitytrackerentry.myEntity);
++					arraylist.add(entitytrackerentry.myEntity);
 +				}
 +			}
 +		}
