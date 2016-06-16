@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static org.bukkit.craftbukkit.util.Java15Compat.Arrays_copyOf;
-
 @SuppressWarnings("unchecked")
 public class LongObjectHashMap<V> implements Cloneable, Serializable {
     static final long serialVersionUID = 2841537710170573815L;
@@ -28,7 +26,6 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
     private transient V[][]    values;
     private transient int      modCount;
     private transient int      size;
-    private transient org.spigotmc.FlatMap<V> flat = new org.spigotmc.FlatMap<V>(); // Spigot
 
     public LongObjectHashMap() {
         initialize();
@@ -62,17 +59,6 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
     }
 
     public V get(long key) {
-        // Spigot start
-        if ( size == 0 )
-        {
-            return null;
-        }
-        V val = flat.get( key );
-        if ( val != null )
-        {
-            return val;
-        }
-        // Spigot end
         int index = (int) (keyIndex(key) & (BUCKET_SIZE - 1));
         long[] inner = keys[index];
         if (inner == null) return null;
@@ -90,7 +76,6 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
     }
 
     public V put(long key, V value) {
-        flat.put(key, value); // Spigot
         int index = (int) (keyIndex(key) & (BUCKET_SIZE - 1));
         long[] innerKeys = keys[index];
         V[] innerValues = values[index];
@@ -125,9 +110,9 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
             }
 
             // chain is full, resize it and add our new entry
-            keys[index] = innerKeys = Arrays_copyOf(innerKeys, i << 1);
+            keys[index] = innerKeys = Arrays.copyOf(innerKeys, i << 1);
             Arrays.fill(innerKeys, i, innerKeys.length, EMPTY_KEY);
-            values[index] = innerValues = Arrays_copyOf(innerValues, i << 1);
+            values[index] = innerValues = Arrays.copyOf(innerValues, i << 1);
             innerKeys[i] = key;
             innerValues[i] = value;
             size++;
@@ -137,7 +122,6 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
     }
 
     public V remove(long key) {
-        flat.remove(key); // Spigot
         int index = (int) (keyIndex(key) & (BUCKET_SIZE - 1));
         long[] inner = keys[index];
         if (inner == null) {
@@ -188,7 +172,6 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
         size = 0;
         Arrays.fill(keys, null);
         Arrays.fill(values, null);
-        flat = new org.spigotmc.FlatMap<V>();
     }
 
     public Set<Long> keySet() {
@@ -205,9 +188,16 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
      * this reason it should be avoided if at all possible.
      *
      * @return Set of Entry objects
+     * @deprecated
      */
+    @Deprecated
     public Set<Map.Entry<Long, V>> entrySet() {
-        return new EntrySet();
+        HashSet<Map.Entry<Long, V>> set = new HashSet<Map.Entry<Long, V>>();
+        for (long key : keySet()) {
+            set.add(new Entry(key, get(key)));
+        }
+
+        return set;
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -406,8 +396,13 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
 
 
     private class Entry implements Map.Entry<Long, V> {
-        private Long key;
+        private final Long key;
         private V value;
+
+        Entry(long k, V v) {
+            key = k;
+            value = v;
+        }
 
         public Long getKey() {
             return key;
@@ -423,42 +418,5 @@ public class LongObjectHashMap<V> implements Cloneable, Serializable {
             put(key, v);
             return old;
         }
-        
-        private void bind(long key, V value) {
-            this.key = key;
-            this.value = value;    
-        }
-    }
-    
-    private class EntrySet extends AbstractSet<Map.Entry<Long, V>> {
-        @Override
-        public Iterator<Map.Entry<Long, V>> iterator() {
-            return new Iterator<Map.Entry<Long, V>>() {
-                final Entry entry = new Entry();
-                final ValueIterator valueIterator = new ValueIterator();
-                
-                @Override
-                public boolean hasNext() {
-                    return valueIterator.hasNext();
-                }
-
-                @Override
-                public LongObjectHashMap<V>.Entry next() {
-                    V value = valueIterator.next();
-                    entry.bind(valueIterator.prevKey, value);
-                    return entry;
-                }
-
-                @Override
-                public void remove() {
-                    valueIterator.remove();
-                }
-            };
-        }
-
-        @Override
-        public int size() {
-            return LongObjectHashMap.this.size;
-        }        
     }
 }
