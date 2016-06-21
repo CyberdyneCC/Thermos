@@ -52,7 +52,7 @@
      private static final String __OBFID = "CL_00000339";
  
      public void updateEntity()
-@@ -60,20 +98,37 @@
+@@ -60,20 +98,42 @@
              Iterator iterator = list.iterator();
              EntityPlayer entityplayer;
  
@@ -79,7 +79,12 @@
              if (this.levels >= 4 && this.primaryEffect != this.secondaryEffect && this.secondaryEffect > 0)
              {
                  iterator = list.iterator();
-+                org.bukkit.potion.PotionEffect secondaryEffect = new org.bukkit.potion.PotionEffect(PotionEffectType.getById(this.getPrimaryEffect()), 180, b0, true); // PaperSpigot
++                org.bukkit.potion.PotionEffect secondaryEffect;
++                if (this.secondaryEffect == 10) {
++                    secondaryEffect = new org.bukkit.potion.PotionEffect(PotionEffectType.getById(10), 180, b0, true); // PaperSpigot
++                } else {
++                    secondaryEffect = new org.bukkit.potion.PotionEffect(PotionEffectType.getById(this.getPrimaryEffect()), 180, b0, true); // PaperSpigot
++                }
  
                  while (iterator.hasNext())
                  {
@@ -95,7 +100,7 @@
                  }
              }
          }
-@@ -343,7 +398,7 @@
+@@ -343,7 +403,7 @@
  
      public int getInventoryStackLimit()
      {
