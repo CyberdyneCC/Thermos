@@ -163,6 +163,7 @@ dependencies {
     libraries 'org.apache.httpcomponents:httpclient:4.4.1'
     libraries 'net.openhft:affinity:3.0.1'
     libraries 'org.fusesource.jansi:jansi:1.11'
+	libraries 'com.koloboke:koloboke-impl-jdk8:1.0.0'
 }
 
 packageUniversal {

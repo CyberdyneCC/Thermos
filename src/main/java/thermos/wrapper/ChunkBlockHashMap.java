@@ -1,17 +1,15 @@
 package thermos.wrapper;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.concurrent.*;
 
-import org.bukkit.craftbukkit.util.LongHash;
-
+import com.koloboke.collect.map.LongObjMap;
+import com.koloboke.collect.map.hash.HashLongObjMaps;
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkBlockHashMap {
 
 	//private final ConcurrentHashMap<Integer, Chunk[][]> map = new ConcurrentHashMap<Integer, Chunk[][]>();
-	private final org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> map = new org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]>();
+	private final LongObjMap<Chunk[][]> map = HashLongObjMaps.newMutableMap(1000);
 	private int size = 0;
 
 	/*public static long chunk_hash(int x, int z)
@@ -40,7 +38,7 @@ public class ChunkBlockHashMap {
 		return bunch;
 	}*/
 
-	public org.bukkit.craftbukkit.util.LongObjectHashMap<Chunk[][]> raw()
+	public LongObjMap<Chunk[][]> raw()
 	{
 		return this.map;
 	}
