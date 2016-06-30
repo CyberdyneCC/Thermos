@@ -1,9 +1,10 @@
 --- ../src-base/minecraft/net/minecraft/tileentity/TileEntity.java
 +++ ../src-work/minecraft/net/minecraft/tileentity/TileEntity.java
-@@ -22,18 +22,23 @@
+@@ -22,20 +22,32 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
++import org.bukkit.craftbukkit.Overridden;
 +import org.spigotmc.CustomTimingsHandler; // Spigot
 +import org.bukkit.inventory.InventoryHolder; // CraftBukkit
 +
@@ -25,8 +26,16 @@
 +    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getTileEntityTimings(this); // Spigot
      private static final String __OBFID = "CL_00000340";
  
++    @Override
++    public int hashCode()
++    {
++        return ((yCoord * 31 + xCoord) * 31 + zCoord) * 17 + yCoord;
++    }
++
      public static void addMapping(Class p_145826_0_, String p_145826_1_)
-@@ -106,7 +111,11 @@
+     {
+         if (nameToClassMap.containsKey(p_145826_1_))
+@@ -106,7 +118,11 @@
          }
          catch (Exception exception)
          {
@@ -39,7 +48,7 @@
          }
  
          if (tileentity != null)
-@@ -282,6 +291,31 @@
+@@ -282,6 +298,31 @@
          addMapping(TileEntityFlowerPot.class, "FlowerPot");
      }
  
