@@ -196,7 +196,7 @@ public class ThermiteRandom extends Random {
      * @since 1.2
      */
     public int nextInt(int bound) {
-        if (bound <= 0) {
+        if (bound < 0) {
             throw new RuntimeException("BadBound");
         }
 
