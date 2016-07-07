@@ -30,19 +30,33 @@
      public Block getBlockByExtId(int p_150819_1_, int p_150819_2_, int p_150819_3_)
      {
          int l = this.blockLSBArray[p_150819_2_ << 8 | p_150819_3_ << 4 | p_150819_1_] & 255;
-@@ -39,7 +62,11 @@
+@@ -39,7 +62,10 @@
          {
              l |= this.blockMSBArray.get(p_150819_1_, p_150819_2_, p_150819_3_) << 8;
          }
+-
 +        
 +        // Thermos instant delete block IDs which are banned
 +        if (net.minecraftforge.cauldron.configuration.CauldronConfig.instance.instantRemove.contains(l)) return Blocks.air;
- 
 +        
          return Block.getBlockById(l);
      }
  
-@@ -139,6 +166,106 @@
+@@ -52,11 +78,10 @@
+             l |= this.blockMSBArray.get(p_150818_1_, p_150818_2_, p_150818_3_) << 8;
+         }
+ 
+-        Block block1 = Block.getBlockById(l);
+-
+-        if (block1 != Blocks.air)
++        if (l > 0)
+         {
+             --this.blockRefCount;
++            Block block1 = Block.getBlockById(l);
+ 
+             if (block1.getTickRandomly())
+             {
+@@ -139,6 +164,106 @@
  
      public void removeInvalidBlocks()
      {
@@ -149,7 +163,7 @@
          this.blockRefCount = 0;
          this.tickRefCount = 0;
  
-@@ -175,51 +302,112 @@
+@@ -175,51 +300,112 @@
          this.blockMSBArray = null;
      }
  

@@ -93,12 +93,38 @@
      public Chunk(World p_i45446_1_, Block[] p_i45446_2_, int p_i45446_3_, int p_i45446_4_)
      {
          this(p_i45446_1_, p_i45446_3_, p_i45446_4_);
-@@ -505,17 +559,17 @@
+@@ -122,6 +176,7 @@
+         this(p_i45447_1_, p_i45447_4_, p_i45447_5_);
+         int k = p_i45447_2_.length / 256;
+         boolean flag = !p_i45447_1_.provider.hasNoSky;
++        int k1 = 0;
+ 
+         for (int l = 0; l < 16; ++l)
+         {
+@@ -129,7 +184,6 @@
+             {
+                 for (int j1 = 0; j1 < k; ++j1)
+                 {
+-                    int k1 = l * k * 16 | i1 * k | j1;
+                     Block block = p_i45447_2_[k1];
+ 
+                     if (block != null && block != Blocks.air)
+@@ -144,6 +198,7 @@
+                         this.storageArrays[l1].func_150818_a(l, j1 & 15, i1, block);
+                         this.storageArrays[l1].setExtBlockMetadata(l, j1 & 15, i1, p_i45447_3_[k1]);
+                     }
++                    k1++;
+                 }
+             }
+         }
+@@ -504,18 +559,18 @@
+ 
      public Block getBlock(final int p_150810_1_, final int p_150810_2_, final int p_150810_3_)
      {
-         Block block = Blocks.air;
+-        Block block = Blocks.air;
 -
 -        if (p_150810_2_ >> 4 < this.storageArrays.length)
++        //Block block = Blocks.air;
 +        int p_2 = p_150810_2_ >> 4;
 +        if (p_2 < this.storageArrays.length)
          {
@@ -109,15 +135,16 @@
              {
 -                try
 -                {
+-                    block = extendedblockstorage.getBlockByExtId(p_150810_1_, p_150810_2_ & 15, p_150810_3_);
+-                }
 +                /*try
 +                {*/ // Exception handled by high-level class with safier deletion
-                     block = extendedblockstorage.getBlockByExtId(p_150810_1_, p_150810_2_ & 15, p_150810_3_);
--                }
++                    /*block = */return extendedblockstorage.getBlockByExtId(p_150810_1_, p_150810_2_ & 15, p_150810_3_);
 +                /*}
                  catch (Throwable throwable)
                  {
                      CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Getting block");
-@@ -529,7 +583,7 @@
+@@ -529,11 +584,11 @@
                          }
                      });
                      throw new ReportedException(crashreport);
@@ -126,14 +153,24 @@
              }
          }
  
-@@ -589,9 +643,10 @@
+-        return block;
++        return Blocks.air;//block;
+     }
  
+     public int getBlockMetadata(int p_76628_1_, int p_76628_2_, int p_76628_3_)
+@@ -585,13 +640,13 @@
+             int l1 = this.xPosition * 16 + p_150807_1_;
+             int i2 = this.zPosition * 16 + p_150807_3_;
+ 
+-            int k2 = block1.getLightOpacity(this.worldObj, l1, p_150807_2_, i2);
+-
              if (!this.worldObj.isRemote)
              {
 +                if (block1 == null) return false; // Cauldron
                  block1.onBlockPreDestroy(this.worldObj, l1, p_150807_2_, i2, k1);
              }
 -
++            int k2 = block1.getLightOpacity(this.worldObj, l1, p_150807_2_, i2);
 +            // Cauldron - Removed CB patch that fixes BUKKIT-5238 to prevent stackoverflows. See issue #1165 and #1169
              extendedblockstorage.func_150818_a(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_4_);
              extendedblockstorage.setExtBlockMetadata(p_150807_1_, p_150807_2_ & 15, p_150807_3_, p_150807_5_); // This line duplicates the one below, so breakBlock fires with valid worldstate
