@@ -52,7 +52,7 @@ Please read the [guide](https://github.com/CyberdyneCC/Thermos/blob/master/CONTR
 
 
 ## Build Requirements
-* Java 8 JDK
+* Java 8u101 JDK or higher
 * `JAVA_HOME` defined on your OS
 
 ## Building CyberdyneCC/Thermos
