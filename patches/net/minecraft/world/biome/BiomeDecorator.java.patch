@@ -174,7 +174,7 @@
          MinecraftForge.EVENT_BUS.post(new DecorateBiomeEvent.Post(currentWorld, randomGenerator, chunk_X, chunk_Z));
      }
  
-@@ -360,6 +386,31 @@
+@@ -360,6 +386,33 @@
          MinecraftForge.ORE_GEN_BUS.post(new OreGenEvent.Post(currentWorld, randomGenerator, chunk_X, chunk_Z));
      }
  
@@ -197,7 +197,9 @@
 +
 +        while (iter.hasNext())
 +        {
-+            this.currentWorld.getWorld().unloadChunk(iter.next().bukkitChunk);
++            Chunk chunk = iter.next();
++            if (chunk.bukkitChunk != null)
++                this.currentWorld.getWorld().unloadChunk(chunk.bukkitChunk);
 +            iter.remove();
 +        }
 +    }
