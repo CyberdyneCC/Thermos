@@ -95,7 +95,7 @@
 +
 +        public static boolean isOp(EntityPlayer ep)
 +        {
-+                 return ep.canCommandSenderUseCommand(4, "stop");
++                 return MinecraftServer.getServer().getConfigurationManager().func_152596_g(ep.getGameProfile());
 +        }
 +
 +        public static boolean nonVanilla(EntityPlayer ep)
