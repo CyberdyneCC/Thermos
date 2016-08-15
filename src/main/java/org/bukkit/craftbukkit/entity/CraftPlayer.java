@@ -461,7 +461,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause) {
         net.minecraft.entity.player.EntityPlayerMP entity = getHandle();
 
-        if (getHealth() == 0 || entity.isDead) {
+        if (getHealth() == 0 || entity.isDead || entity instanceof net.minecraftforge.common.util.FakePlayer) {
             return false;
         }
 
