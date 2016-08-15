@@ -154,7 +154,7 @@
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, null);
 +                
-+                if(eve != null && !(player == null || isTileActivator(player,x,y,z,face)))
++                if(eve != null && !(player == null || isCoFHFakePlayer(player,x,y,z,face)))
 +                {
 +                	event.cb = eve;
 +                	if(eve.isCancelled())
@@ -180,11 +180,11 @@
 -        PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 -        MinecraftForge.EVENT_BUS.post(event);
 -        return event;
-+    	if(player == null || isTileActivator(player,x,y,z,face))
++    	if(player == null || isCoFHFakePlayer(player,x,y,z,face))
 +    	{
 +        	if(CauldronCommand.debug)
 +        	{
-+        		System.out.println("[Thermos] Tile Activator / Null player detected...refusing to create Bukkit event");
++        		System.out.println("[Thermos] CoFH Fake Player / Null player detected...refusing to create Bukkit event");
 +        	}
 +        	onPlayerBukkitInteract( player, action, x, y, z, face, world, null);
 +        }
@@ -213,25 +213,25 @@
 +    	return onPlayerBukkitInteract( player, action, x, y, z, face, world, org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(player, aktor, x, y, z, face, player.inventory.getCurrentItem()));
      }
 +    
-+    private static boolean isTileActivator(EntityPlayer player, int x, int y, int z, int face)
++    private static boolean isCoFHFakePlayer(EntityPlayer player, int x, int y, int z, int face)
 +    {
 +    	if(CauldronCommand.debug)
 +    	{
-+    		System.out.println("[Thermos] Checking if it is a tile activator...");
++    		System.out.println("[Thermos] Checking if it is a CoFH Fake Player...");
 +    	}
-+    	return x == 0 && y==0 && z==0 && face == -1 && player instanceof FakePlayer && player.getGameProfile().getName().contains("[CoFH]");
++    	return player instanceof FakePlayer && player.getGameProfile().getName().equals("[CoFH]");
 +    }
 +    
 +    public static PlayerInteractEvent onPlayerBukkitInteract(EntityPlayer player, Action action, int x, int y, int z, int face, World world, org.bukkit.event.player.PlayerInteractEvent eve)
 +    {
 +                PlayerInteractEvent event = new PlayerInteractEvent(player, action, x, y, z, face, world);
 +                
-+                if(eve != null && !(player == null || isTileActivator(player,x,y,z,face)))
++                if(eve != null && !(player == null || isCoFHFakePlayer(player,x,y,z,face)))
 +                {
 +                	if(CauldronCommand.debug)
 +                	{
 +                		System.out.println("[Thermos] Using Bukkit Event for this action...");
-+                	}                	
++                	}
 +                	event.cb = eve;
 +                	if(eve.isCancelled()) 
 +                	{ 
