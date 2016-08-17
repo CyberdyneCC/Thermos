@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -150,8 +151,8 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
                 return (player.playerNetServerHandler != null) ? player.playerNetServerHandler.getPlayerB() : null; // Cauldron
             }
         }
-
-        return null;
+        EntityPlayer player = net.minecraftforge.common.util.FakePlayerFactory.fakePlayers.get(profile);
+        return player != null ? (Player)player.getBukkitEntity() : null;
     }
 
     @Override
