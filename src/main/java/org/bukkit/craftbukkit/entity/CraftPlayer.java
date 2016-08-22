@@ -110,9 +110,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     public boolean isOnline() {
+        if (this.getHandle() instanceof net.minecraftforge.common.util.FakePlayer)
+	{
+	    return true;
+	}
         for (Object obj : server.getHandle().playerEntityList) {
             net.minecraft.entity.player.EntityPlayerMP player = (net.minecraft.entity.player.EntityPlayerMP) obj;
-            if (player.getBukkitEntity() == this || this.getHandle() == player || this.getHandle().getGameProfile().getId().equals(player.getGameProfile().getId()))
+            if (player != null && (this.getHandle() == player || player.getBukkitEntity() == this || this.getHandle().getGameProfile().getId().equals(player.getGameProfile().getId())))
             {
                 return true;
             }
