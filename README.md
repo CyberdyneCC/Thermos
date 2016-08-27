@@ -80,8 +80,6 @@ All builds will be in `build/distributions`
 
 ## Known Caveats, use provided fixes at your own risk.
 
-✔ Aether II: isDonor function can lock up servers. [Fixed]
-
 ✔ BungeeCord: It's been known for years that BungeeCord barely works with Forge & seems that it'll never be supported officially. [Fixed]
 
 ✔ BuyCraftX: Doesn't seem to work with Thermos, info on why it doesn't is unknown currently. [Fixed]
@@ -89,12 +87,6 @@ All builds will be in `build/distributions`
 ✔ Citizens: Not compatible with forge [Fixed]
 
 ✖ Lilypad: 100% not compatible with Forge, lead developer has declined to add support when asked.
-
-✔ DraconicEvolution: P keybind will bypass protection. [Fixed]
-
-✔ Factions + MassiveCore: No protection from Forge items. [Fixed]
-
-✔ TuxTwoLib: Didn't work with Thermos at all [Fixed]
 
 ✔ Mobius / Opis: You can download fixed version [HERE](https://cdn.discordapp.com/attachments/172072987154055168/186577486593785857/MobiusCore-1.2.5-Thermos.jar)
 
