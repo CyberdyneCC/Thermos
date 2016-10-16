@@ -45,7 +45,7 @@
                <p>Edit your server launch script so that the Java line looks like this:<br>
                   <small>Replace the &lt;version&gt; with the version of the current Thermos build.</small>
                </p>
-               <pre>java -XX:+UseG1GC -XX:+UseFastAccessorMethods -XX:+OptimizeStringConcat -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m  -XX:+AggressiveOpts -XX:MaxGCPauseMillis=10 -XX:+UseStringDeduplication -Xms4G -Xmx6G -XX:hashCode=5 -Dfile.encoding=UTF-8 -jar Thermos-1.7.10-&lt;version&gt;.jar --log-strip-color</pre>
+               <pre>java -XX:+UseG1GC -XX:+UseFastAccessorMethods -XX:+OptimizeStringConcat -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m -XX:+AggressiveOpts -XX:MaxGCPauseMillis=10 -XX:+UseStringDeduplication -Xms4G -Xmx6G -XX:hashCode=5 -Dfile.encoding=UTF-8 -jar Thermos-1.7.10-&lt;version&gt;.jar --log-strip-color</pre>
             </li>
             <li>You're good to go!</li>
          </ol>
