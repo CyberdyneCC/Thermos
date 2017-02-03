@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 
-public class ThermiteTeleporter extends Teleporter
+public class ThermiteTeleporter extends Teleporter //Right Right. Cause if the teleporter isn't extended, your arm will be cut off
 {
 
 
